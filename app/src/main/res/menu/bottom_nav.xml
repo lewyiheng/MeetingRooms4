@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navBookNow"
+        android:title="Book Now"
+        android:icon="@drawable/ic_magnify"/>
+
+    <item
+        android:id="@+id/navBookings"
+        android:title="My Booking"
+        android:icon="@drawable/ic_list"/>
+
+    <item
+        android:id="@+id/navDate"
+        android:title="By Date"
+        android:icon="@drawable/ic_date"/>
+
+    <item
+        android:id="@+id/navRoom"
+        android:title="By Room"
+        android:icon="@drawable/iconajardoor"/>
+
+</menu>
