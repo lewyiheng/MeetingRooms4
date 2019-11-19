@@ -52,35 +52,8 @@ public class BookNowFragment extends Fragment {
         date.setText(dateFormat.format(c));
         time.setText(timeFormat.format(c));
 
-        // Minus Button
-        minus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int number = Integer.parseInt(duration.getText().toString());
+        duration(minus,plus,duration);
 
-                if (number <= 1) {
-                } else {
-                    int finalNumber = number - 1;
-                    String stringNumber = Integer.toString(finalNumber);
-                    duration.setText(stringNumber);
-                }
-            }
-        });
-
-        //Plus Button
-        plus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int number = Integer.parseInt(duration.getText().toString());
-
-                if (number == 9) {
-                } else {
-                    int finalNumber = number + 1;
-                    String stringNumber = Integer.toString(finalNumber);
-                    duration.setText(stringNumber);
-                }
-            }
-        });
         book.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,6 +62,39 @@ public class BookNowFragment extends Fragment {
             }
         });
 
+
         return view;
+
+
+    }
+
+
+    private void duration(Button minus,Button plus, final TextView tv){
+        plus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int number = Integer.parseInt(tv.getText().toString());
+
+                if (number == 9) {
+                } else {
+                    int finalNumber = number + 1;
+                    String stringNumber = Integer.toString(finalNumber);
+                    tv.setText(stringNumber);
+                }
+            }
+        });
+        minus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int number = Integer.parseInt(tv.getText().toString());
+
+                if (number <= 1) {
+                } else {
+                    int finalNumber = number - 1;
+                    String stringNumber = Integer.toString(finalNumber);
+                    tv.setText(stringNumber);
+                }
+            }
+        });
     }
 }

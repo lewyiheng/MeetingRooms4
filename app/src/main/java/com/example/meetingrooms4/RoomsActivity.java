@@ -14,8 +14,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toolbar;
+
+import com.example.meetingrooms4.Adapters.BookingsAdapter;
+import com.example.meetingrooms4.Classes.Bookings;
 
 import java.util.ArrayList;
 
@@ -24,6 +28,12 @@ public class RoomsActivity extends AppCompatActivity {
     Button plus, minus, book;
     TextView hours, gvClickedItem, description;
     CalendarView datepicker;
+
+    //Testing
+    ListView lv;
+    ArrayAdapter aa;
+    ArrayList<Bookings> al = new ArrayList<Bookings>();
+    Button roomTestBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,34 +49,21 @@ public class RoomsActivity extends AppCompatActivity {
         book = findViewById(R.id.roomBook);
         gvClickedItem = findViewById(R.id.gvClickedItem);
         description = findViewById(R.id.roomDesc);
+        lv = findViewById(R.id.roomLv);
 
-        // Minus Button
-        minus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int number = Integer.parseInt(hours.getText().toString());
-                if (number <= 1) {
-                } else {
-                    int finalNumber = number - 1;
-                    String stringNumber = Integer.toString(finalNumber);
-                    hours.setText(stringNumber);
-                }
-            }
-        });
+        duration(minus, plus, hours);
 
-        //Plus Button
-        plus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int number = Integer.parseInt(hours.getText().toString());
-                if (number == 9) {
-                } else {
-                    int finalNumber = number + 1;
-                    String stringNumber = Integer.toString(finalNumber);
-                    hours.setText(stringNumber);
-                }
-            }
-        });
+
+        //LV (testing)
+        al.clear();
+
+        al.add(new Bookings("User2", "User2", " ", " ", "0800 - 1000", "Short briefing on something"));
+        al.add(new Bookings("User2", "User 3", " ", " ", "1000 - 1200", " "));
+        al.add(new Bookings("User2", "User 7", " ", " ", "1300 - 1500", "Meeting for planning an event"));
+        al.add(new Bookings("User2", "User 10", " ", " ", "1600 - 1800", " "));
+
+        aa = new BookingsAdapter(getApplicationContext(), R.layout.row_bookings, al);
+        lv.setAdapter(aa);
 
         book.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +72,6 @@ public class RoomsActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
     }
 
     private void centerTitle(String title) {
@@ -106,5 +102,34 @@ public class RoomsActivity extends AppCompatActivity {
         ActionBar ab = getSupportActionBar();
         ab.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.actionbar));
         ab.setTitle(Html.fromHtml("<font color='#000000'>" + title + " </font>"));
+    }
+
+    private void duration(Button minus, Button plus, final TextView tv) {
+        plus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int number = Integer.parseInt(tv.getText().toString());
+
+                if (number == 9) {
+                } else {
+                    int finalNumber = number + 1;
+                    String stringNumber = Integer.toString(finalNumber);
+                    tv.setText(stringNumber);
+                }
+            }
+        });
+        minus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int number = Integer.parseInt(tv.getText().toString());
+
+                if (number <= 1) {
+                } else {
+                    int finalNumber = number - 1;
+                    String stringNumber = Integer.toString(finalNumber);
+                    tv.setText(stringNumber);
+                }
+            }
+        });
     }
 }

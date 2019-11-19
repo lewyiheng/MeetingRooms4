@@ -51,44 +51,46 @@ public class DateFragment extends Fragment {
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy");
         String date = sdf.format(date1);
 
-        // Minus Button
-        minus.setOnClickListener(new View.OnClickListener() {
+        //Plus minus
+        duration(minus, plus, duration);
+
+        find.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int number = Integer.parseInt(duration.getText().toString());
-
-                if (number <= 1) {
-                } else {
-                    int finalNumber = number - 1;
-                    String stringNumber = Integer.toString(finalNumber);
-                    duration.setText(stringNumber);
-                }
+                Intent i = new Intent(getActivity(), OpenRoomsActivity.class);
+                startActivity(i);
             }
         });
+        return view;
+    }
 
-        //Plus Button
+    private void duration(Button minus, Button plus, final TextView tv) {
         plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int number = Integer.parseInt(duration.getText().toString());
+                int number = Integer.parseInt(tv.getText().toString());
 
                 if (number == 9) {
                 } else {
                     int finalNumber = number + 1;
                     String stringNumber = Integer.toString(finalNumber);
-                    duration.setText(stringNumber);
+                    tv.setText(stringNumber);
                 }
             }
         });
-
-        find.setOnClickListener(new View.OnClickListener() {
+        minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(),OpenRoomsActivity.class);
-                startActivity(i);
+                int number = Integer.parseInt(tv.getText().toString());
+
+                if (number <= 1) {
+                } else {
+                    int finalNumber = number - 1;
+                    String stringNumber = Integer.toString(finalNumber);
+                    tv.setText(stringNumber);
+                }
             }
         });
-        return view;
     }
 
 }

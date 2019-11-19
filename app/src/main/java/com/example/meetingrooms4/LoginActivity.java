@@ -11,69 +11,64 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.EditText;
+import android.widget.Toast;
 import android.widget.Toolbar;
-
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class ConfirmActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
-    ImageView iv;
-    TextView title, time, desc, date;
-    Button book;
+    Button login;
+    EditText id, pass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_confirm);
+        setContentView(R.layout.activity_login);
 
-        centerTitle("Room Name here");
+        centerTitle(" ");
 
-        iv = findViewById(R.id.confirmRoomImage);
-        book = findViewById(R.id.confirmBook);
+        login = findViewById(R.id.login);
+        id = findViewById(R.id.loginId);
+        pass = findViewById(R.id.loginPass);
 
-        Picasso.get().load("https://cdn.discordapp.com/attachments/449905908248739850/638541087568298004/conference_room_3.jpg").resize(1280, 720).into(iv);
+        getSupportActionBar().hide();
 
-        book.setOnClickListener(new View.OnClickListener() {
+        final String loginId = id.getText().toString(); //Get ID
+        String loginPass = pass.getText().toString(); //Get password
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
+        alert.setTitle("Excellence room at 0900");
+        alert.setMessage("Do you want to keep this booking?");
+        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        alert.setNegativeButton("No", null);
+        alert.show();
+
+        login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                AlertDialog.Builder alert = new AlertDialog.Builder(ConfirmActivity.this);
-                alert.setTitle("Confirm Reservation?");
-                alert.setMessage("Are you sure you want to book this room?");
-                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-//Set notif
-                        Calendar timer = Calendar.getInstance();
-                        timer.add(Calendar.SECOND, 5);
-                        Intent i = new Intent(ConfirmActivity.this, NotificationReceiver.class);
-                        PendingIntent pIntent = PendingIntent.getBroadcast(getApplicationContext(), 12345, i, PendingIntent.FLAG_CANCEL_CURRENT);
-                        AlarmManager am = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
-                        am.set(AlarmManager.RTC_WAKEUP, timer.getTimeInMillis(), pIntent);
-
-
-                        Intent i2 = new Intent(getApplicationContext(), MainActivity.class);
-                        i.putExtra("frag", "fragBookings");
-                        startActivity(i2);
-
-                    }
-                });
-                alert.setNegativeButton("No", null);
-                alert.show();
+                SharedPreferences sp = getApplicationContext().getSharedPreferences("sp", 0);
+                SharedPreferences.Editor e = sp.edit();
+                e.putString(loginId, null); //Put login ID
+                e.commit();
+                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(i);
             }
         });
     }
-
     private void centerTitle(String title) {
         ArrayList<View> textViews = new ArrayList<>();
 

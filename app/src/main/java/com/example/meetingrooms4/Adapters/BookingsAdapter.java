@@ -18,9 +18,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
+import com.example.meetingrooms4.AllBookingsFragment;
 import com.example.meetingrooms4.Classes.Bookings;
 import com.example.meetingrooms4.MainActivity;
 import com.example.meetingrooms4.R;
+import com.example.meetingrooms4.RoomsActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -59,13 +61,21 @@ public class BookingsAdapter extends ArrayAdapter<Bookings> {
         } else {
             desc.setText("\"" + results.getDesc() + "\"");
         }
+
+
         //Set time
         String startTime = results.getStartTime();
         String endTime = results.getEndTIme();
         String duration = startTime + " - " + endTime;
 
-        time.setText(duration);
         place.setText(results.getRoom());
+
+        if (results.getStartTime().equalsIgnoreCase(" ")) {
+            time.setVisibility(View.GONE);
+            btn.setText("Call");
+        } else {
+            time.setText(duration);
+        }
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,7 +99,6 @@ public class BookingsAdapter extends ArrayAdapter<Bookings> {
 
             }
         });
-
         return rowView;
     }
 }

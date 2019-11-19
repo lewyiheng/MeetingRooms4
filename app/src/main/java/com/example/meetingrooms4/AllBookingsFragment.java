@@ -17,7 +17,12 @@ import android.widget.ListView;
 import com.example.meetingrooms4.Adapters.BookingsAdapter;
 import com.example.meetingrooms4.Classes.Bookings;
 
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class AllBookingsFragment extends Fragment {
 
@@ -37,15 +42,17 @@ public class AllBookingsFragment extends Fragment {
 
         al.clear();
 
-        al.add(new Bookings("User2", "Serenity Room", "1400", "1500", "25 October 2019", "Short briefing on something"));
-        al.add(new Bookings("User2", "Vigilance Room", "1500", "1600", "26 November 2019", " "));
-        al.add(new Bookings("User2", "Integrity Room", "1500", "1600", "7 December 2019", "Meeting for planning an event"));
-        al.add(new Bookings("User2", "Training Room", "1500", "1600", "1 January 2020", " "));
-        al.add(new Bookings("User2", "Integrity Room", "1500", "1600", "13 October 2019", " "));
-        al.add(new Bookings("User2", "Integrity Room", "1500", "1600", "21 November 2019", " "));
+        al.add(new Bookings("User2", "Serenity Room", "1400", "1500", "13 October 2019", "Short briefing on something"));
+        al.add(new Bookings("User2", "Vigilance Room", "1500", "1600", "21 October 2019", " "));
+        al.add(new Bookings("User2", "Integrity Room", "1500", "1600", "31 October 2019", "Meeting for planning an event"));
+        al.add(new Bookings("User2", "Training Room", "1500", "1600", "12 November 2020", " "));
+        al.add(new Bookings("User2", "Integrity Room", "1500", "1600", "15 December 2019", " "));
+        al.add(new Bookings("User2", "Integrity Room", "1500", "1600", "2 January 2020", " "));
 
         aa = new BookingsAdapter(getActivity(), R.layout.row_bookings, al);
         lv.setAdapter(aa);
+
+
         return view;
     }
 }

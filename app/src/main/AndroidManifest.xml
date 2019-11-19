@@ -11,13 +11,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".RoomsActivity"></activity>
+        <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".RoomsActivity" />
         <activity android:name=".ConfirmActivity" />
         <activity android:name=".OpenRoomsActivity" />
         <activity android:name=".RoomsFragment" />
         <activity android:name=".DateFragment" />
         <activity android:name=".AllBookingsFragment" />
         <activity android:name=".BookNowFragment" />
+
+        <receiver android:name=".NotificationReceiver" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
