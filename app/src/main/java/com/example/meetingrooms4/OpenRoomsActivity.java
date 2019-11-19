@@ -38,8 +38,14 @@ public class OpenRoomsActivity extends AppCompatActivity {
         lv = findViewById(R.id.openList);
         tvTimeInfo = findViewById(R.id.openTimeInfo);
 
+        Intent i = getIntent();
+        final String desc = i.getStringExtra("desc");
+        final String startTime = i.getStringExtra("startTime");
+        final String endTime = i.getStringExtra("endTime");
+        final String date = i.getStringExtra("date");
+
         //Set info
-        tvTimeInfo.setText("Available rooms from\n" + "1000 to 1300");
+        tvTimeInfo.setText("Available rooms from\n" + startTime + " to " + endTime);
 
         //Load rooms
         al = new ArrayList<Rooms>();
@@ -55,7 +61,13 @@ public class OpenRoomsActivity extends AppCompatActivity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(getApplicationContext(),ConfirmActivity.class);
+                Intent i = new Intent(getApplicationContext(), ConfirmActivity.class);
+                String roomChosen = al.get(position).getRoomName();
+                i.putExtra("room",roomChosen);
+                i.putExtra("startTime",startTime);
+                i.putExtra("endTime",endTime);
+                i.putExtra("desc",desc);
+                i.putExtra("date",date);
                 startActivity(i);
             }
         });

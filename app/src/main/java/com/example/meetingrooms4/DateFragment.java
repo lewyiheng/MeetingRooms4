@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -14,9 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -26,6 +29,9 @@ public class DateFragment extends Fragment {
     Button plus, minus, find;
     TextView duration, desc;
     CalendarView calendar;
+
+    private TimePicker picker; // set in onCreate
+    private NumberPicker minutePicker;
 
     @Nullable
     @Override
@@ -45,11 +51,14 @@ public class DateFragment extends Fragment {
         desc = view.findViewById(R.id.dateDesc);
 
         timePicker.setIs24HourView(true);
+        duration.setText("1.0");
 
         //getDate
         Date date1 = new Date(calendar.getDate());
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy");
-        String date = sdf.format(date1);
+        final String date = sdf.format(date1);
+
+
 
         //Plus minus
         duration(minus, plus, duration);
@@ -57,8 +66,32 @@ public class DateFragment extends Fragment {
         find.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                final String startTime = Integer.toString(timePicker.getHour()) + timePicker.getMinute();
+                String durationSelected = duration.getText().toString();
+                String[] timeSplit = durationSelected.split("\\.");
+
+                final String endTime;
+                if (timeSplit[1].equalsIgnoreCase("0")) {
+                    int hour = timePicker.getHour() + Integer.parseInt(timeSplit[0]);
+                    String minute = "00";
+                    endTime = hour + minute;
+                } else {
+                    int hour = timePicker.getHour() + Integer.parseInt(timeSplit[0]);
+                    String minute = "30";
+                    endTime = hour + minute;
+                }
+
+
+
                 Intent i = new Intent(getActivity(), OpenRoomsActivity.class);
+                i.putExtra("startTime",startTime);
+                i.putExtra("endTime",endTime);
+                i.putExtra("date",date);
+                i.putExtra("desc",desc.getText().toString());
                 startActivity(i);
+
+
             }
         });
         return view;
@@ -68,29 +101,35 @@ public class DateFragment extends Fragment {
         plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int number = Integer.parseInt(tv.getText().toString());
+                //    int number = Integer.parseInt(tv.getText().toString());
+                Double numberD = Double.parseDouble(tv.getText().toString());
 
-                if (number == 9) {
+                if (numberD == 9) {
                 } else {
-                    int finalNumber = number + 1;
-                    String stringNumber = Integer.toString(finalNumber);
-                    tv.setText(stringNumber);
+                    //  int finalNumber = number + 1;
+                    Double finalNumberD = numberD + 0.5;
+                    //   String stringNumber = Integer.toString(finalNumber);
+                    String stringNumberD = Double.toString(finalNumberD);
+                    tv.setText(stringNumberD);
                 }
             }
         });
         minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int number = Integer.parseInt(tv.getText().toString());
+                //     int number = Integer.parseInt(tv.getText().toString());
+                Double numberD = Double.parseDouble(tv.getText().toString());
 
-                if (number <= 1) {
+                if (numberD <= 0.5) {
                 } else {
-                    int finalNumber = number - 1;
-                    String stringNumber = Integer.toString(finalNumber);
-                    tv.setText(stringNumber);
+                    //        int finalNumber = number - 1;
+                    Double finalNumberD = numberD - 0.5;
+                    String stringNumberD = Double.toString(finalNumberD);
+
+                    //      String stringNumber = Integer.toString(finalNumber);
+                    tv.setText(stringNumberD);
                 }
             }
         });
     }
-
 }

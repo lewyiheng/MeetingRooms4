@@ -29,59 +29,64 @@
             android:textAlignment="center" />
 
         <ListView
+            android:id="@+id/roomLv"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:id="@+id/roomLv"
             android:nestedScrollingEnabled="true"></ListView>
 
-        <TimePicker
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:timePickerMode="spinner"
-            ></TimePicker>
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Select duration (Hour(s))" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="20dp"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/roomMinus"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@drawable/btn_round"
-                android:text="-" />
-
-            <TextView
-                android:id="@+id/roomHours"
+            <TimePicker
+                android:id="@+id/roomTimePicker"
                 android:layout_width="wrap_content"
-                android:layout_height="150dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="50dp"
-                android:layout_marginRight="50dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/roboto_light"
-                android:gravity="center"
-                android:text="1"
-                android:textAlignment="center"
-                android:textSize="100dp" />
-
-            <Button
-                android:id="@+id/roomPlus"
-                android:layout_width="50dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:timePickerMode="spinner"></TimePicker>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:background="@drawable/btn_round"
-                android:text="+" />
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/roomMinus"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/btn_round"
+                    android:text="-" />
+
+                <TextView
+                    android:id="@+id/roomHour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/roboto_light"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textAlignment="center"
+                    android:textSize="70dp" />
+
+                <Button
+                    android:id="@+id/roomPlus"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/btn_round"
+                    android:text="+" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <EditText

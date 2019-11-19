@@ -28,18 +28,38 @@ import java.util.Calendar;
 public class ConfirmActivity extends AppCompatActivity {
 
     ImageView iv;
-    TextView title, time, desc, date;
+    TextView  time, desc, date,title;
     Button book;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm);
 
-        centerTitle("Room Name here");
+
 
         iv = findViewById(R.id.confirmRoomImage);
         book = findViewById(R.id.confirmBook);
+        time = findViewById(R.id.confirmTime);
+        title = findViewById(R.id.confirmTitle);
+        desc = findViewById(R.id.confirmDesc);
+        date= findViewById(R.id.confirmDate);
+
+        Intent i = getIntent();
+        String room1 = i.getStringExtra("room");
+        String startTime1 = i.getStringExtra("startTime");
+        String endTime1 = i.getStringExtra("endTime");
+        String desc1 = i.getStringExtra("desc");
+        String date1 = i.getStringExtra("date");
+
+        date.setText(date1);
+        title.setText(room1);
+        desc.setText(desc1);
+
+        time.setText(startTime1 + " - " +endTime1);
+
+        centerTitle(room1);
 
         Picasso.get().load("https://cdn.discordapp.com/attachments/449905908248739850/638541087568298004/conference_room_3.jpg").resize(1280, 720).into(iv);
 

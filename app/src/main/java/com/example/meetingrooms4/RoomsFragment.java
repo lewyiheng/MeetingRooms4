@@ -54,7 +54,10 @@ public class RoomsFragment extends Fragment {
         roomsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(getActivity(),RoomsActivity.class);
+
+                String roomChosen = al.get(position).getRoomName();
+                Intent i = new Intent(getActivity(), RoomsActivity.class);
+                i.putExtra("room", roomChosen);
                 startActivity(i);
             }
         });
