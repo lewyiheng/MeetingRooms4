@@ -6,6 +6,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toolbar;
@@ -23,6 +25,7 @@ import com.example.meetingrooms4.Adapters.BookingsAdapter;
 import com.example.meetingrooms4.Adapters.TimingAdapter;
 import com.example.meetingrooms4.Classes.Bookings;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,6 +36,12 @@ public class RoomsActivity extends AppCompatActivity {
     TextView hours, gvClickedItem, description;
     CalendarView datepicker;
     TimePicker timePicker;
+
+    NumberPicker minutePicker;
+
+
+    private static final int INTERVAL = 30;
+    private static final DecimalFormat FORMATTER = new DecimalFormat("00");
 
     //Testing
     ListView lv;
@@ -48,7 +57,6 @@ public class RoomsActivity extends AppCompatActivity {
         Intent i = getIntent();
         final String roomChosen = i.getStringExtra("room");
 
-        centerTitle(roomChosen);
 
         plus = findViewById(R.id.roomPlus);
         minus = findViewById(R.id.roomMinus);
@@ -63,6 +71,9 @@ public class RoomsActivity extends AppCompatActivity {
         hours.setText("1.0");
         duration(minus, plus, hours);
         timePicker.setIs24HourView(true);
+
+        centerTitle(roomChosen);
+        setMinutePicker();
 
         //getDate
         Date date1 = new Date(datepicker.getDate());
@@ -86,20 +97,10 @@ public class RoomsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                final String startTime = Integer.toString(timePicker.getHour()) + timePicker.getMinute();
+                final String startTime = timePicker.getHour() + getMinute();
                 String durationSelected = hours.getText().toString();
-                String[] timeSplit = durationSelected.split("\\.");
 
-                final String endTime;
-                if (timeSplit[1].equalsIgnoreCase("0")) {
-                    int hour = timePicker.getHour() + Integer.parseInt(timeSplit[0]);
-                    String minute = "00";
-                    endTime = hour + minute;
-                } else {
-                    int hour = timePicker.getHour() + Integer.parseInt(timeSplit[0]);
-                    String minute = "30";
-                    endTime = hour + minute;
-                }
+                String endTime = endTime(Integer.toString(timePicker.getHour()), durationSelected);
 
                 Intent i = new Intent(getApplicationContext(), ConfirmActivity.class);
                 i.putExtra("date", date);
@@ -110,6 +111,23 @@ public class RoomsActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+    }
+
+    private String endTime(String startHour, String duration) {
+        String endTiming;
+
+        String[] timeSplit = duration.split("\\."); //Split duration by decimal place
+        if (timeSplit[1].equalsIgnoreCase("0")) {
+            int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
+            String minute = "00";
+            endTiming = hour + minute;
+        } else {
+            int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
+            String minute = "30";
+            endTiming = hour + minute;
+        }
+
+        return endTiming;
     }
 
     private void centerTitle(String title) {
@@ -143,17 +161,16 @@ public class RoomsActivity extends AppCompatActivity {
     }
 
     private void duration(Button minus, Button plus, final TextView tv) {
+        final Double numberD = Double.parseDouble(tv.getText().toString());
+
         plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //    int number = Integer.parseInt(tv.getText().toString());
-                Double numberD = Double.parseDouble(tv.getText().toString());
 
                 if (numberD == 9) {
                 } else {
-                    //  int finalNumber = number + 1;
                     Double finalNumberD = numberD + 0.5;
-                    //   String stringNumber = Integer.toString(finalNumber);
+
                     String stringNumberD = Double.toString(finalNumberD);
                     tv.setText(stringNumberD);
                 }
@@ -162,19 +179,44 @@ public class RoomsActivity extends AppCompatActivity {
         minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //     int number = Integer.parseInt(tv.getText().toString());
-                Double numberD = Double.parseDouble(tv.getText().toString());
 
                 if (numberD <= 0.5) {
                 } else {
-                    //        int finalNumber = number - 1;
                     Double finalNumberD = numberD - 0.5;
                     String stringNumberD = Double.toString(finalNumberD);
 
-                    //      String stringNumber = Integer.toString(finalNumber);
                     tv.setText(stringNumberD);
                 }
             }
         });
+    }
+
+    public void setMinutePicker() {
+        int numValues = 60 / INTERVAL;
+        String[] displayedValues = new String[numValues];
+        for (int i = 0; i < numValues; i++) {
+            displayedValues[i] = FORMATTER.format(i * INTERVAL);
+        }
+
+        View minute = timePicker.findViewById(Resources.getSystem().getIdentifier("minute", "id", "android"));
+        if ((minute != null) && (minute instanceof NumberPicker)) {
+            minutePicker = (NumberPicker) minute;
+            minutePicker.setMinValue(0);
+            minutePicker.setMaxValue(numValues - 1);
+            minutePicker.setDisplayedValues(displayedValues);
+        }
+    }
+
+    public String getMinute() {
+        if (minutePicker != null) {
+            int value = minutePicker.getValue() * INTERVAL;
+            if (value == 0) {
+                return ((minutePicker.getValue() * INTERVAL) + "0");
+            } else {
+                return Integer.toString(value);
+            }
+        } else {
+            return Integer.toString(timePicker.getCurrentMinute());
+        }
     }
 }

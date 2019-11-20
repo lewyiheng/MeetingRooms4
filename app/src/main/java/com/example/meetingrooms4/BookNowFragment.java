@@ -53,65 +53,66 @@ public class BookNowFragment extends Fragment {
         time.setText(timeFormat.format(c));
 
         duration.setText("1.0");
-        duration(minus, plus, duration);
 
+        //Plus-Minus duration
+        duration(minus, plus, duration);
 
 
         book.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                final String description;
-                if (desc.getText().toString().equalsIgnoreCase(null)){
+                String description;
+                if (desc.getText().toString().equalsIgnoreCase(null)) {
                     description = " ";
-                }else{
+                } else {
                     description = desc.getText().toString();
                 }
 
-                final String startTime = hourOnly.format(c) + "00";
+                String startTime = hourOnly.format(c) + "00";
                 String durationSelected = duration.getText().toString();
-                String[] timeSplit = durationSelected.split("\\.");
 
-                final String endTime;
-                if (timeSplit[1].equalsIgnoreCase("0")){
-                    int hour = Integer.parseInt(hourOnly.format(c)) + Integer.parseInt(timeSplit[0]);
-                    String minute = "00";
-                    endTime = hour + minute;
-                }else{
-                    int hour = Integer.parseInt(hourOnly.format(c)) + Integer.parseInt(timeSplit[0]);
-                    String minute = "30";
-                    endTime = hour + minute;
-                }
-
+                String endTime = endTime(hourOnly.format(c), durationSelected);
 
                 Intent i = new Intent(getActivity(), OpenRoomsActivity.class);
-                i.putExtra("startTime",startTime);
-                i.putExtra("endTime",endTime);
-                i.putExtra("desc",description);
-                i.putExtra("date",date.getText().toString());
+                i.putExtra("startTime", startTime);
+                i.putExtra("endTime", endTime);
+                i.putExtra("desc", description);
+                i.putExtra("date", date.getText().toString());
                 startActivity(i);
             }
         });
 
-
         return view;
-
 
     }
 
+    private String endTime(String startHour, String duration) {
+        String endTiming;
+
+        String[] timeSplit = duration.split("\\."); //Split duration by decimal place
+        if (timeSplit[1].equalsIgnoreCase("0")) {
+            int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
+            String minute = "00";
+            endTiming = hour + minute;
+        } else {
+            int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
+            String minute = "30";
+            endTiming = hour + minute;
+        }
+
+        return endTiming;
+    }
 
     private void duration(Button minus, Button plus, final TextView tv) {
         plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            //    int number = Integer.parseInt(tv.getText().toString());
                 Double numberD = Double.parseDouble(tv.getText().toString());
 
                 if (numberD == 9) {
                 } else {
-                  //  int finalNumber = number + 1;
                     Double finalNumberD = numberD + 0.5;
-                 //   String stringNumber = Integer.toString(finalNumber);
                     String stringNumberD = Double.toString(finalNumberD);
                     tv.setText(stringNumberD);
                 }
@@ -120,16 +121,12 @@ public class BookNowFragment extends Fragment {
         minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-           //     int number = Integer.parseInt(tv.getText().toString());
                 Double numberD = Double.parseDouble(tv.getText().toString());
 
                 if (numberD <= 0.5) {
                 } else {
-            //        int finalNumber = number - 1;
                     Double finalNumberD = numberD - 0.5;
                     String stringNumberD = Double.toString(finalNumberD);
-
-              //      String stringNumber = Integer.toString(finalNumber);
                     tv.setText(stringNumberD);
                 }
             }

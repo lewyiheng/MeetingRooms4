@@ -30,8 +30,10 @@ public class DateFragment extends Fragment {
     TextView duration, desc;
     CalendarView calendar;
 
-    private TimePicker picker; // set in onCreate
-    private NumberPicker minutePicker;
+    NumberPicker minutePicker;
+
+    private static final int INTERVAL = 30;
+    private static final DecimalFormat FORMATTER = new DecimalFormat("00");
 
     @Nullable
     @Override
@@ -53,12 +55,11 @@ public class DateFragment extends Fragment {
         timePicker.setIs24HourView(true);
         duration.setText("1.0");
 
+        setMinutePicker();
         //getDate
         Date date1 = new Date(calendar.getDate());
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy");
         final String date = sdf.format(date1);
-
-
 
         //Plus minus
         duration(minus, plus, duration);
@@ -67,48 +68,50 @@ public class DateFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                final String startTime = Integer.toString(timePicker.getHour()) + timePicker.getMinute();
+                String startTime = timePicker.getHour() + getMinute();
                 String durationSelected = duration.getText().toString();
-                String[] timeSplit = durationSelected.split("\\.");
-
-                final String endTime;
-                if (timeSplit[1].equalsIgnoreCase("0")) {
-                    int hour = timePicker.getHour() + Integer.parseInt(timeSplit[0]);
-                    String minute = "00";
-                    endTime = hour + minute;
-                } else {
-                    int hour = timePicker.getHour() + Integer.parseInt(timeSplit[0]);
-                    String minute = "30";
-                    endTime = hour + minute;
-                }
-
-
+                String endTime = endTime(Integer.toString(timePicker.getHour()), durationSelected);
 
                 Intent i = new Intent(getActivity(), OpenRoomsActivity.class);
-                i.putExtra("startTime",startTime);
-                i.putExtra("endTime",endTime);
-                i.putExtra("date",date);
-                i.putExtra("desc",desc.getText().toString());
+                i.putExtra("startTime", startTime);
+                i.putExtra("endTime", endTime);
+                i.putExtra("date", date);
+                i.putExtra("desc", desc.getText().toString());
                 startActivity(i);
-
-
             }
         });
         return view;
     }
 
+    private String endTime(String startHour, String duration) {
+        String endTiming;
+
+        String[] timeSplit = duration.split("\\."); //Split duration by decimal place
+        if (timeSplit[1].equalsIgnoreCase("0")) {
+            int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
+            String minute = "00";
+            endTiming = hour + minute;
+        } else {
+            int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
+            String minute = "30";
+            endTiming = hour + minute;
+        }
+
+        return endTiming;
+    }
+
     private void duration(Button minus, Button plus, final TextView tv) {
+
+        final Double numberD = Double.parseDouble(tv.getText().toString());
+
         plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //    int number = Integer.parseInt(tv.getText().toString());
-                Double numberD = Double.parseDouble(tv.getText().toString());
 
                 if (numberD == 9) {
                 } else {
-                    //  int finalNumber = number + 1;
                     Double finalNumberD = numberD + 0.5;
-                    //   String stringNumber = Integer.toString(finalNumber);
+
                     String stringNumberD = Double.toString(finalNumberD);
                     tv.setText(stringNumberD);
                 }
@@ -117,19 +120,44 @@ public class DateFragment extends Fragment {
         minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //     int number = Integer.parseInt(tv.getText().toString());
-                Double numberD = Double.parseDouble(tv.getText().toString());
 
                 if (numberD <= 0.5) {
                 } else {
-                    //        int finalNumber = number - 1;
                     Double finalNumberD = numberD - 0.5;
                     String stringNumberD = Double.toString(finalNumberD);
 
-                    //      String stringNumber = Integer.toString(finalNumber);
                     tv.setText(stringNumberD);
                 }
             }
         });
+    }
+
+    public void setMinutePicker() {
+        int numValues = 60 / INTERVAL;
+        String[] displayedValues = new String[numValues];
+        for (int i = 0; i < numValues; i++) {
+            displayedValues[i] = FORMATTER.format(i * INTERVAL);
+        }
+
+        View minute = timePicker.findViewById(Resources.getSystem().getIdentifier("minute", "id", "android"));
+        if ((minute != null) && (minute instanceof NumberPicker)) {
+            minutePicker = (NumberPicker) minute;
+            minutePicker.setMinValue(0);
+            minutePicker.setMaxValue(numValues - 1);
+            minutePicker.setDisplayedValues(displayedValues);
+        }
+    }
+
+    public String getMinute() {
+        if (minutePicker != null) {
+            int value = minutePicker.getValue() * INTERVAL;
+            if (value == 0) {
+                return ((minutePicker.getValue() * INTERVAL) + "0");
+            } else {
+                return Integer.toString(value);
+            }
+        } else {
+            return Integer.toString(timePicker.getCurrentMinute());
+        }
     }
 }

@@ -21,18 +21,19 @@
             android:layout_gravity="center"
             android:theme="@style/datePickerStyle" />
 
-        <TextView
-            android:layout_width="350dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Please select date and start time."
-            android:textAlignment="center" />
 
         <ListView
             android:id="@+id/roomLv"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:nestedScrollingEnabled="true"></ListView>
+
+        <TextView
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Please select date and start time."
+            android:textAlignment="center" />
 
         <LinearLayout
             android:layout_width="match_parent"

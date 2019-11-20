@@ -6,10 +6,7 @@
         android:title="Book Now"
         android:icon="@drawable/ic_magnify"/>
 
-    <item
-        android:id="@+id/navBookings"
-        android:title="My Booking"
-        android:icon="@drawable/ic_list"/>
+
 
     <item
         android:id="@+id/navDate"
@@ -20,5 +17,10 @@
         android:id="@+id/navRoom"
         android:title="By Room"
         android:icon="@drawable/iconajardoor"/>
+
+    <item
+        android:id="@+id/navBookings"
+        android:title="My Booking"
+        android:icon="@drawable/ic_list"/>
 
 </menu>

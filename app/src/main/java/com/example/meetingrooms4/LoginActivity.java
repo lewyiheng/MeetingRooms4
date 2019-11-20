@@ -45,17 +45,6 @@ public class LoginActivity extends AppCompatActivity {
         final String loginId = id.getText().toString(); //Get ID
         String loginPass = pass.getText().toString(); //Get password
 
-        AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
-        alert.setTitle("Excellence room at 0900");
-        alert.setMessage("Do you want to keep this booking?");
-        alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        });
-        alert.setNegativeButton("No", null);
-        alert.show();
-
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,6 +58,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
     private void centerTitle(String title) {
         ArrayList<View> textViews = new ArrayList<>();
 
