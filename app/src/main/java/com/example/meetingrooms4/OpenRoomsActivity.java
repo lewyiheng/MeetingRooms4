@@ -23,13 +23,15 @@ import android.widget.Toolbar;
 
 import com.example.meetingrooms4.Adapters.OccupiedAdapter;
 import com.example.meetingrooms4.Adapters.RoomsAdapter;
+import com.example.meetingrooms4.Classes.Bookings;
 import com.example.meetingrooms4.Classes.Rooms;
 
 import java.util.ArrayList;
 
 public class OpenRoomsActivity extends AppCompatActivity {
 
-    ArrayList<Rooms> al, al2;
+    ArrayList<Rooms> al;
+    ArrayList<Bookings>al2;
     ArrayAdapter aa, aa2;
     ListView lv;
     GridView gv;
@@ -67,11 +69,11 @@ public class OpenRoomsActivity extends AppCompatActivity {
         al.add(new Rooms("Training room", " "));
         al.add(new Rooms("Vigilance room", " "));
 
-        al2.add(new Rooms("Courage room \nUser3", " "));
-        //al2.add(new Rooms("Perseverance room \nUser4", " "));
-        al2.add(new Rooms("Excellence room\nUser5", " "));
-        al2.add(new Rooms("OPL room\nUser6", " "));
-        al2.add(new Rooms("BIS2 room\nUser7", " "));
+        al2.add(new Bookings("User4","Courage room","1300","1400","Today","Short Meeting"));
+        al2.add(new Bookings("User5","Perseverance room","1300","1400","Today","Short Meeting"));
+        al2.add(new Bookings("User6","OPL room","1300","1400","Today","Short Meeting"));
+        al2.add(new Bookings("User7","BIS2 room","1300","1400","Today","Short Meeting"));
+
         aa = new RoomsAdapter(getApplicationContext(), R.layout.row_rooms, al);
         aa2 = new OccupiedAdapter(getApplicationContext(), R.layout.row_occupied, al2);
         lv.setAdapter(aa);
@@ -88,22 +90,6 @@ public class OpenRoomsActivity extends AppCompatActivity {
                 i.putExtra("desc", desc);
                 i.putExtra("date", date);
                 startActivity(i);
-            }
-        });
-
-        gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AlertDialog.Builder alert = new AlertDialog.Builder(OpenRoomsActivity.this);
-                alert.setTitle("Excellence room");
-                alert.setMessage("Name: User5\nTime: 1600 to 1700\nPurpose:\nShort Discussion");
-                alert.setPositiveButton("Call", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
-                alert.setNegativeButton("Close", null);
-                alert.show();
             }
         });
 

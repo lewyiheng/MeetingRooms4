@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.example.meetingrooms4.Adapters.BookingsAdapter;
@@ -32,7 +33,7 @@ import java.util.Date;
 
 public class RoomsActivity extends AppCompatActivity {
 
-    Button plus, minus, book;
+    Button plus, minus, book,showAll;
     TextView hours, gvClickedItem, description;
     CalendarView datepicker;
     TimePicker timePicker;
@@ -44,9 +45,10 @@ public class RoomsActivity extends AppCompatActivity {
     private static final DecimalFormat FORMATTER = new DecimalFormat("00");
 
     //Testing
-    ListView lv;
-    ArrayAdapter aa;
+    ListView lv,lvSingleItem;
+    ArrayAdapter aa,aa2;
     ArrayList<Bookings> al = new ArrayList<Bookings>();
+    ArrayList<Bookings> al2 = new ArrayList<Bookings>();
     Button roomTestBtn;
 
     @Override
@@ -67,6 +69,8 @@ public class RoomsActivity extends AppCompatActivity {
         description = findViewById(R.id.roomDesc);
         lv = findViewById(R.id.roomLv);
         timePicker = findViewById(R.id.roomTimePicker);
+        showAll = findViewById(R.id.roomShowAll);
+        lvSingleItem= findViewById(R.id.roomLvTime);
 
         hours.setText("1.0");
         duration(minus, plus, hours);
@@ -90,25 +94,49 @@ public class RoomsActivity extends AppCompatActivity {
         al.add(new Bookings("User2", "Integrity Room", "1700", "1900", "15 December 2019", " "));
         al.add(new Bookings("User2", "Integrity Room", "2000", "2200", "2 January 2020", " "));
 
+        al2.add(new Bookings("User2", "Serenity Room", "0900", "1100", "13 October 2019", "Short briefing on something"));
+
+
         aa = new TimingAdapter(getApplicationContext(), R.layout.row_bookings, al);
+        aa2 = new TimingAdapter(getApplicationContext(), R.layout.row_bookings, al2);
         lv.setAdapter(aa);
+        lvSingleItem.setAdapter(aa2);
+        lv.setVisibility(View.GONE);
 
         book.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                final String startTime = timePicker.getHour() + getMinute();
-                String durationSelected = hours.getText().toString();
+                if (description.getText().toString().isEmpty()) {
+                    Toast.makeText(getApplicationContext(),"Please enter a purpose for booking.",Toast.LENGTH_SHORT).show();
+                } else {
+                    final String startTime = timePicker.getHour() + getMinute();
+                    String durationSelected = hours.getText().toString();
 
-                String endTime = endTime(Integer.toString(timePicker.getHour()), durationSelected);
+                    String endTime = endTime(Integer.toString(timePicker.getHour()), durationSelected);
 
-                Intent i = new Intent(getApplicationContext(), ConfirmActivity.class);
-                i.putExtra("date", date);
-                i.putExtra("room", roomChosen);
-                i.putExtra("startTime", startTime);
-                i.putExtra("endTime", endTime);
-                i.putExtra("desc", description.getText().toString());
-                startActivity(i);
+                    Intent i = new Intent(getApplicationContext(), ConfirmActivity.class);
+                    i.putExtra("date", date);
+                    i.putExtra("room", roomChosen);
+                    i.putExtra("startTime", startTime);
+                    i.putExtra("endTime", endTime);
+                    i.putExtra("desc", description.getText().toString());
+                    startActivity(i);
+
+                }
+            }
+        });
+
+        showAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (lv.getVisibility() == View.GONE){
+                    lv.setVisibility(View.VISIBLE);
+                }else if (lv.getVisibility() == View.VISIBLE){
+                    lv.setVisibility(View.GONE);
+
+                }
+
             }
         });
     }

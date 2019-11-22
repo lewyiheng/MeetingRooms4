@@ -10,18 +10,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.meetingrooms4.Classes.Bookings;
 import com.example.meetingrooms4.Classes.Rooms;
 import com.example.meetingrooms4.R;
 
 import java.util.ArrayList;
 
-public class OccupiedAdapter extends ArrayAdapter<Rooms> {
+public class OccupiedAdapter extends ArrayAdapter<Bookings> {
 
-    private ArrayList<Rooms> room;
+    private ArrayList<Bookings> room;
     private Context context;
-    private TextView roomName;
+    private TextView place,user,time,desc;
 
-    public OccupiedAdapter(Context context, int resource, ArrayList<Rooms> objects) {
+    public OccupiedAdapter(Context context, int resource, ArrayList<Bookings> objects) {
         super(context, resource, objects);
         room = objects;
         this.context = context;
@@ -33,10 +34,22 @@ public class OccupiedAdapter extends ArrayAdapter<Rooms> {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.row_occupied, parent, false);
 
-        Rooms results = room.get(position);
+        Bookings results = room.get(position);
 
-        roomName = rowView.findViewById(R.id.name);
-        roomName.setText(results.getRoomName());
+        place = rowView.findViewById(R.id.occupiedRoom);
+        user = rowView.findViewById(R.id.occupiedName);
+        time = rowView.findViewById(R.id.occupiedTime);
+        desc = rowView.findViewById(R.id.occupiedDesc);
+
+        place.setText(results.getRoom());
+        user.setText(results.getUser());
+
+        String startTime = results.getStartTime();
+        String endTime = results.getEndTIme();
+        String timing = startTime + " - " + endTime;
+
+        time.setText(timing);
+        desc.setText(results.getDesc());
 
         return rowView;
 

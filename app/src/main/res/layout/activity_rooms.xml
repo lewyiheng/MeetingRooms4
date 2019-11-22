@@ -23,16 +23,31 @@
 
 
         <ListView
+            android:id="@+id/roomLvTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="true"></ListView>
+
+        <Button
+            android:id="@+id/roomShowAll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/btn_selector"
+            android:layout_margin="10dp"
+            android:text="Show all" />
+
+        <ListView
             android:id="@+id/roomLv"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="575dp"
             android:nestedScrollingEnabled="true"></ListView>
 
         <TextView
             android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Please select date and start time."
+            android:text="Please select start time and duration."
             android:textAlignment="center" />
 
         <LinearLayout
@@ -97,7 +112,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
             android:fontFamily="@font/roboto_light"
-            android:hint="Purpose for booking (Optional)"
+            android:hint="Purpose for booking"
             android:textColorHint="@color/black"
             android:textSize="17dp" />
 

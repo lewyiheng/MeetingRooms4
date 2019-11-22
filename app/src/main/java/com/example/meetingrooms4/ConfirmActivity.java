@@ -28,23 +28,20 @@ import java.util.Calendar;
 public class ConfirmActivity extends AppCompatActivity {
 
     ImageView iv;
-    TextView  time, desc, date,title;
+    TextView time, desc, date, title;
     Button book;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm);
 
-
-
         iv = findViewById(R.id.confirmRoomImage);
         book = findViewById(R.id.confirmBook);
         time = findViewById(R.id.confirmTime);
         title = findViewById(R.id.confirmTitle);
         desc = findViewById(R.id.confirmDesc);
-        date= findViewById(R.id.confirmDate);
+        date = findViewById(R.id.confirmDate);
 
         Intent i = getIntent();
         String room1 = i.getStringExtra("room");
@@ -57,7 +54,7 @@ public class ConfirmActivity extends AppCompatActivity {
         title.setText(room1);
         desc.setText(desc1);
 
-        time.setText(startTime1 + " - " +endTime1);
+        time.setText(startTime1 + " - " + endTime1);
 
         centerTitle(room1);
 
@@ -73,14 +70,14 @@ public class ConfirmActivity extends AppCompatActivity {
                 alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-//Set notif
+
+                        //Set notif
                         Calendar timer = Calendar.getInstance();
                         timer.add(Calendar.SECOND, 5);
                         Intent i = new Intent(ConfirmActivity.this, NotificationReceiver.class);
                         PendingIntent pIntent = PendingIntent.getBroadcast(getApplicationContext(), 12345, i, PendingIntent.FLAG_CANCEL_CURRENT);
                         AlarmManager am = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
                         am.set(AlarmManager.RTC_WAKEUP, timer.getTimeInMillis(), pIntent);
-
 
                         Intent i2 = new Intent(getApplicationContext(), MainActivity.class);
                         i.putExtra("frag", "fragBookings");

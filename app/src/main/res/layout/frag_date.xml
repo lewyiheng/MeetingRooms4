@@ -118,7 +118,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/roboto_light"
-            android:hint="Purpose for booking (Optional)" />
+            android:hint="Purpose for booking" />
 
         <Button
             android:id="@+id/dateBook"

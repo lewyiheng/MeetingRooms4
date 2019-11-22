@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -62,24 +63,29 @@ public class BookNowFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                String description;
-                if (desc.getText().toString().equalsIgnoreCase(null)) {
-                    description = " ";
+                if (desc.getText().toString().isEmpty()) {
+                    Toast.makeText(getContext().getApplicationContext(), "Please enter a purpose for booking.", Toast.LENGTH_SHORT).show();
                 } else {
-                    description = desc.getText().toString();
+
+                    String description;
+                    if (desc.getText().toString().equalsIgnoreCase(null)) {
+                        description = " ";
+                    } else {
+                        description = desc.getText().toString();
+                    }
+
+                    String startTime = hourOnly.format(c) + "00";
+                    String durationSelected = duration.getText().toString();
+
+                    String endTime = endTime(hourOnly.format(c), durationSelected);
+
+                    Intent i = new Intent(getActivity(), OpenRoomsActivity.class);
+                    i.putExtra("startTime", startTime);
+                    i.putExtra("endTime", endTime);
+                    i.putExtra("desc", description);
+                    i.putExtra("date", date.getText().toString());
+                    startActivity(i);
                 }
-
-                String startTime = hourOnly.format(c) + "00";
-                String durationSelected = duration.getText().toString();
-
-                String endTime = endTime(hourOnly.format(c), durationSelected);
-
-                Intent i = new Intent(getActivity(), OpenRoomsActivity.class);
-                i.putExtra("startTime", startTime);
-                i.putExtra("endTime", endTime);
-                i.putExtra("desc", description);
-                i.putExtra("date", date.getText().toString());
-                startActivity(i);
             }
         });
 

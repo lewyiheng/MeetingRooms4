@@ -18,6 +18,7 @@ import android.widget.CalendarView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -67,17 +68,21 @@ public class DateFragment extends Fragment {
         find.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (desc.getText().toString().isEmpty()) {
+                    Toast.makeText(getContext().getApplicationContext(),"Please enter a purpose for booking.",Toast.LENGTH_SHORT).show();
+                } else {
 
-                String startTime = timePicker.getHour() + getMinute();
-                String durationSelected = duration.getText().toString();
-                String endTime = endTime(Integer.toString(timePicker.getHour()), durationSelected);
+                    String startTime = timePicker.getHour() + getMinute();
+                    String durationSelected = duration.getText().toString();
+                    String endTime = endTime(Integer.toString(timePicker.getHour()), durationSelected);
 
-                Intent i = new Intent(getActivity(), OpenRoomsActivity.class);
-                i.putExtra("startTime", startTime);
-                i.putExtra("endTime", endTime);
-                i.putExtra("date", date);
-                i.putExtra("desc", desc.getText().toString());
-                startActivity(i);
+                    Intent i = new Intent(getActivity(), OpenRoomsActivity.class);
+                    i.putExtra("startTime", startTime);
+                    i.putExtra("endTime", endTime);
+                    i.putExtra("date", date);
+                    i.putExtra("desc", desc.getText().toString());
+                    startActivity(i);
+                }
             }
         });
         return view;
