@@ -1,6 +1,7 @@
 package com.example.meetingrooms4.Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,7 @@ public class OccupiedAdapter extends ArrayAdapter<Bookings> {
 
     private ArrayList<Bookings> room;
     private Context context;
-    private TextView place,user,time,desc;
+    private TextView place,user,time,desc,status;
 
     public OccupiedAdapter(Context context, int resource, ArrayList<Bookings> objects) {
         super(context, resource, objects);
@@ -40,9 +41,19 @@ public class OccupiedAdapter extends ArrayAdapter<Bookings> {
         user = rowView.findViewById(R.id.occupiedName);
         time = rowView.findViewById(R.id.occupiedTime);
         desc = rowView.findViewById(R.id.occupiedDesc);
+        status = rowView.findViewById(R.id.occupiedStatus);
 
         place.setText(results.getRoom());
         user.setText(results.getUser());
+        status.setText(results.getStatus());
+
+        if (status.getText().toString().equalsIgnoreCase("Confirmed")){
+            status.setTextColor(Color.parseColor("#00AA00"));
+        }else if (status.getText().toString().equalsIgnoreCase("Pending")){
+            status.setTextColor(Color.parseColor("#ffa500"));
+        }else{
+            status.setTextColor(Color.parseColor("#BBBBBB"));
+        }
 
         String startTime = results.getStartTime();
         String endTime = results.getEndTIme();

@@ -22,26 +22,62 @@
             android:theme="@style/datePickerStyle" />
 
 
-        <ListView
-            android:id="@+id/roomLvTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="true"></ListView>
+        <!--<ListView-->
+        <!--android:id="@+id/roomLvTime"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:nestedScrollingEnabled="true"></ListView>-->
 
-        <Button
-            android:id="@+id/roomShowAll"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/btn_selector"
-            android:layout_margin="10dp"
-            android:text="Show all" />
+        <!--<Button-->
+        <!--android:id="@+id/roomShowAll"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:background="@drawable/btn_selector"-->
+        <!--android:layout_margin="10dp"-->
+        <!--android:text="Show all" />-->
 
-        <ListView
-            android:id="@+id/roomLv"
-            android:layout_width="match_parent"
-            android:layout_height="575dp"
-            android:nestedScrollingEnabled="true"></ListView>
+        <!--<ListView-->
+        <!--android:id="@+id/roomLv"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="575dp"-->
+        <!--android:nestedScrollingEnabled="true"></ListView>-->
+
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/seatLegendLayout"
+            android:nestedScrollingEnabled="true">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/linearLayout_gridtableLayout"
+                    android:layout_width="1350dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <GridView
+                        android:id="@+id/roomsLv"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:columnWidth="325dp"
+                        android:gravity="center"
+                        android:horizontalSpacing="5dp"
+                        android:numColumns="9"
+                        android:scrollbarAlwaysDrawHorizontalTrack="true"
+                        android:scrollbarAlwaysDrawVerticalTrack="true"
+                        android:scrollbars="horizontal"
+                        android:stretchMode="none"
+                        android:verticalSpacing="1dp">
+
+                    </GridView>
+                </LinearLayout>
+            </FrameLayout>
+        </HorizontalScrollView>
 
         <TextView
             android:layout_width="350dp"
@@ -92,7 +128,7 @@
                     android:gravity="center"
                     android:text="1"
                     android:textAlignment="center"
-                    android:textSize="70dp" />
+                    android:textSize="50dp" />
 
                 <Button
                     android:id="@+id/roomPlus"
@@ -111,8 +147,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
+            android:background="@drawable/cardview_border"
             android:fontFamily="@font/roboto_light"
             android:hint="Purpose for booking"
+            android:padding="5dp"
             android:textColorHint="@color/black"
             android:textSize="17dp" />
 

@@ -42,12 +42,12 @@ public class AllBookingsFragment extends Fragment {
 
         al.clear();
 
-        al.add(new Bookings("User2", "Serenity Room", "1400", "1500", "13 October 2019", "Short briefing on something"));
-        al.add(new Bookings("User2", "Vigilance Room", "1500", "1600", "21 October 2019", " "));
-        al.add(new Bookings("User2", "Integrity Room", "1500", "1600", "31 October 2019", "Meeting for planning an event"));
-        al.add(new Bookings("User2", "Training Room", "1500", "1600", "12 November 2020", " "));
-        al.add(new Bookings("User2", "Integrity Room", "1500", "1600", "15 December 2019", " "));
-        al.add(new Bookings("User2", "Integrity Room", "1500", "1600", "2 January 2020", " "));
+        al.add(new Bookings("User2", "Serenity Room", "1400", "1500", "13 October 2019", "Short briefing on something","Confirmed"));
+        al.add(new Bookings("User2", "Vigilance Room", "1500", "1600", "21 October 2019", " ","Pending"));
+        al.add(new Bookings("User2", "Integrity Room", "1500", "1600", "31 October 2019", "Meeting for planning an event","Pending"));
+        al.add(new Bookings("User2", "Training Room", "1500", "1600", "12 November 2020", " ","Expired"));
+        al.add(new Bookings("User2", "Integrity Room", "1500", "1600", "15 December 2019", " ","Cancelled"));
+        al.add(new Bookings("User2", "Integrity Room", "1500", "1600", "2 January 2020", " ","Pending"));
 
         aa = new BookingsAdapter(getActivity(), R.layout.row_bookings, al);
         lv.setAdapter(aa);

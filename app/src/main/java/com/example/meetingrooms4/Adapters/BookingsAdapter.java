@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,7 @@ public class BookingsAdapter extends ArrayAdapter<Bookings> {
 
     private ArrayList<Bookings> bookings;
         private Context context;
-        private TextView date, time, place, user, desc;
+        private TextView date, time, place, user, desc, status;
         private Button btn;
 
     public BookingsAdapter(Context context, int resource, ArrayList<Bookings> objects) {
@@ -53,8 +54,18 @@ public class BookingsAdapter extends ArrayAdapter<Bookings> {
             place = rowView.findViewById(R.id.bookRoom);
             btn = rowView.findViewById(R.id.bookNowDelete);
             desc = rowView.findViewById(R.id.bookDesc);
+            status = rowView.findViewById(R.id.bookStatus);
 
             date.setText(results.getDate());
+            status.setText(results.getStatus());
+
+            if (status.getText().toString().equalsIgnoreCase("Confirmed")){
+                status.setTextColor(Color.parseColor("#00AA00"));
+            }else if (status.getText().toString().equalsIgnoreCase("Pending")){
+                status.setTextColor(Color.parseColor("#ffa500"));
+            }else{
+                status.setTextColor(Color.parseColor("#BBBBBB"));
+            }
 
             if (results.getDesc().equalsIgnoreCase(" ")) {
                 desc.setText(" ");

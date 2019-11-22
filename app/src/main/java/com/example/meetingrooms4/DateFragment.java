@@ -69,7 +69,7 @@ public class DateFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (desc.getText().toString().isEmpty()) {
-                    Toast.makeText(getContext().getApplicationContext(),"Please enter a purpose for booking.",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext().getApplicationContext(), "Please enter a purpose for booking.", Toast.LENGTH_SHORT).show();
                 } else {
 
                     String startTime = timePicker.getHour() + getMinute();
@@ -107,16 +107,14 @@ public class DateFragment extends Fragment {
 
     private void duration(Button minus, Button plus, final TextView tv) {
 
-        final Double numberD = Double.parseDouble(tv.getText().toString());
-
         plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Double numberD = Double.parseDouble(tv.getText().toString());
 
                 if (numberD == 9) {
                 } else {
                     Double finalNumberD = numberD + 0.5;
-
                     String stringNumberD = Double.toString(finalNumberD);
                     tv.setText(stringNumberD);
                 }
@@ -125,12 +123,12 @@ public class DateFragment extends Fragment {
         minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Double numberD = Double.parseDouble(tv.getText().toString());
 
                 if (numberD <= 0.5) {
                 } else {
                     Double finalNumberD = numberD - 0.5;
                     String stringNumberD = Double.toString(finalNumberD);
-
                     tv.setText(stringNumberD);
                 }
             }

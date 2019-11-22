@@ -23,6 +23,8 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.example.meetingrooms4.Adapters.BookingsAdapter;
+import com.example.meetingrooms4.Adapters.OccupiedAdapter;
+import com.example.meetingrooms4.Adapters.OccupiedTimeAdapter;
 import com.example.meetingrooms4.Adapters.TimingAdapter;
 import com.example.meetingrooms4.Classes.Bookings;
 
@@ -33,7 +35,7 @@ import java.util.Date;
 
 public class RoomsActivity extends AppCompatActivity {
 
-    Button plus, minus, book,showAll;
+    Button plus, minus, book, showAll;
     TextView hours, gvClickedItem, description;
     CalendarView datepicker;
     TimePicker timePicker;
@@ -45,8 +47,9 @@ public class RoomsActivity extends AppCompatActivity {
     private static final DecimalFormat FORMATTER = new DecimalFormat("00");
 
     //Testing
-    ListView lv,lvSingleItem;
-    ArrayAdapter aa,aa2;
+    GridView gv;
+    ListView lv, lvSingleItem;
+    ArrayAdapter aa, aa2;
     ArrayList<Bookings> al = new ArrayList<Bookings>();
     ArrayList<Bookings> al2 = new ArrayList<Bookings>();
     Button roomTestBtn;
@@ -67,10 +70,10 @@ public class RoomsActivity extends AppCompatActivity {
         book = findViewById(R.id.roomBook);
         gvClickedItem = findViewById(R.id.gvClickedItem);
         description = findViewById(R.id.roomDesc);
-        lv = findViewById(R.id.roomLv);
+        gv = findViewById(R.id.roomsLv);
         timePicker = findViewById(R.id.roomTimePicker);
-        showAll = findViewById(R.id.roomShowAll);
-        lvSingleItem= findViewById(R.id.roomLvTime);
+        //showAll = findViewById(R.id.roomShowAll);
+        //lvSingleItem = findViewById(R.id.roomLvTime);
 
         hours.setText("1.0");
         duration(minus, plus, hours);
@@ -87,28 +90,28 @@ public class RoomsActivity extends AppCompatActivity {
         //LV (testing)
         al.clear();
 
-        al.add(new Bookings("User2", "Serenity Room", "0900", "1100", "13 October 2019", "Short briefing on something"));
-        al.add(new Bookings("User2", "Vigilance Room", "1100", "1300", "21 October 2019", " "));
-        al.add(new Bookings("User2", "Integrity Room", "1400", "1500", "31 October 2019", "Meeting for planning an event"));
-        al.add(new Bookings("User2", "Training Room", "1500", "1600", "12 November 2020", " "));
-        al.add(new Bookings("User2", "Integrity Room", "1700", "1900", "15 December 2019", " "));
-        al.add(new Bookings("User2", "Integrity Room", "2000", "2200", "2 January 2020", " "));
+        al.add(new Bookings("User2", "Serenity Room", "0900", "1100", "13 October 2019", "Short briefing on something","Confirmed"));
+        al.add(new Bookings("User2", "Vigilance Room", "1100", "1300", "21 October 2019", " ","Pending"));
+        al.add(new Bookings("User2", "Integrity Room", "1400", "1500", "31 October 2019", "Meeting for planning an event","Pending"));
+        al.add(new Bookings("User2", "Training Room", "1500", "1600", "12 November 2020", " ","Expired"));
+        al.add(new Bookings("User2", "Integrity Room", "1700", "1900", "15 December 2019", " ","Cancelled"));
+        al.add(new Bookings("User2", "Integrity Room", "2000", "2200", "2 January 2020", " ","Cancelled"));
 
-        al2.add(new Bookings("User2", "Serenity Room", "0900", "1100", "13 October 2019", "Short briefing on something"));
+        //al2.add(new Bookings("User2", "Serenity Room", "0900", "1100", "13 October 2019", "Short briefing on something"));
 
 
-        aa = new TimingAdapter(getApplicationContext(), R.layout.row_bookings, al);
-        aa2 = new TimingAdapter(getApplicationContext(), R.layout.row_bookings, al2);
-        lv.setAdapter(aa);
-        lvSingleItem.setAdapter(aa2);
-        lv.setVisibility(View.GONE);
+        aa = new OccupiedTimeAdapter(getApplicationContext(), R.layout.row_occupied_time, al);
+        //aa2 = new TimingAdapter(getApplicationContext(), R.layout.row_bookings, al2);
+        gv.setAdapter(aa);
+        //lvSingleItem.setAdapter(aa2);
+        //lv.setVisibility(View.GONE);
 
         book.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (description.getText().toString().isEmpty()) {
-                    Toast.makeText(getApplicationContext(),"Please enter a purpose for booking.",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please enter a purpose for booking.", Toast.LENGTH_SHORT).show();
                 } else {
                     final String startTime = timePicker.getHour() + getMinute();
                     String durationSelected = hours.getText().toString();
@@ -127,18 +130,18 @@ public class RoomsActivity extends AppCompatActivity {
             }
         });
 
-        showAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (lv.getVisibility() == View.GONE){
-                    lv.setVisibility(View.VISIBLE);
-                }else if (lv.getVisibility() == View.VISIBLE){
-                    lv.setVisibility(View.GONE);
-
-                }
-
-            }
-        });
+//        showAll.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (lv.getVisibility() == View.GONE) {
+//                    lv.setVisibility(View.VISIBLE);
+//                } else if (lv.getVisibility() == View.VISIBLE) {
+//                    lv.setVisibility(View.GONE);
+//
+//                }
+//
+//            }
+//        });
     }
 
     private String endTime(String startHour, String duration) {
@@ -189,16 +192,14 @@ public class RoomsActivity extends AppCompatActivity {
     }
 
     private void duration(Button minus, Button plus, final TextView tv) {
-        final Double numberD = Double.parseDouble(tv.getText().toString());
-
         plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Double numberD = Double.parseDouble(tv.getText().toString());
 
                 if (numberD == 9) {
                 } else {
                     Double finalNumberD = numberD + 0.5;
-
                     String stringNumberD = Double.toString(finalNumberD);
                     tv.setText(stringNumberD);
                 }
@@ -207,12 +208,12 @@ public class RoomsActivity extends AppCompatActivity {
         minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Double numberD = Double.parseDouble(tv.getText().toString());
 
                 if (numberD <= 0.5) {
                 } else {
                     Double finalNumberD = numberD - 0.5;
                     String stringNumberD = Double.toString(finalNumberD);
-
                     tv.setText(stringNumberD);
                 }
             }

@@ -69,10 +69,10 @@ public class OpenRoomsActivity extends AppCompatActivity {
         al.add(new Rooms("Training room", " "));
         al.add(new Rooms("Vigilance room", " "));
 
-        al2.add(new Bookings("User4","Courage room","1300","1400","Today","Short Meeting"));
-        al2.add(new Bookings("User5","Perseverance room","1300","1400","Today","Short Meeting"));
-        al2.add(new Bookings("User6","OPL room","1300","1400","Today","Short Meeting"));
-        al2.add(new Bookings("User7","BIS2 room","1300","1400","Today","Short Meeting"));
+        al2.add(new Bookings("User4","Courage room","1300","1400","Today","Short Meeting","Confirmed"));
+        al2.add(new Bookings("User5","Perseverance room","1300","1400","Today","Short Meeting","Pending"));
+        al2.add(new Bookings("User6","OPL room","1300","1400","Today","Short Meeting","Expired"));
+        al2.add(new Bookings("User7","BIS2 room","1300","1400","Today","Short Meeting","Cancelled"));
 
         aa = new RoomsAdapter(getApplicationContext(), R.layout.row_rooms, al);
         aa2 = new OccupiedAdapter(getApplicationContext(), R.layout.row_occupied, al2);

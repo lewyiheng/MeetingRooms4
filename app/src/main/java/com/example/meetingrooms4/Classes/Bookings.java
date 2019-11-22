@@ -8,14 +8,24 @@ public class Bookings {
     private String endTIme;
     private String date;
     private String desc;
+    private String status;
 
-    public Bookings(String user, String room, String startTime, String endTIme, String date, String desc) {
+    public Bookings(String user, String room, String startTime, String endTIme, String date, String desc,String status) {
         this.user = user;
         this.room = room;
         this.startTime = startTime;
         this.endTIme = endTIme;
         this.date = date;
         this.desc = desc;
+        this.status = status;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getDesc() {

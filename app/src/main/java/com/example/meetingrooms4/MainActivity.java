@@ -32,20 +32,23 @@ public class MainActivity extends AppCompatActivity {
         //View
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
 
-        //Bottom Navigation
+//        //Bottom Navigation
+//        bottomNav.setOnNavigationItemSelectedListener(navListener);
+//        Fragment f = new BookNowFragment();
+//        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, f).commit();
+//        bottomNav.setSelectedItemId(R.id.navBookNow);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
-        Fragment f = new BookNowFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, f).commit();
-        bottomNav.setSelectedItemId(R.id.navBookNow);
 
         Intent i = getIntent();
         String frag = i.getStringExtra("frag");
         if (frag == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new BookNowFragment()).commit();
-        } else {
-            Fragment book = new AllBookingsFragment();
+        } else if (frag.equalsIgnoreCase("fragBookings")) {
+            Fragment f = new AllBookingsFragment();
             bottomNav.setSelectedItemId(R.id.navBookings);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, f).commit();
+
+
         }
 
     }
@@ -59,14 +62,14 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navBookNow:
                     selectedFragment = new BookNowFragment();
                     break;
-                case R.id.navBookings:
-                    selectedFragment = new AllBookingsFragment();
-                    break;
                 case R.id.navDate:
                     selectedFragment = new DateFragment();
                     break;
                 case R.id.navRoom:
                     selectedFragment = new RoomsFragment();
+                    break;
+                case R.id.navBookings:
+                    selectedFragment = new AllBookingsFragment();
                     break;
 
             }

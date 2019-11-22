@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.squareup.picasso.Picasso;
@@ -80,7 +81,8 @@ public class ConfirmActivity extends AppCompatActivity {
                         am.set(AlarmManager.RTC_WAKEUP, timer.getTimeInMillis(), pIntent);
 
                         Intent i2 = new Intent(getApplicationContext(), MainActivity.class);
-                        i.putExtra("frag", "fragBookings");
+                        i2.putExtra("frag", "fragBookings");
+                        Toast.makeText(getApplicationContext(),"Your booking has been confirmed",Toast.LENGTH_SHORT).show();
                         startActivity(i2);
 
                     }
