@@ -31,79 +31,82 @@ import java.util.Calendar;
 public class BookingsAdapter extends ArrayAdapter<Bookings> {
 
     private ArrayList<Bookings> bookings;
-        private Context context;
-        private TextView date, time, place, user, desc, status;
-        private Button btn;
+    private Context context;
+    private TextView date, time, place, user, desc, status;
+    private Button btn;
 
     public BookingsAdapter(Context context, int resource, ArrayList<Bookings> objects) {
-            super(context, resource, objects);
-            bookings = objects;
-            this.context = context;
+        super(context, resource, objects);
+        bookings = objects;
+        this.context = context;
+    }
+
+    @NonNull
+    @Override
+    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View rowView = inflater.inflate(R.layout.row_bookings, parent, false);
+
+        Bookings results = bookings.get(position);
+
+        date = rowView.findViewById(R.id.bookDate);
+        time = rowView.findViewById(R.id.bookTime);
+        place = rowView.findViewById(R.id.bookRoom);
+        btn = rowView.findViewById(R.id.bookNowDelete);
+        desc = rowView.findViewById(R.id.bookDesc);
+        status = rowView.findViewById(R.id.bookStatus);
+
+        date.setText(results.getDate());
+        status.setText(results.getStatus());
+
+        if (status.getText().toString().equalsIgnoreCase("Confirmed")) {
+            status.setTextColor(Color.parseColor("#000000"));
+            status.setBackgroundColor(Color.parseColor("#55EE55"));
+        } else if (status.getText().toString().equalsIgnoreCase("Pending")) {
+            status.setTextColor(Color.parseColor("#000000"));
+            status.setBackgroundColor(Color.parseColor("#ffb555"));
+        } else {
+            status.setTextColor(Color.parseColor("#000000"));
+            status.setBackgroundColor(Color.parseColor("#CCCCCC"));
         }
 
-        @NonNull
-        @Override
-        public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View rowView = inflater.inflate(R.layout.row_bookings, parent, false);
+        if (results.getDesc().equalsIgnoreCase(" ")) {
+            desc.setText(" ");
+        } else {
+            desc.setText("\"" + results.getDesc() + "\"");
+        }
 
-            Bookings results = bookings.get(position);
 
-            date = rowView.findViewById(R.id.bookDate);
-            time = rowView.findViewById(R.id.bookTime);
-            place = rowView.findViewById(R.id.bookRoom);
-            btn = rowView.findViewById(R.id.bookNowDelete);
-            desc = rowView.findViewById(R.id.bookDesc);
-            status = rowView.findViewById(R.id.bookStatus);
+        //Set time
+        String startTime = results.getStartTime();
+        String endTime = results.getEndTIme();
+        String duration = startTime + " - " + endTime;
 
-            date.setText(results.getDate());
-            status.setText(results.getStatus());
+        place.setText(results.getRoom());
+        time.setText(duration);
 
-            if (status.getText().toString().equalsIgnoreCase("Confirmed")){
-                status.setTextColor(Color.parseColor("#00AA00"));
-            }else if (status.getText().toString().equalsIgnoreCase("Pending")){
-                status.setTextColor(Color.parseColor("#ffa500"));
-            }else{
-                status.setTextColor(Color.parseColor("#BBBBBB"));
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                alert.setTitle("Confirm release?");
+                alert.setMessage("Are you sure you want to release the room?");
+                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        bookings.remove(position);
+                        notifyDataSetChanged();
+                        Toast.makeText(context, "Room has been released", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                alert.setNegativeButton("No", null);
+                alert.show();
+
+
             }
-
-            if (results.getDesc().equalsIgnoreCase(" ")) {
-                desc.setText(" ");
-            } else {
-                desc.setText("\"" + results.getDesc() + "\"");
-            }
-
-
-            //Set time
-            String startTime = results.getStartTime();
-            String endTime = results.getEndTIme();
-            String duration = startTime + " - " + endTime;
-
-            place.setText(results.getRoom());
-            time.setText(duration);
-
-            btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    AlertDialog.Builder alert = new AlertDialog.Builder(context);
-                    alert.setTitle("Confirm release?");
-                    alert.setMessage("Are you sure you want to release the room?");
-                    alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                            bookings.remove(position);
-                            notifyDataSetChanged();
-                            Toast.makeText(context, "Room has been released", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    alert.setNegativeButton("No", null);
-                    alert.show();
-
-
-                }
-            });
-            return rowView;
+        });
+        return rowView;
     }
 }

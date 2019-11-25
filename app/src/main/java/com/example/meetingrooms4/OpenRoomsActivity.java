@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,11 +18,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
 import com.example.meetingrooms4.Adapters.OccupiedAdapter;
+import com.example.meetingrooms4.Adapters.OccupiedTimeAdapter;
 import com.example.meetingrooms4.Adapters.RoomsAdapter;
 import com.example.meetingrooms4.Classes.Bookings;
 import com.example.meetingrooms4.Classes.Rooms;
@@ -31,10 +34,9 @@ import java.util.ArrayList;
 public class OpenRoomsActivity extends AppCompatActivity {
 
     ArrayList<Rooms> al;
-    ArrayList<Bookings>al2;
-    ArrayAdapter aa, aa2;
+    ArrayList<Bookings> al2;
+    ArrayAdapter aa;
     ListView lv;
-    GridView gv;
     TextView tvTimeInfo;
     RecyclerView rv;
 
@@ -47,8 +49,7 @@ public class OpenRoomsActivity extends AppCompatActivity {
 
         lv = findViewById(R.id.openList);
         tvTimeInfo = findViewById(R.id.openTimeInfo);
-        //rv = findViewById(R.id.rv);
-        gv = findViewById(R.id.openGv);
+        rv = findViewById(R.id.openRv);
 
         Intent i = getIntent();
         final String desc = i.getStringExtra("desc");
@@ -69,15 +70,17 @@ public class OpenRoomsActivity extends AppCompatActivity {
         al.add(new Rooms("Training room", " "));
         al.add(new Rooms("Vigilance room", " "));
 
-        al2.add(new Bookings("User4","Courage room","1300","1400","Today","Short Meeting","Confirmed"));
-        al2.add(new Bookings("User5","Perseverance room","1300","1400","Today","Short Meeting","Pending"));
-        al2.add(new Bookings("User6","OPL room","1300","1400","Today","Short Meeting","Expired"));
-        al2.add(new Bookings("User7","BIS2 room","1300","1400","Today","Short Meeting","Cancelled"));
+        al2.add(new Bookings("User4", "Courage room", "1300", "1400", "Today", "Short Meeting", "Confirmed"));
+        al2.add(new Bookings("User5", "Perseverance room", "1300", "1400", "Today", "Short Meeting", "Pending"));
+        al2.add(new Bookings("User6", "OPL room", "1300", "1400", "Today", "Short Meeting", "Expired"));
+        al2.add(new Bookings("User7", "BIS2 room", "1300", "1400", "Today", "Short Meeting", "Cancelled"));
 
         aa = new RoomsAdapter(getApplicationContext(), R.layout.row_rooms, al);
-        aa2 = new OccupiedAdapter(getApplicationContext(), R.layout.row_occupied, al2);
         lv.setAdapter(aa);
-        gv.setAdapter(aa2);
+
+        rv.setLayoutManager(new GridLayoutManager(this, 1, RecyclerView.HORIZONTAL, false));
+        OccupiedAdapter aa = new OccupiedAdapter(getApplicationContext(), al2);
+        rv.setAdapter(aa);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

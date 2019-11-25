@@ -1,9 +1,12 @@
 package com.example.meetingrooms4;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.res.Resources;
@@ -39,20 +42,14 @@ public class RoomsActivity extends AppCompatActivity {
     TextView hours, gvClickedItem, description;
     CalendarView datepicker;
     TimePicker timePicker;
+    ArrayList<Bookings> al = new ArrayList<Bookings>();
+    RecyclerView rv;
 
     NumberPicker minutePicker;
 
 
     private static final int INTERVAL = 30;
     private static final DecimalFormat FORMATTER = new DecimalFormat("00");
-
-    //Testing
-    GridView gv;
-    ListView lv, lvSingleItem;
-    ArrayAdapter aa, aa2;
-    ArrayList<Bookings> al = new ArrayList<Bookings>();
-    ArrayList<Bookings> al2 = new ArrayList<Bookings>();
-    Button roomTestBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +67,7 @@ public class RoomsActivity extends AppCompatActivity {
         book = findViewById(R.id.roomBook);
         gvClickedItem = findViewById(R.id.gvClickedItem);
         description = findViewById(R.id.roomDesc);
-        gv = findViewById(R.id.roomsLv);
+        rv = findViewById(R.id.roomRv);
         timePicker = findViewById(R.id.roomTimePicker);
         //showAll = findViewById(R.id.roomShowAll);
         //lvSingleItem = findViewById(R.id.roomLvTime);
@@ -90,21 +87,31 @@ public class RoomsActivity extends AppCompatActivity {
         //LV (testing)
         al.clear();
 
-        al.add(new Bookings("User2", "Serenity Room", "0900", "1100", "13 October 2019", "Short briefing on something","Confirmed"));
-        al.add(new Bookings("User2", "Vigilance Room", "1100", "1300", "21 October 2019", " ","Pending"));
-        al.add(new Bookings("User2", "Integrity Room", "1400", "1500", "31 October 2019", "Meeting for planning an event","Pending"));
-        al.add(new Bookings("User2", "Training Room", "1500", "1600", "12 November 2020", " ","Expired"));
-        al.add(new Bookings("User2", "Integrity Room", "1700", "1900", "15 December 2019", " ","Cancelled"));
-        al.add(new Bookings("User2", "Integrity Room", "2000", "2200", "2 January 2020", " ","Cancelled"));
+        al.add(new Bookings("User2", "Serenity Room", "0900", "1100", "13 October 2019", "Short briefing on something", "Confirmed"));
+        al.add(new Bookings("User2", "Vigilance Room", "1100", "1300", "21 October 2019", " ", "Pending"));
+        al.add(new Bookings("User2", "Integrity Room", "1400", "1500", "31 October 2019", "Meeting for planning an event", "Pending"));
+        al.add(new Bookings("User2", "Training Room", "1500", "1600", "12 November 2020", " ", "Expired"));
+        al.add(new Bookings("User2", "Integrity Room", "1700", "1900", "15 December 2019", " ", "Cancelled"));
+        al.add(new Bookings("User2", "Integrity Room", "2000", "2200", "2 January 2020", " ", "Cancelled"));
+        al.add(new Bookings("User2", "Integrity Room", "2000", "2200", "2 January 2020", " ", "Cancelled"));
+
 
         //al2.add(new Bookings("User2", "Serenity Room", "0900", "1100", "13 October 2019", "Short briefing on something"));
+        rv.setLayoutManager(new GridLayoutManager(this, 3, RecyclerView.HORIZONTAL, false));
+        OccupiedTimeAdapter aa = new OccupiedTimeAdapter(getApplicationContext(), al);
+        rv.setAdapter(aa);
 
+        datepicker.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+                if (dayOfMonth == 25) {
+                    rv.setVisibility(View.VISIBLE);
+                } else {
+                    rv.setVisibility(View.GONE);
+                }
+            }
+        });
 
-        aa = new OccupiedTimeAdapter(getApplicationContext(), R.layout.row_occupied_time, al);
-        //aa2 = new TimingAdapter(getApplicationContext(), R.layout.row_bookings, al2);
-        gv.setAdapter(aa);
-        //lvSingleItem.setAdapter(aa2);
-        //lv.setVisibility(View.GONE);
 
         book.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -56,6 +56,9 @@ public class DateFragment extends Fragment {
         timePicker.setIs24HourView(true);
         duration.setText("1.0");
 
+        //Ease of Access
+        desc.setText("F");
+
         setMinutePicker();
         //getDate
         Date date1 = new Date(calendar.getDate());
