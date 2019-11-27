@@ -27,18 +27,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        centerTitle("MainActivity");
-
         //View
+        centerTitle("MainActivity");
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
-
-//        //Bottom Navigation
-//        bottomNav.setOnNavigationItemSelectedListener(navListener);
-//        Fragment f = new BookNowFragment();
-//        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, f).commit();
-//        bottomNav.setSelectedItemId(R.id.navBookNow);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
+        //Change fragment to AllBookingsFrag when booking is confirmed.
         Intent i = getIntent();
         String frag = i.getStringExtra("frag");
         if (frag == null) {
@@ -47,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
             Fragment f = new AllBookingsFragment();
             bottomNav.setSelectedItemId(R.id.navBookings);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, f).commit();
-
 
         }
 
@@ -71,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navBookings:
                     selectedFragment = new AllBookingsFragment();
                     break;
-
             }
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
             return true;

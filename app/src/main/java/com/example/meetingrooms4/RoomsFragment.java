@@ -33,7 +33,7 @@ public class RoomsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frag_rooms, container, false);
 
-        //Title
+        //View
         ActionBar ab = ((AppCompatActivity) getActivity()).getSupportActionBar();
         ab.setTitle(Html.fromHtml("<font color='#000000'>By Room</font>"));
 
@@ -47,10 +47,11 @@ public class RoomsFragment extends Fragment {
         al.add(new Rooms("Training Room", " "));
         al.add(new Rooms("Vigilance Room", " "));
 
-
+        //Set rooms list
         aa = new RoomsAdapter(getActivity(), R.layout.row_rooms, al);
         roomsList.setAdapter(aa);
 
+        //Set room click
         roomsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

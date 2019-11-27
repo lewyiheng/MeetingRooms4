@@ -41,7 +41,7 @@ public class DateFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frag_date, container, false);
 
-        //Title
+        //View
         ActionBar ab = ((AppCompatActivity) getActivity()).getSupportActionBar();
         ab.setTitle(Html.fromHtml("<font color='#000000'>By Date</font>"));
 
@@ -59,6 +59,7 @@ public class DateFragment extends Fragment {
         //Ease of Access
         desc.setText("F");
 
+        //Set Minute Picker to 30min intervals
         setMinutePicker();
         //getDate
         Date date1 = new Date(calendar.getDate());

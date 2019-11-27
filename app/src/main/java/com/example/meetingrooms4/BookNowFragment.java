@@ -40,24 +40,23 @@ public class BookNowFragment extends Fragment {
         date = view.findViewById(R.id.bookNowDateNow);
         desc = view.findViewById(R.id.bookNowDesc);
 
-        //Title
+        //View
         ActionBar ab = ((AppCompatActivity) getActivity()).getSupportActionBar();
         ab.setTitle(Html.fromHtml("<font color='#000000'>Book Now</font>"));
 
         //Time Now
-        final Date c = Calendar.getInstance().getTime();
+        final Date c = Calendar.getInstance().getTime(); //Get today's date and time
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        final SimpleDateFormat hourOnly = new SimpleDateFormat("HH");
+        final SimpleDateFormat hourOnly = new SimpleDateFormat("HH"); //Get only hour
 
-        date.setText(dateFormat.format(c));
-        time.setText(timeFormat.format(c));
+        date.setText(dateFormat.format(c)); //Set date to "dd MM yyyy"
+        time.setText(timeFormat.format(c)); //Set time to HH:mm
 
         duration.setText("1.0");
 
-        //Plus-Minus duration
+        //Plus and minus buttons
         duration(minus, plus, duration);
-
 
         book.setOnClickListener(new View.OnClickListener() {
             @Override

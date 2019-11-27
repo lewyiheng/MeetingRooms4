@@ -19,6 +19,7 @@
             android:textAlignment="center"
             android:textSize="30dp" />
 
+        <!-- Available Rooms -->
         <ListView
             android:id="@+id/openList"
             android:layout_width="match_parent"
@@ -45,6 +46,7 @@
             android:textAlignment="center"
             android:textSize="30dp" />
 
+        <!-- Occupied Rooms -->
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -38,7 +38,7 @@ import java.util.Date;
 
 public class RoomsActivity extends AppCompatActivity {
 
-    Button plus, minus, book, showAll;
+    Button plus, minus, book;
     TextView hours, gvClickedItem, description;
     CalendarView datepicker;
     TimePicker timePicker;
@@ -46,7 +46,6 @@ public class RoomsActivity extends AppCompatActivity {
     RecyclerView rv;
 
     NumberPicker minutePicker;
-
 
     private static final int INTERVAL = 30;
     private static final DecimalFormat FORMATTER = new DecimalFormat("00");
@@ -69,22 +68,24 @@ public class RoomsActivity extends AppCompatActivity {
         description = findViewById(R.id.roomDesc);
         rv = findViewById(R.id.roomRv);
         timePicker = findViewById(R.id.roomTimePicker);
-        //showAll = findViewById(R.id.roomShowAll);
-        //lvSingleItem = findViewById(R.id.roomLvTime);
 
         hours.setText("1.0");
+
+        //Plus minus button
         duration(minus, plus, hours);
         timePicker.setIs24HourView(true);
 
+        //Set title
         centerTitle(roomChosen);
+
+        //Set timePicker to 30min intervals.
         setMinutePicker();
 
         //getDate
-        Date date1 = new Date(datepicker.getDate());
+        Date date1 = new Date(datepicker.getDate()); //Get today's date
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy");
-        final String date = sdf.format(date1);
+        final String date = sdf.format(date1); //Convert today's date to "dd MMMM yyyy"
 
-        //LV (testing)
         al.clear();
 
         al.add(new Bookings("User2", "Serenity Room", "0900", "1100", "13 October 2019", "Short briefing on something", "Confirmed"));
@@ -95,16 +96,22 @@ public class RoomsActivity extends AppCompatActivity {
         al.add(new Bookings("User2", "Integrity Room", "2000", "2200", "2 January 2020", " ", "Cancelled"));
         al.add(new Bookings("User2", "Integrity Room", "2000", "2200", "2 January 2020", " ", "Cancelled"));
 
-
-        //al2.add(new Bookings("User2", "Serenity Room", "0900", "1100", "13 October 2019", "Short briefing on something"));
         rv.setLayoutManager(new GridLayoutManager(this, 3, RecyclerView.HORIZONTAL, false));
         OccupiedTimeAdapter aa = new OccupiedTimeAdapter(getApplicationContext(), al);
-        rv.setAdapter(aa);
+        rv.setAdapter(aa); //Set recyclerView list.
 
+        //For testing only (Pls remove)
+        if (date.equalsIgnoreCase("28 November 2019")) {
+            rv.setVisibility(View.VISIBLE);
+        } else {
+            rv.setVisibility(View.GONE);
+        }
+
+        //Will only show recyclerView if the date is on the 25th
         datepicker.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                if (dayOfMonth == 25) {
+                if (dayOfMonth == 28) {
                     rv.setVisibility(View.VISIBLE);
                 } else {
                     rv.setVisibility(View.GONE);
@@ -132,23 +139,9 @@ public class RoomsActivity extends AppCompatActivity {
                     i.putExtra("endTime", endTime);
                     i.putExtra("desc", description.getText().toString());
                     startActivity(i);
-
                 }
             }
         });
-
-//        showAll.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (lv.getVisibility() == View.GONE) {
-//                    lv.setVisibility(View.VISIBLE);
-//                } else if (lv.getVisibility() == View.VISIBLE) {
-//                    lv.setVisibility(View.GONE);
-//
-//                }
-//
-//            }
-//        });
     }
 
     private String endTime(String startHour, String duration) {

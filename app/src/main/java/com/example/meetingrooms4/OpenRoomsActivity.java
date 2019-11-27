@@ -45,11 +45,11 @@ public class OpenRoomsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_rooms);
 
-        centerTitle("Available Rooms");
-
         lv = findViewById(R.id.openList);
         tvTimeInfo = findViewById(R.id.openTimeInfo);
         rv = findViewById(R.id.openRv);
+
+        centerTitle("Available Rooms");
 
         Intent i = getIntent();
         final String desc = i.getStringExtra("desc");
@@ -64,23 +64,27 @@ public class OpenRoomsActivity extends AppCompatActivity {
         al = new ArrayList<Rooms>();
         al2 = new ArrayList<>();
         al.clear();
+        al2.clear();
+
+        //Available Rooms
         al.add(new Rooms("Faith room", " "));
         al.add(new Rooms("Integrity room", " "));
         al.add(new Rooms("Serenity room", " "));
         al.add(new Rooms("Training room", " "));
         al.add(new Rooms("Vigilance room", " "));
 
+        //Occupied Rooms
         al2.add(new Bookings("User4", "Courage room", "1300", "1400", "Today", "Short Meeting", "Confirmed"));
         al2.add(new Bookings("User5", "Perseverance room", "1300", "1400", "Today", "Short Meeting", "Pending"));
         al2.add(new Bookings("User6", "OPL room", "1300", "1400", "Today", "Short Meeting", "Expired"));
         al2.add(new Bookings("User7", "BIS2 room", "1300", "1400", "Today", "Short Meeting", "Cancelled"));
 
         aa = new RoomsAdapter(getApplicationContext(), R.layout.row_rooms, al);
-        lv.setAdapter(aa);
+        lv.setAdapter(aa); //Set available rooms
 
         rv.setLayoutManager(new GridLayoutManager(this, 1, RecyclerView.HORIZONTAL, false));
         OccupiedAdapter aa = new OccupiedAdapter(getApplicationContext(), al2);
-        rv.setAdapter(aa);
+        rv.setAdapter(aa); //Set occupied rooms
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
