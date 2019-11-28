@@ -24,10 +24,10 @@
             android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginBottom="30dp"
             android:fontFamily="@font/roboto_light"
             android:text="Please select date, time and duration."
-            android:textAlignment="center"
-            android:layout_marginBottom="30dp"/>
+            android:textAlignment="center" />
 
         <LinearLayout
             android:layout_width="300dp"
@@ -40,7 +40,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/roboto_light"
                 android:text="Start Time" />
@@ -48,7 +48,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/roboto_light"
                 android:text="Duration (Hour(s))"
@@ -90,7 +90,7 @@
                 <TextView
                     android:id="@+id/dateDuration"
                     android:layout_width="wrap_content"
-                    android:layout_height="150dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
@@ -117,12 +117,12 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:background="@drawable/cardview_border"
             android:fontFamily="@font/roboto_light"
             android:hint="Purpose for booking"
-            android:background="@drawable/cardview_border"
             android:padding="10dp"
             android:textColorHint="@color/black"
-            android:textSize="17dp"/>
+            android:textSize="17dp" />
 
         <Button
             android:id="@+id/dateBook"
@@ -131,7 +131,7 @@
             android:layout_gravity="center"
             android:layout_margin="30dp"
             android:background="@drawable/btn_selector"
-            android:text="BOOK" />
+            android:text="Next" />
 
     </LinearLayout>
 </ScrollView>

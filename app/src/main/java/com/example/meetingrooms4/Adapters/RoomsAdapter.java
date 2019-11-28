@@ -19,7 +19,7 @@ public class RoomsAdapter extends ArrayAdapter<Rooms> {
 
     private ArrayList<Rooms> room;
     private Context context;
-    private TextView roomName,roomDesc;
+    private TextView roomName,roomDesc,roomAV,roomPAX;
 
     public RoomsAdapter(Context context, int resource, ArrayList<Rooms> objects) {
         super(context, resource, objects);
@@ -35,6 +35,9 @@ public class RoomsAdapter extends ArrayAdapter<Rooms> {
 
         roomName = rowView.findViewById(R.id.name);
         roomDesc = rowView.findViewById(R.id.desc);
+        roomAV = rowView.findViewById(R.id.descAV);
+        roomPAX = rowView.findViewById(R.id.pax);
+
         Rooms results = room.get(position);
 
         roomName.setText(results.getRoomName());
@@ -44,7 +47,9 @@ public class RoomsAdapter extends ArrayAdapter<Rooms> {
         String loc = desc[1];
         String av = desc[2];
         String msg = " •" + cap + " •" + loc + " •" + av;
-        roomDesc.setText(msg);
+        roomDesc.setText(desc[1]);
+        roomPAX.setText(desc[0]);
+        roomAV.setText(desc[2]);
         return rowView;
 
     }

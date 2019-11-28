@@ -21,6 +21,7 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.example.meetingrooms4.Adapters.OccupiedAdapter;
@@ -81,7 +82,7 @@ public class OpenRoomsActivity extends AppCompatActivity {
         al2.add(new Bookings("User7", "BIS2 room", "1300", "1400", "Today", "Short Meeting", "Cancelled"));
 
 
-        RoomsAdapter aa = new RoomsAdapter(getApplicationContext(),R.layout.row_rooms,al);
+        RoomsAdapter aa = new RoomsAdapter(getApplicationContext(), R.layout.row_rooms, al);
         lv.setAdapter(aa); //Set available rooms
 
 
@@ -102,6 +103,31 @@ public class OpenRoomsActivity extends AppCompatActivity {
 //                startActivity(i);
 //            }
 //        });
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String roomChosen = al.get(position).getRoomName();
+                String msg = "Room: " + roomChosen + "\n"
+                        + "Date: " + date + "\n"
+                        + "Time: " + startTime + " - " + endTime + "\n"
+                        + "Purpose: " + "\n"
+                        + desc + "\n";
+                AlertDialog.Builder alert = new AlertDialog.Builder(OpenRoomsActivity.this);
+                alert.setTitle("Confirm booking?");
+                alert.setMessage(msg);
+                alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                        i.putExtra("frag", "fragBookings");
+                        startActivity(i);
+                    }
+                });
+                alert.setNegativeButton("No", null);
+                alert.show();
+            }
+        });
 
     }
 

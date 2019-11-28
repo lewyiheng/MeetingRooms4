@@ -2,12 +2,14 @@ package com.example.meetingrooms4;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -159,15 +161,35 @@ public class RoomsActivity extends AppCompatActivity {
                     String durationSelected = hours.getText().toString();
 
                     String endTime = endTime(Integer.toString(timePicker.getHour()), durationSelected);
+//
+//                    Intent i = new Intent(getApplicationContext(), ConfirmActivity.class);
+//                    i.putExtra("date", date);
+//                    i.putExtra("room", roomChosen);
+//                    i.putExtra("startTime", startTime);
+//                    i.putExtra("endTime", endTime);
+//                    i.putExtra("desc", description.getText().toString());
+//                    startActivity(i);
 
-                    Intent i = new Intent(getApplicationContext(), ConfirmActivity.class);
-                    i.putExtra("date", date);
-                    i.putExtra("room", roomChosen);
-                    i.putExtra("startTime", startTime);
-                    i.putExtra("endTime", endTime);
-                    i.putExtra("desc", description.getText().toString());
-                    startActivity(i);
+                    String msg = "Room: " + roomChosen + "\n"
+                            + "Date: " + date + "\n"
+                            + "Time: " + startTime + " - " + endTime + "\n"
+                            + "Purpose: " + "\n"
+                            + description.getText().toString() + "\n";
+                    AlertDialog.Builder alert = new AlertDialog.Builder(RoomsActivity.this);
+                    alert.setTitle("Confirm booking?");
+                    alert.setMessage(msg);
+                    alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                            i.putExtra("frag", "fragBookings");
+                            startActivity(i);
+                        }
+                    });
+                    alert.setNegativeButton("No", null);
+                    alert.show();
                 }
+
             }
         });
     }
