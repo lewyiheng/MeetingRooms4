@@ -41,11 +41,16 @@ public class RoomsFragment extends Fragment {
 
         al = new ArrayList<Rooms>();
         al.clear();
-        al.add(new Rooms("Faith Room", "8,No AV,https://cdn.discordapp.com/attachments/449905908248739850/611117360463740938/projJhin.png"));
-        al.add(new Rooms("Integrity Room", "10,Has AV,https://cdn.discordapp.com/attachments/449905908248739850/582483927835344930/payday3.png"));
-        al.add(new Rooms("Serenity Room", " "));
-        al.add(new Rooms("Training Room", " "));
-        al.add(new Rooms("Vigilance Room", " "));
+        al.add(new Rooms("BIS2 discussion room", "6,AE05, "));
+        al.add(new Rooms("Courage room", "12,AE05-2,AV"));
+        al.add(new Rooms("Excellence room", "10,WW05-5, "));
+        al.add(new Rooms("Faith room", "12,AW05-1,AV"));
+        al.add(new Rooms("Integrity room", "16,WW05-2,AV"));
+        al.add(new Rooms("OPL discussion Room", "8,WW05, "));
+        al.add(new Rooms("Perseverance room", "12,AE05-1,AV"));
+        al.add(new Rooms("Serenity room", "8,WW05-1, "));
+        al.add(new Rooms("Training room", "18,WW05-4,AV"));
+        al.add(new Rooms("Vigilance room", "10,WW05-3,AV"));
 
         //Set rooms list
         aa = new RoomsAdapter(getActivity(), R.layout.row_rooms, al);

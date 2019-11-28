@@ -21,11 +21,41 @@
             android:layout_gravity="center"
             android:theme="@style/datePickerStyle" />
 
+        <LinearLayout
+            android:id="@+id/collapsible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/btn_selector"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/showAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Occupied Slots"
+                android:clickable="false"
+                android:layout_weight="1"
+                android:background="@drawable/list_selector"
+                android:shadowColor="@color/greyDD"
+                android:stateListAnimator="@null"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:textSize="25dp"
+                android:id="@+id/collapsibleTV"/>
+        </LinearLayout>
+
         <!-- Occupied Time Slot -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/roomRv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
 
         <TextView
             android:layout_width="350dp"
@@ -94,11 +124,10 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="30dp"
             android:background="@drawable/cardview_border"
             android:fontFamily="@font/roboto_light"
             android:hint="Purpose for booking"
-            android:padding="5dp"
+            android:padding="10dp"
             android:textColorHint="@color/black"
             android:textSize="17dp" />
 
@@ -111,6 +140,7 @@
             android:layout_marginBottom="40dp"
             android:background="@drawable/btn_selector"
             android:text="Book" />
+
 
         <TextView
             android:id="@+id/gvClickedItem"

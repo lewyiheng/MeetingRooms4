@@ -67,11 +67,12 @@ public class OpenRoomsActivity extends AppCompatActivity {
         al2.clear();
 
         //Available Rooms
-        al.add(new Rooms("Faith room", " "));
-        al.add(new Rooms("Integrity room", " "));
-        al.add(new Rooms("Serenity room", " "));
-        al.add(new Rooms("Training room", " "));
-        al.add(new Rooms("Vigilance room", " "));
+        al.add(new Rooms("Excellence room", "10,WW05-5, "));
+        al.add(new Rooms("Faith room", "12,AW05-1,AV"));
+        al.add(new Rooms("Integrity room", "16,WW05-2,AV"));
+        al.add(new Rooms("Serenity room", "8,WW05-1, "));
+        al.add(new Rooms("Training room", "18,WW05-4,AV"));
+        al.add(new Rooms("Vigilance room", "10,WW05-3,AV"));
 
         //Occupied Rooms
         al2.add(new Bookings("User4", "Courage room", "1300", "1400", "Today", "Short Meeting", "Confirmed"));
@@ -79,26 +80,28 @@ public class OpenRoomsActivity extends AppCompatActivity {
         al2.add(new Bookings("User6", "OPL room", "1300", "1400", "Today", "Short Meeting", "Expired"));
         al2.add(new Bookings("User7", "BIS2 room", "1300", "1400", "Today", "Short Meeting", "Cancelled"));
 
-        aa = new RoomsAdapter(getApplicationContext(), R.layout.row_rooms, al);
+
+        RoomsAdapter aa = new RoomsAdapter(getApplicationContext(),R.layout.row_rooms,al);
         lv.setAdapter(aa); //Set available rooms
 
-        rv.setLayoutManager(new GridLayoutManager(this, 1, RecyclerView.HORIZONTAL, false));
-        OccupiedAdapter aa = new OccupiedAdapter(getApplicationContext(), al2);
-        rv.setAdapter(aa); //Set occupied rooms
 
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(getApplicationContext(), ConfirmActivity.class);
-                String roomChosen = al.get(position).getRoomName();
-                i.putExtra("room", roomChosen);
-                i.putExtra("startTime", startTime);
-                i.putExtra("endTime", endTime);
-                i.putExtra("desc", desc);
-                i.putExtra("date", date);
-                startActivity(i);
-            }
-        });
+        rv.setLayoutManager(new GridLayoutManager(this, 2, RecyclerView.HORIZONTAL, false));
+        OccupiedAdapter aa2 = new OccupiedAdapter(getApplicationContext(), al2);
+        rv.setAdapter(aa2); //Set occupied rooms
+
+//        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Intent i = new Intent(getApplicationContext(), ConfirmActivity.class);
+//                String roomChosen = al.get(position).getRoomName();
+//                i.putExtra("room", roomChosen);
+//                i.putExtra("startTime", startTime);
+//                i.putExtra("endTime", endTime);
+//                i.putExtra("desc", desc);
+//                i.putExtra("date", date);
+//                startActivity(i);
+//            }
+//        });
 
     }
 

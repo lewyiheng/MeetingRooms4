@@ -66,6 +66,9 @@ public class DateFragment extends Fragment {
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy");
         final String date = sdf.format(date1);
 
+        //Set min date to today
+        calendar.setMinDate(System.currentTimeMillis() - 1000);
+
         //Plus minus
         duration(minus, plus, duration);
 

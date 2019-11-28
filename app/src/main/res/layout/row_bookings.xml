@@ -12,7 +12,8 @@
         android:layout_marginLeft="10dp"
         android:background="@color/greyEE"
         android:fontFamily="@font/roboto_light"
-        android:textSize="30dp" />
+        android:textSize="25dp"
+        android:layout_marginBottom="5dp"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -41,7 +42,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:orientation="horizontal">
 
         <TextView
@@ -64,7 +65,6 @@
             android:layout_marginRight="20dp"
             android:layout_weight="1"
             android:background="@drawable/btn_selector"
-            android:gravity="center"
             android:text="Release" />
 
     </LinearLayout>

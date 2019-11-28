@@ -114,13 +114,15 @@
 
         <EditText
             android:id="@+id/dateDesc"
-            android:layout_width="350dp"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/roboto_light"
             android:hint="Purpose for booking"
             android:background="@drawable/cardview_border"
-            android:padding="5dp"/>
+            android:padding="10dp"
+            android:textColorHint="@color/black"
+            android:textSize="17dp"/>
 
         <Button
             android:id="@+id/dateBook"
@@ -129,7 +131,7 @@
             android:layout_gravity="center"
             android:layout_margin="30dp"
             android:background="@drawable/btn_selector"
-            android:text="Find" />
+            android:text="BOOK" />
 
     </LinearLayout>
 </ScrollView>

@@ -5,10 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="800dp"
-        android:fillViewport="true">
 
         <ListView
             android:id="@+id/roomsList"
@@ -16,7 +12,6 @@
             android:layout_height="match_parent"
             android:layout_marginTop="5dp"
             android:dividerHeight="1dip"
-            android:listSelector="@color/greyDD"></ListView>
-    </ScrollView>
+            android:listSelector="@drawable/list_selector"></ListView>
 
 </LinearLayout>

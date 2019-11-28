@@ -51,13 +51,15 @@ public class ConfirmActivity extends AppCompatActivity {
         String desc1 = i.getStringExtra("desc");
         String date1 = i.getStringExtra("date");
 
-        //Set info
         date.setText(date1);
         title.setText(room1);
         desc.setText(desc1);
+
         time.setText(startTime1 + " - " + endTime1);
 
         centerTitle(room1);
+
+        Picasso.get().load("https://cdn.discordapp.com/attachments/449905908248739850/638541087568298004/conference_room_3.jpg").resize(1280, 720).into(iv);
 
         book.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,7 +80,6 @@ public class ConfirmActivity extends AppCompatActivity {
                         AlarmManager am = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
                         am.set(AlarmManager.RTC_WAKEUP, timer.getTimeInMillis(), pIntent);
 
-                        //Move in AllBookings
                         Intent i2 = new Intent(getApplicationContext(), MainActivity.class);
                         i2.putExtra("frag", "fragBookings");
                         Toast.makeText(getApplicationContext(),"Your booking has been confirmed",Toast.LENGTH_SHORT).show();

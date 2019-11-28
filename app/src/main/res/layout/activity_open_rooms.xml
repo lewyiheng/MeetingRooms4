@@ -15,9 +15,10 @@
             android:id="@+id/openTimeInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/greyEE"
             android:paddingBottom="10dp"
             android:textAlignment="center"
-            android:textSize="30dp" />
+            android:textSize="25dp" />
 
         <!-- Available Rooms -->
         <ListView
@@ -26,30 +27,34 @@
             android:layout_height="400dp"
             android:layout_marginTop="5dp"
             android:dividerHeight="1dip"
-            android:listSelector="@color/greyDD"
+            android:listSelector="@drawable/list_selector"
             android:nestedScrollingEnabled="true" />
 
-        <EditText
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:clickable="false"
-            android:enabled="false"
-            android:focusable="false"
-            android:textIsSelectable="false" />
+        <!--        <EditText-->
+        <!--            android:layout_width="300dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_gravity="center"-->
+        <!--            android:clickable="false"-->
+        <!--            android:enabled="false"-->
+        <!--            android:focusable="false"-->
+        <!--            android:textIsSelectable="false" />-->
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="20dp"
+            android:background="@color/greyEE"
             android:padding="20dp"
             android:text="Occupied Rooms"
             android:textAlignment="center"
-            android:textSize="30dp" />
+            android:textSize="25dp" />
 
         <!-- Occupied Rooms -->
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/openRv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/openRv"/>
+            android:layout_marginBottom="30dp" />
     </LinearLayout>
 </ScrollView>

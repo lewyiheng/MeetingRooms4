@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
@@ -38,12 +39,13 @@ import java.util.Date;
 
 public class RoomsActivity extends AppCompatActivity {
 
-    Button plus, minus, book;
-    TextView hours, gvClickedItem, description;
+    Button plus, minus, book, showAll;
+    TextView hours, gvClickedItem, description, cTv;
     CalendarView datepicker;
     TimePicker timePicker;
     ArrayList<Bookings> al = new ArrayList<Bookings>();
     RecyclerView rv;
+    LinearLayout collapsible;
 
     NumberPicker minutePicker;
 
@@ -68,6 +70,10 @@ public class RoomsActivity extends AppCompatActivity {
         description = findViewById(R.id.roomDesc);
         rv = findViewById(R.id.roomRv);
         timePicker = findViewById(R.id.roomTimePicker);
+        showAll = findViewById(R.id.showAll);
+
+        collapsible = findViewById(R.id.collapsible);
+        cTv = findViewById(R.id.collapsibleTV);
 
         hours.setText("1.0");
 
@@ -86,6 +92,9 @@ public class RoomsActivity extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy");
         final String date = sdf.format(date1); //Convert today's date to "dd MMMM yyyy"
 
+        //Set min date to today
+        datepicker.setMinDate(System.currentTimeMillis() - 1000);
+
         al.clear();
 
         al.add(new Bookings("User2", "Serenity Room", "0900", "1100", "13 October 2019", "Short briefing on something", "Confirmed"));
@@ -96,16 +105,35 @@ public class RoomsActivity extends AppCompatActivity {
         al.add(new Bookings("User2", "Integrity Room", "2000", "2200", "2 January 2020", " ", "Cancelled"));
         al.add(new Bookings("User2", "Integrity Room", "2000", "2200", "2 January 2020", " ", "Cancelled"));
 
-        rv.setLayoutManager(new GridLayoutManager(this, 3, RecyclerView.HORIZONTAL, false));
+        rv.setLayoutManager(new GridLayoutManager(this, 2, RecyclerView.HORIZONTAL, false));
         OccupiedTimeAdapter aa = new OccupiedTimeAdapter(getApplicationContext(), al);
         rv.setAdapter(aa); //Set recyclerView list.
 
-        //For testing only (Pls remove)
-        if (date.equalsIgnoreCase("28 November 2019")) {
-            rv.setVisibility(View.VISIBLE);
-        } else {
-            rv.setVisibility(View.GONE);
-        }
+        rv.setVisibility(View.GONE);
+        cTv.setText("+");
+
+        collapsible.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (rv.getVisibility() == View.GONE) {
+                    rv.setVisibility(View.VISIBLE);
+                    cTv.setText("-");
+                } else {
+                    rv.setVisibility(View.GONE);
+                    cTv.setText("+");
+                }
+            }
+        });
+//        showAll.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (rv.getVisibility() == View.GONE){
+//                    rv.setVisibility(View.VISIBLE);
+//                }else{
+//                    rv.setVisibility(View.GONE);
+//                }
+//            }
+//        });
 
         //Will only show recyclerView if the date is on the 25th
         datepicker.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
