@@ -40,16 +40,14 @@ public class RoomsAdapter extends ArrayAdapter<Rooms> {
 
         Rooms results = room.get(position);
 
-        roomName.setText(results.getRoomName());
+        int capacity = results.getCapacity();
+        String capacityString = String.valueOf(capacity);
 
-        String[] desc = (results.getRoomDesc()).split(",");
-        String cap = desc[0] + " PAX";
-        String loc = desc[1];
-        String av = desc[2];
-        String msg = " •" + cap + " •" + loc + " •" + av;
-        roomDesc.setText(desc[1]);
-        roomPAX.setText(desc[0]);
-        roomAV.setText(desc[2]);
+        roomName.setText(results.getRoomName());
+        roomDesc.setText(results.getLocation());
+        roomPAX.setText(capacityString);
+        roomAV.setText(results.getDescription());
+
         return rowView;
 
     }

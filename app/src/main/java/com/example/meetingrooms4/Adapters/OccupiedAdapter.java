@@ -57,7 +57,7 @@ public class OccupiedAdapter extends RecyclerView.Adapter<OccupiedAdapter.ViewHo
         holder.place.setText(results.getRoom());
 
         String startTime = results.getStartTime();
-        String endTime = results.getEndTIme();
+        String endTime = results.getEndTime();
         holder.time.setText(startTime + " - " + endTime);
 
         if (holder.status.getText().toString().equalsIgnoreCase("Confirmed")) {

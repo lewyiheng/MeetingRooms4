@@ -1,0 +1,122 @@
+{
+  "project_info": {
+    "project_number": "888800445477",
+    "firebase_url": "https://meetingrooms-767e8.firebaseio.com",
+    "project_id": "meetingrooms-767e8",
+    "storage_bucket": "meetingrooms-767e8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:888800445477:android:cf872b48833e1358c76bcc",
+        "android_client_info": {
+          "package_name": "com.example.meetingrooms"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "888800445477-qb7huuc1tedj7f2qe4ovql52ha7q6nod.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.meetingrooms",
+            "certificate_hash": "c85dd831070a5342e42840648933a3f3072c467c"
+          }
+        },
+        {
+          "client_id": "888800445477-ojd8258m1q3v3p2jmi2br3ge0fhbkpkt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_yiFmdENNkvVj1l51Jo1_4KjBJmU3LlM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "888800445477-ojd8258m1q3v3p2jmi2br3ge0fhbkpkt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:888800445477:android:62a49f806e33478cc76bcc",
+        "android_client_info": {
+          "package_name": "com.example.meetingrooms2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "888800445477-gqimm4mnbesh8slbpb3f4r7da0fh5858.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.meetingrooms2",
+            "certificate_hash": "c85dd831070a5342e42840648933a3f3072c467c"
+          }
+        },
+        {
+          "client_id": "888800445477-ojd8258m1q3v3p2jmi2br3ge0fhbkpkt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_yiFmdENNkvVj1l51Jo1_4KjBJmU3LlM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "888800445477-ojd8258m1q3v3p2jmi2br3ge0fhbkpkt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:888800445477:android:3af6d4de523a5385c76bcc",
+        "android_client_info": {
+          "package_name": "com.example.meetingrooms4"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "888800445477-hh8jm25q7afshvhk4sp4joqt2khu0mg9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.meetingrooms4",
+            "certificate_hash": "c85dd831070a5342e42840648933a3f3072c467c"
+          }
+        },
+        {
+          "client_id": "888800445477-ojd8258m1q3v3p2jmi2br3ge0fhbkpkt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_yiFmdENNkvVj1l51Jo1_4KjBJmU3LlM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "888800445477-ojd8258m1q3v3p2jmi2br3ge0fhbkpkt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

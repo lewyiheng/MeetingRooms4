@@ -99,13 +99,13 @@ public class RoomsActivity extends AppCompatActivity {
 
         al.clear();
 
-        al.add(new Bookings("User2", "Serenity Room", "0900", "1100", "13 October 2019", "Short briefing on something", "Confirmed"));
-        al.add(new Bookings("User2", "Vigilance Room", "1100", "1300", "21 October 2019", " ", "Pending"));
-        al.add(new Bookings("User2", "Integrity Room", "1400", "1500", "31 October 2019", "Meeting for planning an event", "Pending"));
-        al.add(new Bookings("User2", "Training Room", "1500", "1600", "12 November 2020", " ", "Expired"));
-        al.add(new Bookings("User2", "Integrity Room", "1700", "1900", "15 December 2019", " ", "Cancelled"));
-        al.add(new Bookings("User2", "Integrity Room", "2000", "2200", "2 January 2020", " ", "Cancelled"));
-        al.add(new Bookings("User2", "Integrity Room", "2000", "2200", "2 January 2020", " ", "Cancelled"));
+//        al.add(new Bookings("User2", "Serenity Room", "0900", "1100", "13 October 2019", "Short briefing on something", "Confirmed"));
+//        al.add(new Bookings("User2", "Vigilance Room", "1100", "1300", "21 October 2019", " ", "Pending"));
+//        al.add(new Bookings("User2", "Integrity Room", "1400", "1500", "31 October 2019", "Meeting for planning an event", "Pending"));
+//        al.add(new Bookings("User2", "Training Room", "1500", "1600", "12 November 2020", " ", "Expired"));
+//        al.add(new Bookings("User2", "Integrity Room", "1700", "1900", "15 December 2019", " ", "Cancelled"));
+//        al.add(new Bookings("User2", "Integrity Room", "2000", "2200", "2 January 2020", " ", "Cancelled"));
+//        al.add(new Bookings("User2", "Integrity Room", "2000", "2200", "2 January 2020", " ", "Cancelled"));
 
         rv.setLayoutManager(new GridLayoutManager(this, 2, RecyclerView.HORIZONTAL, false));
         OccupiedTimeAdapter aa = new OccupiedTimeAdapter(getApplicationContext(), al);

@@ -33,7 +33,7 @@ public class BookingsAdapter extends ArrayAdapter<Bookings> {
     private ArrayList<Bookings> bookings;
     private Context context;
     private TextView date, time, place, user, desc, status;
-    private Button btn;
+    private Button btn,confirm;
 
     public BookingsAdapter(Context context, int resource, ArrayList<Bookings> objects) {
         super(context, resource, objects);
@@ -55,9 +55,23 @@ public class BookingsAdapter extends ArrayAdapter<Bookings> {
         btn = rowView.findViewById(R.id.bookNowDelete);
         desc = rowView.findViewById(R.id.bookDesc);
         status = rowView.findViewById(R.id.bookStatus);
+        confirm = rowView.findViewById(R.id.bookNowConfirm);
 
-        date.setText(results.getDate());
+        date.setText(results.getDate().toString());
         status.setText(results.getStatus());
+
+        if (date.getText().toString().equalsIgnoreCase("28 November 2019")){
+            confirm.setVisibility(View.VISIBLE);
+        }
+
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                status.setText("Confirmed");
+                confirm.setVisibility(View.GONE);
+                status.setBackgroundColor(Color.parseColor("#55EE55"));
+            }
+        });
 
         if (status.getText().toString().equalsIgnoreCase("Confirmed")) {
             status.setTextColor(Color.parseColor("#000000"));
@@ -70,6 +84,8 @@ public class BookingsAdapter extends ArrayAdapter<Bookings> {
             status.setBackgroundColor(Color.parseColor("#CCCCCC"));
         }
 
+
+
         if (results.getDesc().equalsIgnoreCase(" ")) {
             desc.setText(" ");
         } else {
@@ -79,7 +95,7 @@ public class BookingsAdapter extends ArrayAdapter<Bookings> {
 
         //Set time
         String startTime = results.getStartTime();
-        String endTime = results.getEndTIme();
+        String endTime = results.getEndTime();
         String duration = startTime + " - " + endTime;
 
         place.setText(results.getRoom());

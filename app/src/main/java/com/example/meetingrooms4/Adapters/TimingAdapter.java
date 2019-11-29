@@ -55,7 +55,7 @@ public class TimingAdapter extends ArrayAdapter<Bookings> {
 
         //Set time
         String startTime = results.getStartTime();
-        String endTime = results.getEndTIme();
+        String endTime = results.getEndTime();
         String duration = startTime + " - " + endTime;
 
         time.setText(duration);

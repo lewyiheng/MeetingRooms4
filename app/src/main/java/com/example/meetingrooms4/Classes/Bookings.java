@@ -1,39 +1,30 @@
 package com.example.meetingrooms4.Classes;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 public class Bookings {
 
     private String user;
     private String room;
     private String startTime;
-    private String endTIme;
-    private String date;
+    private String endTime;
+    private Date date;
     private String desc;
     private String status;
 
-    public Bookings(String user, String room, String startTime, String endTIme, String date, String desc,String status) {
+    public Bookings() {
+
+    }
+
+    public Bookings(String user, String room, String startTime, String endTime, Date date, String desc, String status) {
         this.user = user;
         this.room = room;
         this.startTime = startTime;
-        this.endTIme = endTIme;
+        this.endTime = endTime;
         this.date = date;
         this.desc = desc;
         this.status = status;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
     }
 
     public String getUser() {
@@ -60,23 +51,35 @@ public class Bookings {
         this.startTime = startTime;
     }
 
-    public String getEndTIme() {
-        return endTIme;
+    public String getEndTime() {
+        return endTime;
     }
 
-    public void setEndTIme(String endTIme) {
-        this.endTIme = endTIme;
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
-    public Bookings() {
+    public String getDesc() {
+        return desc;
+    }
 
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
