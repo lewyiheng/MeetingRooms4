@@ -9,7 +9,7 @@ public class Bookings {
     private String room;
     private String startTime;
     private String endTime;
-    private Date date;
+    private String date;
     private String desc;
     private String status;
 
@@ -17,7 +17,7 @@ public class Bookings {
 
     }
 
-    public Bookings(String user, String room, String startTime, String endTime, Date date, String desc, String status) {
+    public Bookings(String user, String room, String startTime, String endTime, String date, String desc, String status) {
         this.user = user;
         this.room = room;
         this.startTime = startTime;
@@ -59,11 +59,11 @@ public class Bookings {
         this.endTime = endTime;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

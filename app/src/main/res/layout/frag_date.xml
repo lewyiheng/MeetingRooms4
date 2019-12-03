@@ -133,5 +133,11 @@
             android:background="@drawable/btn_selector"
             android:text="Next" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/dateTVCHECK"
+            android:visibility="gone"/>
+
     </LinearLayout>
 </ScrollView>

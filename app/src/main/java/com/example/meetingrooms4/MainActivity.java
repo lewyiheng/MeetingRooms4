@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (frag.equalsIgnoreCase("fragBookings")) {
             Fragment f = new AllBookingsFragment();
             bottomNav.setSelectedItemId(R.id.navBookings);
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, f).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, f).commitNow();
 
         }
 

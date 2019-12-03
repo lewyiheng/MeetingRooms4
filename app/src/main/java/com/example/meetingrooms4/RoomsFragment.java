@@ -105,9 +105,6 @@ public class RoomsFragment extends Fragment {
 //        al.add(new Rooms("Training room", "18,WW05-4,AV"));
 //        al.add(new Rooms("Vigilance room", "10,WW05-3,AV"));
 
-
-
-
         //Set room click
         roomsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

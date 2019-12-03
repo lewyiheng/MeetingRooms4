@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -33,6 +35,7 @@ import com.example.meetingrooms4.Classes.Rooms;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -51,15 +54,16 @@ import java.util.Date;
 
 public class OpenRoomsActivity extends AppCompatActivity {
 
-    ArrayList<Rooms> al;
-    ArrayList<Bookings> al2;
+    private String TAG = "lol";
+    ArrayList<Rooms> al = new ArrayList<Rooms>();
+    ArrayList<Bookings> al2 = new ArrayList<Bookings>();
     ArrayAdapter aa;
     ListView lv;
     TextView tvTimeInfo;
     RecyclerView rv;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference bookings = db.collection("booking");
+    CollectionReference booking = db.collection("booking");
     CollectionReference room = db.collection("room");
 
     @Override
@@ -83,75 +87,85 @@ public class OpenRoomsActivity extends AppCompatActivity {
         tvTimeInfo.setText("Available rooms from\n" + startTime + " to " + endTime);
 
         //Load rooms
-        al = new ArrayList<Rooms>();
-        al2 = new ArrayList<>();
-        al.clear();
-        al2.clear();
 
-        //Available Rooms
-//        al.add(new Rooms("Excellence room", "10,WW05-5, "));
-//        al.add(new Rooms("Faith room", "12,AW05-1,AV"));
-//        al.add(new Rooms("Integrity room", "16,WW05-2,AV"));
-//        al.add(new Rooms("Serenity room", "8,WW05-1, "));
-//        al.add(new Rooms("Training room", "18,WW05-4,AV"));
-//        al.add(new Rooms("Vigilance room", "10,WW05-3,AV"));
+//        al.clear();
+//        al2.clear();
 
         //Occupied Rooms
-//        al2.add(new Bookings("User4", "Courage room", "1300", "1400", "Today", "Short Meeting", "Confirmed"));
-//        al2.add(new Bookings("User5", "Perseverance room", "1300", "1400", "Today", "Short Meeting", "Pending"));
-//        al2.add(new Bookings("User6", "OPL room", "1300", "1400", "Today", "Short Meeting", "Expired"));
-//        al2.add(new Bookings("User7", "BIS2 room", "1300", "1400", "Today", "Short Meeting", "Cancelled"));
+
+        booking.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        String date1 = document.getData().get("date").toString();
+                        String desc = document.getData().get("desc").toString();
+                        String endTime = document.getData().get("endTime").toString();
+                        String startTime = document.getData().get("startTime").toString();
+                        String room = document.getData().get("room").toString();
+                        String status = document.getData().get("status").toString();
+                        String user = document.getData().get("user").toString();
+
+                        if (date.equalsIgnoreCase(date1)) {
+                            Bookings book = new Bookings(user, room, startTime, endTime, date1, desc, status);
+                            al2.add(book);
+                        }
+                    }
+                }
+                rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2, RecyclerView.HORIZONTAL, false));
+                OccupiedAdapter aa2 = new OccupiedAdapter(getApplicationContext(), al2);
+                rv.setAdapter(aa2); //Set occupied rooms
+            }
+        });
 
         room.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        String roomName = document.getData().get("roomName").toString();
-                        String location = document.getId();
-                        String capacityString = document.getData().get("capacity").toString();
-                        int capacity = Integer.parseInt(capacityString);
-                        String av = document.getData().get("description").toString();
-                        String group = document.getData().get("roomGroup").toString();
+                        final String roomName = document.getData().get("roomName").toString();
+                        final String location = document.getId();
+                        final String capacityString = document.getData().get("capacity").toString();
+                        final int capacity = Integer.parseInt(capacityString);
+                        final String av = document.getData().get("description").toString();
+                        final String group = document.getData().get("roomGroup").toString();
                         al.add(new Rooms(roomName, capacity, av, group, location));
+
+                        booking.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        String date1 = document.getData().get("date").toString();
+                                        String desc = document.getData().get("desc").toString();
+                                        String endTime = document.getData().get("endTime").toString();
+                                        String startTime = document.getData().get("startTime").toString();
+                                        String room = document.getData().get("room").toString();
+                                        String status = document.getData().get("status").toString();
+                                        String user = document.getData().get("user").toString();
+
+                                        if (date.equalsIgnoreCase(date1)) {
+                                            Bookings book = new Bookings(user, room, startTime, endTime, date1, desc, status);
+                                            al2.add(book);
+                                        }
+
+                                    }
+                                    onDone(al2, al, startTime, endTime);
+                                }
+                            }
+                        });
                     }
                 }
-                Collections.sort(al, new Comparator<Rooms>() {
-                    @Override
-                    public int compare(Rooms o1, Rooms o2) {
-                        return o1.getRoomName().compareToIgnoreCase(o2.getRoomName());
-                    }
-                });
                 aa = new RoomsAdapter(getApplicationContext(), R.layout.row_rooms, al);
                 lv.setAdapter(aa);
             }
         });
-//        RoomsAdapter aa = new RoomsAdapter(getApplicationContext(), R.layout.row_rooms, al);
-//        lv.setAdapter(aa); //Set available rooms
-
-
-//        rv.setLayoutManager(new GridLayoutManager(this, 2, RecyclerView.HORIZONTAL, false));
-//        OccupiedAdapter aa2 = new OccupiedAdapter(getApplicationContext(), al2);
-//        rv.setAdapter(aa2); //Set occupied rooms
-
-//        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Intent i = new Intent(getApplicationContext(), ConfirmActivity.class);
-//                String roomChosen = al.get(position).getRoomName();
-//                i.putExtra("room", roomChosen);
-//                i.putExtra("startTime", startTime);
-//                i.putExtra("endTime", endTime);
-//                i.putExtra("desc", desc);
-//                i.putExtra("date", date);
-//                startActivity(i);
-//            }
-//        });
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String roomChosen = al.get(position).getRoomName();
+                final String roomLocation = al.get(position).getLocation();
                 String msg = "Room: " + roomChosen + "\n"
                         + "Date: " + date + "\n"
                         + "Time: " + startTime + " - " + endTime + "\n"
@@ -165,19 +179,54 @@ public class OpenRoomsActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent i = new Intent(getApplicationContext(), MainActivity.class);
                         i.putExtra("frag", "fragBookings");
-                        startActivity(i);
 
-                        SimpleDateFormat format = new SimpleDateFormat("dd MMMM yyyy");
-                        Date date1 = format.parse(date,new ParsePosition(0));
-                        Bookings book = new Bookings("User1","WW05-1",startTime,endTime,date1,desc,"Pending");
-                        bookings.document("000000").set(book);
+                        final Bookings book = new Bookings("User1", roomLocation, startTime, endTime, date, desc, "Pending");
+
+                        //getid?
+                        booking.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    String id = "000001";
+                                    int count = 1;
+                                    for (DocumentSnapshot document : task.getResult()) {
+                                        count++;
+                                        if (document.exists() == false) {
+                                            id = "000001";
+                                        } else {
+                                            id = docId(count);
+                                        }
+                                    }
+                                    booking.document(id).set(book);
+                                }
+                            }
+                        });
+                        startActivity(i);
                     }
                 });
                 alert.setNegativeButton("No", null);
                 alert.show();
             }
         });
+//100 000
+    }
 
+    public String docId(int count) {
+        String id = Integer.toString(count);
+
+        if (count > 99999) {
+            return id; // id = 100000
+        } else if (count > 9999) {
+            return "0" + id; // id = 010000
+        } else if (count > 999) {
+            return "00" + id; // id = 001000
+        } else if (count > 99) {
+            return "000" + id; // id = 000100
+        } else if (count > 9) {
+            return "0000" + id; // id = 000010;
+        } else {
+            return "00000" + id; // id = 000001;
+        }
     }
 
     private void centerTitle(String title) {
@@ -208,5 +257,37 @@ public class OpenRoomsActivity extends AppCompatActivity {
         ActionBar ab = getSupportActionBar();
         ab.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.actionbar));
         ab.setTitle(Html.fromHtml("<font color='#000000'>" + title + " </font>"));
+    }
+
+    public void onDone(ArrayList<Bookings> al2, ArrayList<Rooms> al, String b1, String b2) {
+        ArrayList<Bookings> alString = new ArrayList<>();
+
+        for (int i = 0; al2.size() > i; i++) {
+            for (int i2 = 0; al.size() > i2; i2++) {
+                if (al.get(i2).getLocation().equalsIgnoreCase(al2.get(i).getRoom())) {
+                    alString.add(al2.get(i));
+
+                    for (int i3 = 0; alString.size() > i3; i3++) {
+                        Log.d(TAG, alString.get(i3).getRoom());
+                        int a1 = Integer.parseInt(alString.get(i3).getStartTime());
+                        int a2 = Integer.parseInt(alString.get(i3).getEndTime());
+
+                        int c1 = Integer.parseInt(b1);
+                        int c2 = Integer.parseInt(b2);
+
+                        if (c1 >= a1 && c1 < a2) {
+                            al.remove(i2);
+                        } else if (c2 > a1 && c2 <= a2) {
+                            al.remove(i2);
+                        } else if (c1 <= a1 && c2 >= a2) {
+                            al.remove(i2);
+                        } else {
+                        }
+                    }
+                    alString.clear();
+                    aa.notifyDataSetChanged();
+                }
+            }
+        }
     }
 }

@@ -47,10 +47,12 @@ public class BookNowFragment extends Fragment {
         //Time Now
         final Date c = Calendar.getInstance().getTime(); //Get today's date and time
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
+        SimpleDateFormat dateFormat2 = new SimpleDateFormat("dd-MM-yyyy");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
         final SimpleDateFormat hourOnly = new SimpleDateFormat("HH"); //Get only hour
 
-        date.setText(dateFormat.format(c)); //Set date to "dd MM yyyy"
+        date.setText(dateFormat.format(c));//Set date to "dd MM yyyy"
+        final String dateDB = dateFormat2.format(c);
         time.setText(timeFormat.format(c)); //Set time to HH:mm
 
         duration.setText("1.0");
@@ -82,7 +84,7 @@ public class BookNowFragment extends Fragment {
                     i.putExtra("startTime", startTime);
                     i.putExtra("endTime", endTime);
                     i.putExtra("desc", description);
-                    i.putExtra("date", date.getText().toString());
+                    i.putExtra("date", dateDB);
                     startActivity(i);
                 }
             }
@@ -104,6 +106,10 @@ public class BookNowFragment extends Fragment {
             int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
             String minute = "30";
             endTiming = hour + minute;
+        }
+
+        if (Integer.parseInt(endTiming) <= 999) {
+            endTiming = "0" + endTiming;
         }
 
         return endTiming;

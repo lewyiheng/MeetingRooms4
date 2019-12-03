@@ -22,13 +22,14 @@ import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class DateFragment extends Fragment {
 
     TimePicker timePicker;
     Button plus, minus, find;
-    TextView duration, desc;
+    TextView duration, desc, check;
     CalendarView calendar;
 
     NumberPicker minutePicker;
@@ -52,6 +53,7 @@ public class DateFragment extends Fragment {
         find = view.findViewById(R.id.dateBook);
         duration = view.findViewById(R.id.dateDuration);
         desc = view.findViewById(R.id.dateDesc);
+        check = view.findViewById(R.id.dateTVCHECK);
 
         timePicker.setIs24HourView(true);
         duration.setText("1.0");
@@ -61,10 +63,27 @@ public class DateFragment extends Fragment {
 
         //Set Minute Picker to 30min intervals
         setMinutePicker();
+
         //getDate
-        Date date1 = new Date(calendar.getDate());
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy");
-        final String date = sdf.format(date1);
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        String formattedDate = df.format(c);
+        check.setText(formattedDate);
+
+        calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+                //String date = getDate(dayOfMonth, month, year);
+                String day;
+                if (dayOfMonth < 10){
+                    day = "0" + dayOfMonth;
+                }else{
+                    day = Integer.toString(dayOfMonth);
+                }
+                String date = day + "-" + (month + 1) + "-" + year;
+                check.setText(date);
+            }
+        });
 
         //Set min date to today
         calendar.setMinDate(System.currentTimeMillis() - 1000);
@@ -86,7 +105,7 @@ public class DateFragment extends Fragment {
                     Intent i = new Intent(getActivity(), OpenRoomsActivity.class);
                     i.putExtra("startTime", startTime);
                     i.putExtra("endTime", endTime);
-                    i.putExtra("date", date);
+                    i.putExtra("date", check.getText().toString());
                     i.putExtra("desc", desc.getText().toString());
                     startActivity(i);
                 }
@@ -170,4 +189,6 @@ public class DateFragment extends Fragment {
             return Integer.toString(timePicker.getCurrentMinute());
         }
     }
+
+
 }
