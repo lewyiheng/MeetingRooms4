@@ -22,6 +22,7 @@ import com.example.meetingrooms4.Classes.Rooms;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -41,6 +42,11 @@ public class AllBookingsFragment extends Fragment {
     ArrayList<Bookings> al = new ArrayList<Bookings>();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference booking = db.collection("booking");
+    CollectionReference room = db.collection("room");
+    CollectionReference bks = db.collection("booking_status");
+    CollectionReference player = db.collection("user");
+    String roomName;
+    BookingsAdapter aa;
 
     @Nullable
     @Override
@@ -55,38 +61,92 @@ public class AllBookingsFragment extends Fragment {
         booking.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@javax.annotation.Nullable QuerySnapshot snapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+
+                int status = 0;
+                int user = 0;
                 al.clear();
                 for (QueryDocumentSnapshot document : snapshot) {
-                    String date = document.getData().get("date").toString();
-                    String desc = document.getData().get("desc").toString();
-                    String endTime = document.getData().get("endTime").toString();
-                    String startTime = document.getData().get("startTime").toString();
-                    String room = document.getData().get("room").toString();
-                    String status = document.getData().get("status").toString();
-                    String user = document.getData().get("user").toString();
-                    Bookings book = new Bookings(user, room, startTime, endTime, date, desc, status);
+                    final Bookings book = new Bookings();
+                    final String date = document.getData().get("book_date").toString();
+                    final String desc = document.getData().get("book_purpose").toString();
+                    final String endTime = document.getData().get("end_time").toString();
+                    final String startTime = document.getData().get("start_time").toString();
+                    final String roomId = document.getData().get("room_id").toString();
+                    status = Integer.parseInt(document.getData().get("bks_id").toString());
+
+                    String statusString = String.valueOf(status);
+                    String userString = String.valueOf(user);
+                    // book = new Bookings("null", room, startTime, endTime, date1, desc, "null");
+                    //book.setRoom_id(room);
+
+                    //String realDate = getDate(date);
+                    book.setStart_time(startTime);
+                    book.setEnd_time(endTime);
+                    book.setBook_date(date);
+                    book.setBook_purpose(desc);
+
+                    room.document(roomId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                String roomname = task.getResult().getData().get("room_name").toString();
+                                book.setRoom_id(roomname);
+                                try {
+                                    aa.notifyDataSetChanged();
+                                } catch (Exception e) {
+
+                                }
+                            }
+                        }
+                    });
+
+                    bks.document(statusString).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                String realStatus = task.getResult().getData().get("bks_status").toString();
+                                book.setBks_id(realStatus);
+                                try {
+                                    aa.notifyDataSetChanged();
+                                } catch (Exception e) {
+
+                                }
+                            }
+                        }
+                    });
+
+                    player.document("000001").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                String realName = task.getResult().getData().get("name").toString();
+                                book.setUser_id(realName);
+                                try {
+                                    aa.notifyDataSetChanged();
+                                } catch (Exception e) {
+
+                                }
+                            }
+                        }
+                    });
                     al.add(book);
                 }
-
-                Collections.sort(al, new Comparator<Bookings>() {
-                    public int compare(Bookings o1, Bookings o2) {
-                        return sortDate(o1.getDate()).compareTo(sortDate(o2.getDate()));
-                    }
-                });
+                if (al.size() < 1) {
+                    Collections.sort(al, new Comparator<Bookings>() {
+                        public int compare(Bookings o1, Bookings o2) {
+                            return sortDate(o1.getBook_date()).compareTo(sortDate(o2.getBook_date()));
+                        }
+                    });
+                }
                 if (isAdded()) {
-                    BookingsAdapter aa = new BookingsAdapter(getActivity(), R.layout.row_bookings, al);
+                    aa = new BookingsAdapter(getActivity(), R.layout.row_bookings, al);
                     lv.setAdapter(aa);
                     aa.notifyDataSetChanged();
                 }
+
+
             }
         });
-
-//        al.add(new Bookings("User2", "Serenity Room", "1400", "1500", "27 November 2019", "Short briefing on something", "Confirmed"));
-//        al.add(new Bookings("User2", "Vigilance Room", "1500", "1600", "28 November 2019", " ", "Pending"));
-//        al.add(new Bookings("User2", "Integrity Room", "1500", "1600", "31 November 2019", "Meeting for planning an event", "Pending"));
-//        al.add(new Bookings("User2", "Training Room", "1500", "1600", "12 December 2020", " ", "Cancelled"));
-//        al.add(new Bookings("User2", "Integrity Room", "1500", "1600", "15 December 2019", " ", "Cancelled"));
-//        al.add(new Bookings("User2", "Integrity Room", "1500", "1600", "2 January 2020", " ", "Pending"));
         return view;
     }
 
@@ -106,6 +166,7 @@ public class AllBookingsFragment extends Fragment {
 
         int day = Integer.parseInt(dateSplit[0]);
         int datePickerMonth = Integer.parseInt(dateSplit[1]);
+        datePickerMonth--;
         int year = Integer.parseInt(dateSplit[2]);
 
         String day1;

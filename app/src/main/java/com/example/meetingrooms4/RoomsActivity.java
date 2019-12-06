@@ -33,11 +33,24 @@ import com.example.meetingrooms4.Adapters.OccupiedAdapter;
 import com.example.meetingrooms4.Adapters.OccupiedTimeAdapter;
 import com.example.meetingrooms4.Adapters.TimingAdapter;
 import com.example.meetingrooms4.Classes.Bookings;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.FirestoreRegistrar;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+
+import javax.annotation.Nullable;
 
 public class RoomsActivity extends AppCompatActivity {
 
@@ -46,8 +59,18 @@ public class RoomsActivity extends AppCompatActivity {
     CalendarView datepicker;
     TimePicker timePicker;
     ArrayList<Bookings> al = new ArrayList<Bookings>();
+    ArrayList<Bookings> al2 = new ArrayList<Bookings>();
+
     RecyclerView rv;
     LinearLayout collapsible;
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    CollectionReference booking = db.collection("booking");
+    CollectionReference bks = db.collection("booking_status");
+    CollectionReference player = db.collection("user");
+    CollectionReference room1 = db.collection("room");
+
+    OccupiedTimeAdapter aa;
 
     NumberPicker minutePicker;
 
@@ -61,7 +84,7 @@ public class RoomsActivity extends AppCompatActivity {
 
         Intent i = getIntent();
         final String roomChosen = i.getStringExtra("room");
-
+        final String roomid = i.getStringExtra("roomid");
 
         plus = findViewById(R.id.roomPlus);
         minus = findViewById(R.id.roomMinus);
@@ -91,25 +114,14 @@ public class RoomsActivity extends AppCompatActivity {
 
         //getDate
         Date date1 = new Date(datepicker.getDate()); //Get today's date
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy");
-        final String date = sdf.format(date1); //Convert today's date to "dd MMMM yyyy"
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        gvClickedItem.setText(sdf.format(date1)); //Convert today's date to "dd MMMM yyyy"
+        datepicker.setDate(Calendar.getInstance().getTimeInMillis(), false, true);
 
         //Set min date to today
         datepicker.setMinDate(System.currentTimeMillis() - 1000);
 
         al.clear();
-
-//        al.add(new Bookings("User2", "Serenity Room", "0900", "1100", "13 October 2019", "Short briefing on something", "Confirmed"));
-//        al.add(new Bookings("User2", "Vigilance Room", "1100", "1300", "21 October 2019", " ", "Pending"));
-//        al.add(new Bookings("User2", "Integrity Room", "1400", "1500", "31 October 2019", "Meeting for planning an event", "Pending"));
-//        al.add(new Bookings("User2", "Training Room", "1500", "1600", "12 November 2020", " ", "Expired"));
-//        al.add(new Bookings("User2", "Integrity Room", "1700", "1900", "15 December 2019", " ", "Cancelled"));
-//        al.add(new Bookings("User2", "Integrity Room", "2000", "2200", "2 January 2020", " ", "Cancelled"));
-//        al.add(new Bookings("User2", "Integrity Room", "2000", "2200", "2 January 2020", " ", "Cancelled"));
-
-        rv.setLayoutManager(new GridLayoutManager(this, 2, RecyclerView.HORIZONTAL, false));
-        OccupiedTimeAdapter aa = new OccupiedTimeAdapter(getApplicationContext(), al);
-        rv.setAdapter(aa); //Set recyclerView list.
 
         rv.setVisibility(View.GONE);
         cTv.setText("+");
@@ -126,29 +138,108 @@ public class RoomsActivity extends AppCompatActivity {
                 }
             }
         });
-//        showAll.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (rv.getVisibility() == View.GONE){
-//                    rv.setVisibility(View.VISIBLE);
-//                }else{
-//                    rv.setVisibility(View.GONE);
-//                }
-//            }
-//        });
 
-        //Will only show recyclerView if the date is on the 25th
+
         datepicker.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                if (dayOfMonth == 28) {
-                    rv.setVisibility(View.VISIBLE);
+
+                al.clear();
+
+                String dayofmonth;
+                String monthString;
+                String yearString = String.valueOf(year);
+                month = month + 1;
+
+                if (dayOfMonth < 10) {
+                    dayofmonth = "0" + dayOfMonth;
                 } else {
-                    rv.setVisibility(View.GONE);
+                    dayofmonth = String.valueOf(dayOfMonth);
                 }
+
+                if (month < 10) {
+                    monthString = "0" + (month);
+                } else {
+                    monthString = String.valueOf(month);
+                }
+                final String date2 = dayofmonth + "-" + monthString + "-" + yearString;
+                gvClickedItem.setText(date2);
+
+
+                booking.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                        for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                            int status;
+                            int user = 0;
+                            String room = doc.getData().get("room_id").toString();
+                            String date1 = doc.getData().get("book_date").toString();
+
+                            if (roomid.equalsIgnoreCase(room)) {
+                                if (date1.equalsIgnoreCase(date2)) {
+                                    final Bookings book = new Bookings();
+                                    String desc = doc.getData().get("book_purpose").toString();
+                                    String endTime = doc.getData().get("end_time").toString();
+                                    String startTime = doc.getData().get("start_time").toString();
+                                    String roomId = doc.getData().get("room_id").toString();
+                                    status = Integer.parseInt(doc.getData().get("bks_id").toString());
+
+                                    // TODO: Get user and replace
+// TODO: Check for booking status as well
+                                    //user = Integer.parseInt(document.getData().get("user_id").toString());
+
+                                    String statusString = String.valueOf(status);
+                                    String userString = String.valueOf(user);
+                                    // book = new Bookings("null", room, startTime, endTime, date1, desc, "null");
+                                    //book.setRoom_id(room);
+                                    book.setStart_time(startTime);
+                                    book.setEnd_time(endTime);
+                                    book.setBook_date(date1);
+                                    book.setBook_purpose(desc);
+
+                                    room1.document(roomId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                String roomname = task.getResult().getData().get("room_name").toString();
+                                                book.setRoom_id(roomname);
+                                                aa.notifyDataSetChanged();
+                                            }
+                                        }
+                                    });
+
+                                    bks.document(statusString).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                String realStatus = task.getResult().getData().get("bks_status").toString();
+                                                book.setBks_id(realStatus);
+                                                aa.notifyDataSetChanged();
+                                            }
+                                        }
+                                    });
+
+                                    player.document("000001").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                String realName = task.getResult().getData().get("name").toString();
+                                                book.setUser_id(realName);
+                                                aa.notifyDataSetChanged();
+                                            }
+                                        }
+                                    });
+                                    al.add(book);
+                                }
+                            }
+                        }
+                        rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2, RecyclerView.HORIZONTAL, false));
+                        aa = new OccupiedTimeAdapter(getApplicationContext(), al);
+                        rv.setAdapter(aa); //Set recyclerView list.
+                    }
+                });
             }
         });
-
 
         book.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,41 +250,46 @@ public class RoomsActivity extends AppCompatActivity {
                 } else {
                     final String startTime = timePicker.getHour() + getMinute();
                     String durationSelected = hours.getText().toString();
-
                     String endTime = endTime(Integer.toString(timePicker.getHour()), durationSelected);
-//
-//                    Intent i = new Intent(getApplicationContext(), ConfirmActivity.class);
-//                    i.putExtra("date", date);
-//                    i.putExtra("room", roomChosen);
-//                    i.putExtra("startTime", startTime);
-//                    i.putExtra("endTime", endTime);
-//                    i.putExtra("desc", description.getText().toString());
-//                    startActivity(i);
 
-                    String msg = "Room: " + roomChosen + "\n"
-                            + "Date: " + date + "\n"
-                            + "Time: " + startTime + " - " + endTime + "\n"
-                            + "Purpose: " + "\n"
-                            + description.getText().toString() + "\n";
-                    AlertDialog.Builder alert = new AlertDialog.Builder(RoomsActivity.this);
-                    alert.setTitle("Confirm booking?");
-                    alert.setMessage(msg);
-                    alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                            i.putExtra("frag", "fragBookings");
-                            startActivity(i);
+
+                    for (int i = 0; al.size() > i; i++) {
+                        String starting = al.get(i).getStart_time();
+                        String ending = al.get(i).getEnd_time();
+
+                        boolean conflict = compareTime(starting, ending, startTime, endTime);
+
+                        if (conflict) {
+                            Toast.makeText(getApplicationContext(), "Your chosen slot is not available", Toast.LENGTH_SHORT).show();
+                        } else {
+                            String msg = "Room: " + roomChosen + "\n"
+                                    + "Date: " + gvClickedItem.getText() + "\n"
+                                    + "Time: " + startTime + " - " + endTime + "\n"
+                                    + "Purpose: " + "\n"
+                                    + description.getText().toString() + "\n";
+                            AlertDialog.Builder alert = new AlertDialog.Builder(RoomsActivity.this);
+                            alert.setTitle("Confirm booking?");
+                            alert.setMessage(msg);
+                            alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                                    i.putExtra("frag", "fragBookings");
+                                    startActivity(i);
+
+                                }
+                            });
+                            alert.setNegativeButton("No", null);
+                            alert.show();
                         }
-                    });
-                    alert.setNegativeButton("No", null);
-                    alert.show();
+                    }
                 }
-
             }
         });
     }
 
+    // =-=-=-=-=-=-=-=-=-==-=-=-=-=
     private String endTime(String startHour, String duration) {
         String endTiming;
 
@@ -296,6 +392,24 @@ public class RoomsActivity extends AppCompatActivity {
             }
         } else {
             return Integer.toString(timePicker.getCurrentMinute());
+        }
+    }
+
+    public boolean compareTime(String dbStart, String dbEnd, String selectedStart, String selectedEnd) {
+        int a1 = Integer.parseInt(dbStart);
+        int a2 = Integer.parseInt(dbEnd);
+
+        int b1 = Integer.parseInt(selectedStart);
+        int b2 = Integer.parseInt(selectedEnd);
+
+        if (b1 >= a1 && b1 < a2) {
+            return true;
+        } else if (b2 > a1 && b2 <= a2) {
+            return true;
+        } else if (b1 >= a1 && b2 <= a2) {
+            return true;
+        } else {
+            return false;
         }
     }
 }

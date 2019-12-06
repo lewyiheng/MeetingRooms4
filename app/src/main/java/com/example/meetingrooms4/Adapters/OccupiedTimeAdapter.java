@@ -50,12 +50,12 @@ public class OccupiedTimeAdapter extends RecyclerView.Adapter<OccupiedTimeAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Bookings results = room.get(position);
-        holder.user.setText(results.getUser());
-        holder.desc.setText(results.getDesc());
-        holder.status.setText(results.getStatus());
+        holder.user.setText(results.getUser_id());
+        holder.desc.setText(results.getBook_purpose());
+        holder.status.setText(results.getBks_id());
 
-        String startTime = results.getStartTime();
-        String endTime = results.getEndTime();
+        String startTime = results.getStart_time();
+        String endTime = results.getEnd_time();
         holder.time.setText(startTime + " - " + endTime);
 
         if (holder.status.getText().toString().equalsIgnoreCase("Confirmed")) {

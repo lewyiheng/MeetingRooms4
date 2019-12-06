@@ -46,20 +46,20 @@ public class TimingAdapter extends ArrayAdapter<Bookings> {
         desc = rowView.findViewById(R.id.timingDesc);
 
 
-        if (results.getDesc().equalsIgnoreCase(" ")) {
+        if (results.getBook_purpose().equalsIgnoreCase(" ")) {
             desc.setText(" ");
         } else {
-            desc.setText("\"" + results.getDesc() + "\"");
+            desc.setText("\"" + results.getBook_purpose() + "\"");
         }
 
 
         //Set time
-        String startTime = results.getStartTime();
-        String endTime = results.getEndTime();
+        String startTime = results.getStart_time();
+        String endTime = results.getEnd_time();
         String duration = startTime + " - " + endTime;
 
         time.setText(duration);
-        user.setText(results.getUser());
+        user.setText(results.getUser_id());
 
 //        btn.setOnClickListener(new View.OnClickListener() {
 //            @Override

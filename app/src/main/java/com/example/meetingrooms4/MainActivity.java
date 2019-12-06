@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.drm.DrmStore;
 import android.os.Bundle;
 import android.text.Html;
@@ -26,6 +27,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SharedPreferences sp = getApplicationContext().getSharedPreferences("sp",0);
+        SharedPreferences.Editor e = sp.edit();
+        e.putString("user","000001");
+        e.commit();
 
         //View
         centerTitle("MainActivity");

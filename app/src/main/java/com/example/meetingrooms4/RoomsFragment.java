@@ -35,6 +35,8 @@ public class RoomsFragment extends Fragment {
     ArrayAdapter aa;
     ListView roomsList;
 
+   // String roomid;
+
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference room = db.collection("room");
 
@@ -50,21 +52,26 @@ public class RoomsFragment extends Fragment {
         roomsList = view.findViewById(R.id.roomsList);
 
 
-//        Rooms city = new Rooms("BIS2 discussion room", 6, " ","ISG", "AE05");
-//        Rooms city1 = new Rooms("Courage room", 12, "AV equipped","ISG", "AE05-2");
-//        Rooms city2 = new Rooms("Excellence room", 10, " ","ISG", "WW05-5");
-//        Rooms city3 = new Rooms("Faith room", 12, "AV equipped","ISG", "AW05-1");
-//        Rooms city4 = new Rooms("OPL discussion room", 8, " ","ISG", "WW05");
-//        Rooms city5 = new Rooms("Perseverance room", 12, "AV equipped","ISG", "AE05-1");
-//        Rooms city6 = new Rooms("Training centre", 6, "AV equipped","ISG", "WW05-4");
+//        Rooms city = new Rooms("BIS2 discussion room", 6, " ", "ISG", "Available");
+//        Rooms city1 = new Rooms("Courage room", 12, "AV", "ISG", "Available");
+//        Rooms city2 = new Rooms("Excellence room", 10, " ", "ISG", "Available");
+//        Rooms city3 = new Rooms("Faith room", 12, "AV", "ISG", "Available");
+//        Rooms city7 = new Rooms("Integrity room", 16, "AV", "ISG", "Available");
+//        Rooms city4 = new Rooms("OPL discussion room", 8, " ", "ISG", "Available");
+//        Rooms city5 = new Rooms("Perseverance room", 12, "AV", "ISG", "Available");
+//        Rooms city8 = new Rooms("Serenity room", 8, "AV", "ISG", "Available");
+//        Rooms city6 = new Rooms("Training centre", 6, "AV", "ISG", "Available");
 //
-//        db.collection("room").document(city.getLocation()).set(city);
-//        db.collection("room").document(city1.getLocation()).set(city1);
-//        db.collection("room").document(city2.getLocation()).set(city2);
-//        db.collection("room").document(city3.getLocation()).set(city3);
-//        db.collection("room").document(city4.getLocation()).set(city4);
-//        db.collection("room").document(city5.getLocation()).set(city5);
-//        db.collection("room").document(city6.getLocation()).set(city6);
+//        db.collection("room").document("AE05").set(city);
+//        db.collection("room").document("AE05-2").set(city1);
+//        db.collection("room").document("WW05-5").set(city2);
+//        db.collection("room").document("AW05-1").set(city3);
+//        db.collection("room").document("WW05").set(city4);
+//        db.collection("room").document("AE05-1").set(city5);
+//        db.collection("room").document("WW05-4").set(city6);
+//        db.collection("room").document("WW05-2").set(city7);
+//        db.collection("room").document("WW05-1").set(city8);
+
         al = new ArrayList<Rooms>();
         al.clear();
 
@@ -74,23 +81,29 @@ public class RoomsFragment extends Fragment {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        String roomName = document.getData().get("roomName").toString();
-                        String location = document.getId();
-                        String capacityString = document.getData().get("capacity").toString();
-                        int capacity = Integer.parseInt(capacityString);
-                        String av = document.getData().get("description").toString();
-                        String group = document.getData().get("roomGroup").toString();
-                        al.add(new Rooms(roomName, capacity, av, group, location));
+                        String avail = document.getData().get("room_status").toString();
+                        if (avail.equalsIgnoreCase("Available")) {
+                            String roomName = document.getData().get("room_name").toString();
+                            String roomid = document.getId();
+                            String capacityString = document.getData().get("room_capacity").toString();
+                            int capacity = Integer.parseInt(capacityString);
+                            String av = document.getData().get("room_description").toString();
+                            String group = document.getData().get("room_group").toString();
+                            al.add(new Rooms(roomName, capacity, av, group, roomid));
+                        }
                     }
                 }
                 Collections.sort(al, new Comparator<Rooms>() {
                     @Override
                     public int compare(Rooms o1, Rooms o2) {
-                        return o1.getRoomName().compareToIgnoreCase(o2.getRoomName());
+                        return o1.getRoom_name().compareToIgnoreCase(o2.getRoom_name());
                     }
                 });
-                aa = new RoomsAdapter(getActivity(), R.layout.row_rooms, al);
-                roomsList.setAdapter(aa);
+                if (isAdded()) {
+                    aa = new RoomsAdapter(getActivity(), R.layout.row_rooms, al);
+                    roomsList.setAdapter(aa);
+                    aa.notifyDataSetChanged();
+                }
             }
         });
 
@@ -110,9 +123,11 @@ public class RoomsFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                String roomChosen = al.get(position).getRoomName();
+                String roomChosen = al.get(position).getRoom_name();
+                String roomid = al.get(position).getRoom_status();
                 Intent i = new Intent(getActivity(), RoomsActivity.class);
                 i.putExtra("room", roomChosen);
+                i.putExtra("roomid",roomid);
                 startActivity(i);
             }
         });

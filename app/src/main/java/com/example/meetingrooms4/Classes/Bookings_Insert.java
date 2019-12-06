@@ -3,21 +3,21 @@ package com.example.meetingrooms4.Classes;
 import java.sql.Timestamp;
 import java.util.Date;
 
-public class Bookings {
+public class Bookings_Insert {
 
-    private String user_id;
+    private int user_id;
     private String room_id;
     private String start_time;
     private String end_time;
     private String book_date;
     private String book_purpose;
-    private String bks_id;
+    private int bks_id;
 
-    public Bookings() {
+    public Bookings_Insert() {
 
     }
 
-    public Bookings(String user_id, String room_id, String start_time, String end_time, String book_date, String book_purpose, String bks_id) {
+    public Bookings_Insert(int user_id, String room_id, String start_time, String end_time, String book_date, String book_purpose, int bks_id) {
         this.user_id = user_id;
         this.room_id = room_id;
         this.start_time = start_time;
@@ -69,19 +69,19 @@ public class Bookings {
         this.book_purpose = book_purpose;
     }
 
-    public String getUser_id() {
+    public int getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(String user_id) {
+    public void setUser_id(int user_id) {
         this.user_id = user_id;
     }
 
-    public String getBks_id() {
+    public int getBks_id() {
         return bks_id;
     }
 
-    public void setBks_id(String bks_id) {
+    public void setBks_id(int bks_id) {
         this.bks_id = bks_id;
     }
 }

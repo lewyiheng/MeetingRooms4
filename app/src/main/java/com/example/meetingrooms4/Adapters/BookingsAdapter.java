@@ -24,16 +24,20 @@ import com.example.meetingrooms4.Classes.Bookings;
 import com.example.meetingrooms4.MainActivity;
 import com.example.meetingrooms4.R;
 import com.example.meetingrooms4.RoomsActivity;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 
 public class BookingsAdapter extends ArrayAdapter<Bookings> {
 
     private ArrayList<Bookings> bookings;
     private Context context;
     private TextView date, time, place, user, desc, status;
-    private Button btn,confirm;
+    private Button btn, confirm;
+
 
     public BookingsAdapter(Context context, int resource, ArrayList<Bookings> objects) {
         super(context, resource, objects);
@@ -47,7 +51,7 @@ public class BookingsAdapter extends ArrayAdapter<Bookings> {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.row_bookings, parent, false);
 
-        Bookings results = bookings.get(position);
+        final Bookings results = bookings.get(position);
 
         date = rowView.findViewById(R.id.bookDate);
         time = rowView.findViewById(R.id.bookTime);
@@ -57,10 +61,10 @@ public class BookingsAdapter extends ArrayAdapter<Bookings> {
         status = rowView.findViewById(R.id.bookStatus);
         confirm = rowView.findViewById(R.id.bookNowConfirm);
 
-        date.setText(results.getDate().toString());
-        status.setText(results.getStatus());
+        date.setText(results.getBook_date().toString());
+        status.setText(results.getBks_id());
 
-        if (date.getText().toString().equalsIgnoreCase("28 November 2019")){
+        if (date.getText().toString().equalsIgnoreCase("28 November 2019")) {
             confirm.setVisibility(View.VISIBLE);
         }
 
@@ -84,21 +88,19 @@ public class BookingsAdapter extends ArrayAdapter<Bookings> {
             status.setBackgroundColor(Color.parseColor("#CCCCCC"));
         }
 
-
-
-        if (results.getDesc().equalsIgnoreCase(" ")) {
+        if (results.getBook_purpose().equalsIgnoreCase(" ")) {
             desc.setText(" ");
         } else {
-            desc.setText("\"" + results.getDesc() + "\"");
+            desc.setText("\"" + results.getBook_purpose() + "\"");
         }
 
 
         //Set time
-        String startTime = results.getStartTime();
-        String endTime = results.getEndTime();
+        String startTime = results.getStart_time();
+        String endTime = results.getEnd_time();
         String duration = startTime + " - " + endTime;
 
-        place.setText(results.getRoom());
+        place.setText(results.getRoom_id());
         time.setText(duration);
 
         btn.setOnClickListener(new View.OnClickListener() {
@@ -112,15 +114,20 @@ public class BookingsAdapter extends ArrayAdapter<Bookings> {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        bookings.remove(position);
-                        notifyDataSetChanged();
+                        //bookings.remove(position);
                         Toast.makeText(context, "Room has been released", Toast.LENGTH_SHORT).show();
+
+                        status.setText("Cancelled");
+
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        CollectionReference colRef = db.collection("booking");
+
+                        notifyDataSetChanged();
+
                     }
                 });
                 alert.setNegativeButton("No", null);
                 alert.show();
-
-
             }
         });
         return rowView;

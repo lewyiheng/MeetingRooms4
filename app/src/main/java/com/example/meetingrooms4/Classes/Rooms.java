@@ -2,60 +2,58 @@ package com.example.meetingrooms4.Classes;
 
 public class Rooms {
 
-    private String roomName;
-    private int capacity;
-    private String description;
-    private String roomGroup;
-    private String location;
+    private String room_name;
+    private int room_capacity;
+    private String room_description;
+    private String room_group;
+    private String room_status;
 
 
-    public Rooms(String roomName, int capacity, String description, String roomGroup, String location) {
-        this.roomName = roomName;
-        this.capacity = capacity;
-        this.description = description;
-        this.roomGroup = roomGroup;
-        this.location = location;
+    public Rooms(String room_name, int room_capacity, String room_description, String room_group, String room_status) {
+        this.room_name = room_name;
+        this.room_capacity = room_capacity;
+        this.room_description = room_description;
+        this.room_group = room_group;
+        this.room_status = room_status;
     }
 
-
-    public String getLocation() {
-        return location;
+    public String getRoom_name() {
+        return room_name;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setRoom_name(String room_name) {
+        this.room_name = room_name;
     }
 
-    public String getRoomName() {
-        return roomName;
+    public int getRoom_capacity() {
+        return room_capacity;
     }
 
-    public void setRoomName(String roomName) {
-        this.roomName = roomName;
+    public void setRoom_capacity(int room_capacity) {
+        this.room_capacity = room_capacity;
     }
 
-    public int getCapacity() {
-        return capacity;
+    public String getRoom_description() {
+        return room_description;
     }
 
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
+    public void setRoom_description(String room_description) {
+        this.room_description = room_description;
     }
 
-    public String getDescription() {
-        return description;
+    public String getRoom_group() {
+        return room_group;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setRoom_group(String room_group) {
+        this.room_group = room_group;
     }
 
-    public String getRoomGroup() {
-        return roomGroup;
+    public String getRoom_status() {
+        return room_status;
     }
 
-    public void setRoomGroup(String roomGroup) {
-        this.roomGroup = roomGroup;
+    public void setRoom_status(String room_status) {
+        this.room_status = room_status;
     }
-
 }

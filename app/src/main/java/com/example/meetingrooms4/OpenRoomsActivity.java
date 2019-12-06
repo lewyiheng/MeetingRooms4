@@ -31,6 +31,7 @@ import com.example.meetingrooms4.Adapters.OccupiedAdapter;
 import com.example.meetingrooms4.Adapters.OccupiedTimeAdapter;
 import com.example.meetingrooms4.Adapters.RoomsAdapter;
 import com.example.meetingrooms4.Classes.Bookings;
+import com.example.meetingrooms4.Classes.Bookings_Insert;
 import com.example.meetingrooms4.Classes.Rooms;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -51,6 +52,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Set;
 
 public class OpenRoomsActivity extends AppCompatActivity {
 
@@ -61,9 +63,12 @@ public class OpenRoomsActivity extends AppCompatActivity {
     ListView lv;
     TextView tvTimeInfo;
     RecyclerView rv;
+    OccupiedAdapter aa2;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference booking = db.collection("booking");
+    CollectionReference bks = db.collection("booking_status");
+    CollectionReference player = db.collection("user");
     CollectionReference room = db.collection("room");
 
     @Override
@@ -86,86 +91,120 @@ public class OpenRoomsActivity extends AppCompatActivity {
         //Set info
         tvTimeInfo.setText("Available rooms from\n" + startTime + " to " + endTime);
 
-        //Load rooms
-
-//        al.clear();
-//        al2.clear();
-
-        //Occupied Rooms
-
+        //Occupied rooms
         booking.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                al2.clear();
+                int status = 0;
+                int user = 0;
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        String date1 = document.getData().get("date").toString();
-                        String desc = document.getData().get("desc").toString();
-                        String endTime = document.getData().get("endTime").toString();
-                        String startTime = document.getData().get("startTime").toString();
-                        String room = document.getData().get("room").toString();
-                        String status = document.getData().get("status").toString();
-                        String user = document.getData().get("user").toString();
+                        if (document.exists()) {
+                            final Bookings book = new Bookings();
+                            String date1 = document.getData().get("book_date").toString();
+                            String desc = document.getData().get("book_purpose").toString();
+                            String endTime = document.getData().get("end_time").toString();
+                            String startTime = document.getData().get("start_time").toString();
+                            String roomId = document.getData().get("room_id").toString();
+                            status = Integer.parseInt(document.getData().get("bks_id").toString());
 
-                        if (date.equalsIgnoreCase(date1)) {
-                            Bookings book = new Bookings(user, room, startTime, endTime, date1, desc, status);
-                            al2.add(book);
+// TODO: Get user and replace
+// TODO: Check for booking status as well
+                            //user = Integer.parseInt(document.getData().get("user_id").toString());
+
+                            String statusString = String.valueOf(status);
+                            String userString = String.valueOf(user);
+                            if (date.equalsIgnoreCase(date1)) {
+                                // book = new Bookings("null", room, startTime, endTime, date1, desc, "null");
+                                //book.setRoom_id(room);
+                                book.setStart_time(startTime);
+                                book.setEnd_time(endTime);
+                                book.setBook_date(date1);
+                                book.setBook_purpose(desc);
+
+                                room.document(roomId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            String roomname = task.getResult().getData().get("room_name").toString();
+                                            book.setRoom_id(roomname);
+                                            aa2.notifyDataSetChanged();
+                                        }
+                                    }
+                                });
+
+                                bks.document(statusString).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            String realStatus = task.getResult().getData().get("bks_status").toString();
+                                            book.setBks_id(realStatus);
+                                            aa2.notifyDataSetChanged();
+                                        }
+                                    }
+                                });
+
+                                player.document("000001").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            String realName = task.getResult().getData().get("name").toString();
+                                            book.setUser_id(realName);
+                                            aa2.notifyDataSetChanged();
+                                        }
+                                    }
+                                });
+                                al2.add(book);
+
+                            }
+
                         }
                     }
+
                 }
                 rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2, RecyclerView.HORIZONTAL, false));
-                OccupiedAdapter aa2 = new OccupiedAdapter(getApplicationContext(), al2);
+                aa2 = new OccupiedAdapter(getApplicationContext(), al2);
                 rv.setAdapter(aa2); //Set occupied rooms
             }
         });
 
+        //Not Occupied Rooms
         room.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                al.clear();
+                String id = null;
+                String roomName = null;
+                al.clear();
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        final String roomName = document.getData().get("roomName").toString();
+                        roomName = document.getData().get("room_name").toString();
                         final String location = document.getId();
-                        final String capacityString = document.getData().get("capacity").toString();
+                        id = document.getId();
+                        final String capacityString = document.getData().get("room_capacity").toString();
                         final int capacity = Integer.parseInt(capacityString);
-                        final String av = document.getData().get("description").toString();
-                        final String group = document.getData().get("roomGroup").toString();
+                        final String av = document.getData().get("room_description").toString();
+                        final String group = document.getData().get("room_group").toString();
                         al.add(new Rooms(roomName, capacity, av, group, location));
 
-                        booking.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                        String date1 = document.getData().get("date").toString();
-                                        String desc = document.getData().get("desc").toString();
-                                        String endTime = document.getData().get("endTime").toString();
-                                        String startTime = document.getData().get("startTime").toString();
-                                        String room = document.getData().get("room").toString();
-                                        String status = document.getData().get("status").toString();
-                                        String user = document.getData().get("user").toString();
-
-                                        if (date.equalsIgnoreCase(date1)) {
-                                            Bookings book = new Bookings(user, room, startTime, endTime, date1, desc, status);
-                                            al2.add(book);
-                                        }
-
-                                    }
-                                    onDone(al2, al, startTime, endTime);
-                                }
-                            }
-                        });
                     }
+
                 }
+
                 aa = new RoomsAdapter(getApplicationContext(), R.layout.row_rooms, al);
                 lv.setAdapter(aa);
+                aa.notifyDataSetChanged();
+//              aa2.notifyDataSetChanged();
             }
         });
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String roomChosen = al.get(position).getRoomName();
-                final String roomLocation = al.get(position).getLocation();
+
+                String roomChosen = al.get(position).getRoom_name();
+                final String roomLocation = al.get(position).getRoom_status();
                 String msg = "Room: " + roomChosen + "\n"
                         + "Date: " + date + "\n"
                         + "Time: " + startTime + " - " + endTime + "\n"
@@ -180,7 +219,7 @@ public class OpenRoomsActivity extends AppCompatActivity {
                         Intent i = new Intent(getApplicationContext(), MainActivity.class);
                         i.putExtra("frag", "fragBookings");
 
-                        final Bookings book = new Bookings("User1", roomLocation, startTime, endTime, date, desc, "Pending");
+                        final Bookings_Insert book = new Bookings_Insert(000001, roomLocation, startTime, endTime, date, desc, 1);
 
                         //getid?
                         booking.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -208,7 +247,6 @@ public class OpenRoomsActivity extends AppCompatActivity {
                 alert.show();
             }
         });
-//100 000
     }
 
     public String docId(int count) {
@@ -264,13 +302,13 @@ public class OpenRoomsActivity extends AppCompatActivity {
 
         for (int i = 0; al2.size() > i; i++) {
             for (int i2 = 0; al.size() > i2; i2++) {
-                if (al.get(i2).getLocation().equalsIgnoreCase(al2.get(i).getRoom())) {
+                if (al.get(i2).getRoom_status().equalsIgnoreCase(al2.get(i).getRoom_id())) {
                     alString.add(al2.get(i));
 
                     for (int i3 = 0; alString.size() > i3; i3++) {
-                        Log.d(TAG, alString.get(i3).getRoom());
-                        int a1 = Integer.parseInt(alString.get(i3).getStartTime());
-                        int a2 = Integer.parseInt(alString.get(i3).getEndTime());
+                        Log.d(TAG, alString.get(i3).getRoom_id());
+                        int a1 = Integer.parseInt(alString.get(i3).getStart_time());
+                        int a2 = Integer.parseInt(alString.get(i3).getEnd_time());
 
                         int c1 = Integer.parseInt(b1);
                         int c2 = Integer.parseInt(b2);
@@ -285,9 +323,9 @@ public class OpenRoomsActivity extends AppCompatActivity {
                         }
                     }
                     alString.clear();
-                    aa.notifyDataSetChanged();
                 }
             }
         }
+        aa.notifyDataSetChanged();
     }
 }

@@ -29,7 +29,7 @@ public class OccupiedAdapter extends RecyclerView.Adapter<OccupiedAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView user, time, desc, status,place;
+        TextView user, time, desc, status, place;
 
         ViewHolder(View rowView) {
             super(rowView);
@@ -40,6 +40,7 @@ public class OccupiedAdapter extends RecyclerView.Adapter<OccupiedAdapter.ViewHo
             status = rowView.findViewById(R.id.occupiedStatus);
         }
     }
+
     @NonNull
     @Override
     public OccupiedAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -51,32 +52,33 @@ public class OccupiedAdapter extends RecyclerView.Adapter<OccupiedAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull OccupiedAdapter.ViewHolder holder, int position) {
         Bookings results = room.get(position);
-        holder.user.setText(results.getUser());
-        holder.desc.setText(results.getDesc());
-        holder.status.setText(results.getStatus());
-        holder.place.setText(results.getRoom());
+        String userid = String.valueOf(results.getUser_id());
+        String bksid = String.valueOf(results.getBks_id());
+        holder.user.setText(userid);
+        holder.desc.setText(results.getBook_purpose());
+        holder.status.setText(bksid);
+        holder.place.setText(results.getRoom_id());
 
-        String startTime = results.getStartTime();
-        String endTime = results.getEndTime();
+        String startTime = results.getStart_time();
+        String endTime = results.getEnd_time();
         holder.time.setText(startTime + " - " + endTime);
 
         if (holder.status.getText().toString().equalsIgnoreCase("Confirmed")) {
-            holder. status.setTextColor(Color.parseColor("#000000"));
-            holder. status.setBackgroundColor(Color.parseColor("#55EE55"));
+            holder.status.setTextColor(Color.parseColor("#000000"));
+            holder.status.setBackgroundColor(Color.parseColor("#55EE55"));
         } else if (holder.status.getText().toString().equalsIgnoreCase("Pending")) {
-            holder. status.setTextColor(Color.parseColor("#000000"));
-            holder. status.setBackgroundColor(Color.parseColor("#ffb555"));
+            holder.status.setTextColor(Color.parseColor("#000000"));
+            holder.status.setBackgroundColor(Color.parseColor("#ffb555"));
         } else {
-            holder. status.setTextColor(Color.parseColor("#000000"));
+            holder.status.setTextColor(Color.parseColor("#000000"));
             holder.status.setBackgroundColor(Color.parseColor("#CCCCCC"));
         }
     }
+
     @Override
     public int getItemCount() {
         return room.size();
     }
-
-
 
 
 }
