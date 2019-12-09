@@ -37,7 +37,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.ServerTimestamp;
@@ -52,7 +55,11 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+
+import javax.annotation.Nullable;
 
 public class OpenRoomsActivity extends AppCompatActivity {
 
@@ -111,13 +118,10 @@ public class OpenRoomsActivity extends AppCompatActivity {
 
 // TODO: Get user and replace
 // TODO: Check for booking status as well
-                            //user = Integer.parseInt(document.getData().get("user_id").toString());
 
                             String statusString = String.valueOf(status);
                             String userString = String.valueOf(user);
                             if (date.equalsIgnoreCase(date1)) {
-                                // book = new Bookings("null", room, startTime, endTime, date1, desc, "null");
-                                //book.setRoom_id(room);
                                 book.setStart_time(startTime);
                                 book.setEnd_time(endTime);
                                 book.setBook_date(date1);
@@ -156,12 +160,9 @@ public class OpenRoomsActivity extends AppCompatActivity {
                                     }
                                 });
                                 al2.add(book);
-
                             }
-
                         }
                     }
-
                 }
                 rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2, RecyclerView.HORIZONTAL, false));
                 aa2 = new OccupiedAdapter(getApplicationContext(), al2);
@@ -174,28 +175,23 @@ public class OpenRoomsActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 al.clear();
-                String id = null;
-                String roomName = null;
+                String roomName;
                 al.clear();
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         roomName = document.getData().get("room_name").toString();
                         final String location = document.getId();
-                        id = document.getId();
                         final String capacityString = document.getData().get("room_capacity").toString();
                         final int capacity = Integer.parseInt(capacityString);
                         final String av = document.getData().get("room_description").toString();
                         final String group = document.getData().get("room_group").toString();
                         al.add(new Rooms(roomName, capacity, av, group, location));
-
                     }
-
                 }
 
                 aa = new RoomsAdapter(getApplicationContext(), R.layout.row_rooms, al);
                 lv.setAdapter(aa);
                 aa.notifyDataSetChanged();
-//              aa2.notifyDataSetChanged();
             }
         });
 
@@ -233,10 +229,16 @@ public class OpenRoomsActivity extends AppCompatActivity {
                                         if (document.exists() == false) {
                                             id = "000001";
                                         } else {
-                                            id = docId(count);
+                                            //id = docId(count);
+                                            id = String.format("%6s", count).replace(' ', '0');
                                         }
                                     }
                                     booking.document(id).set(book);
+                                    Map<String,Object> updates = new HashMap<>();
+                                    updates.put("timestamp", FieldValue.serverTimestamp());
+                                    booking.document(id).update(updates);
+
+
                                 }
                             }
                         });

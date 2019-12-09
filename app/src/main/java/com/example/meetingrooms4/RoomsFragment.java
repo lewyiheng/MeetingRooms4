@@ -35,7 +35,7 @@ public class RoomsFragment extends Fragment {
     ArrayAdapter aa;
     ListView roomsList;
 
-   // String roomid;
+    // String roomid;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference room = db.collection("room");
@@ -81,8 +81,8 @@ public class RoomsFragment extends Fragment {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        String avail = document.getData().get("room_status").toString();
-                        if (avail.equalsIgnoreCase("Available")) {
+                        Boolean avail = (Boolean) document.getData().get("room_status");
+                        if (avail == true) {
                             String roomName = document.getData().get("room_name").toString();
                             String roomid = document.getId();
                             String capacityString = document.getData().get("room_capacity").toString();
@@ -127,7 +127,7 @@ public class RoomsFragment extends Fragment {
                 String roomid = al.get(position).getRoom_status();
                 Intent i = new Intent(getActivity(), RoomsActivity.class);
                 i.putExtra("room", roomChosen);
-                i.putExtra("roomid",roomid);
+                i.putExtra("roomid", roomid);
                 startActivity(i);
             }
         });

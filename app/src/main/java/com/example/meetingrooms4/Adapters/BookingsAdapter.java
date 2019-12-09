@@ -24,12 +24,21 @@ import com.example.meetingrooms4.Classes.Bookings;
 import com.example.meetingrooms4.MainActivity;
 import com.example.meetingrooms4.R;
 import com.example.meetingrooms4.RoomsActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 
 public class BookingsAdapter extends ArrayAdapter<Bookings> {
 
@@ -37,6 +46,9 @@ public class BookingsAdapter extends ArrayAdapter<Bookings> {
     private Context context;
     private TextView date, time, place, user, desc, status;
     private Button btn, confirm;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference colRef = db.collection("booking");
+    private String id;
 
 
     public BookingsAdapter(Context context, int resource, ArrayList<Bookings> objects) {
@@ -61,21 +73,13 @@ public class BookingsAdapter extends ArrayAdapter<Bookings> {
         status = rowView.findViewById(R.id.bookStatus);
         confirm = rowView.findViewById(R.id.bookNowConfirm);
 
+        //Today's date
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy");
+        String today = sdf.format(c);
+
         date.setText(results.getBook_date().toString());
         status.setText(results.getBks_id());
-
-        if (date.getText().toString().equalsIgnoreCase("28 November 2019")) {
-            confirm.setVisibility(View.VISIBLE);
-        }
-
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                status.setText("Confirmed");
-                confirm.setVisibility(View.GONE);
-                status.setBackgroundColor(Color.parseColor("#55EE55"));
-            }
-        });
 
         if (status.getText().toString().equalsIgnoreCase("Confirmed")) {
             status.setTextColor(Color.parseColor("#000000"));
@@ -103,6 +107,25 @@ public class BookingsAdapter extends ArrayAdapter<Bookings> {
         place.setText(results.getRoom_id());
         time.setText(duration);
 
+
+        if (status.getText().toString().equalsIgnoreCase("Confirmed")) {
+            confirm.setVisibility(View.GONE);
+        } else {
+            if (date.getText().toString().equalsIgnoreCase(today)) {
+                confirm.setVisibility(View.VISIBLE);
+            }
+        }
+
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String pos = String.format("%6s", position + 1).replace(' ', '0');
+                colRef.document(pos).update("bks_id", 2);
+                confirm.setVisibility(View.GONE);
+            }
+        });
+
+
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,13 +138,13 @@ public class BookingsAdapter extends ArrayAdapter<Bookings> {
                     public void onClick(DialogInterface dialog, int which) {
 
                         //bookings.remove(position);
+                        String pos = String.format("%6s", position + 1).replace(' ', '0');
+
+                        colRef.document(pos).update("bks_id", 4);
+
                         Toast.makeText(context, "Room has been released", Toast.LENGTH_SHORT).show();
 
-                        status.setText("Cancelled");
-
-                        FirebaseFirestore db = FirebaseFirestore.getInstance();
-                        CollectionReference colRef = db.collection("booking");
-
+                        //status.setText("Cancelled");
                         notifyDataSetChanged();
 
                     }

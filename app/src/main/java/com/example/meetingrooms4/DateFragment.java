@@ -59,7 +59,7 @@ public class DateFragment extends Fragment {
         duration.setText("1.0");
 
         //Ease of Access
-        desc.setText("F");
+        desc.setText("TEST ");
 
         //Set Minute Picker to 30min intervals
         setMinutePicker();

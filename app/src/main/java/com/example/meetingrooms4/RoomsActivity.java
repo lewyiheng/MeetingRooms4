@@ -184,14 +184,12 @@ public class RoomsActivity extends AppCompatActivity {
                                     String roomId = doc.getData().get("room_id").toString();
                                     status = Integer.parseInt(doc.getData().get("bks_id").toString());
 
-                                    // TODO: Get user and replace
+// TODO: Get user and replace
 // TODO: Check for booking status as well
-                                    //user = Integer.parseInt(document.getData().get("user_id").toString());
 
                                     String statusString = String.valueOf(status);
                                     String userString = String.valueOf(user);
-                                    // book = new Bookings("null", room, startTime, endTime, date1, desc, "null");
-                                    //book.setRoom_id(room);
+
                                     book.setStart_time(startTime);
                                     book.setEnd_time(endTime);
                                     book.setBook_date(date1);
