@@ -14,6 +14,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
@@ -97,97 +98,96 @@ public class OpenRoomsActivity extends AppCompatActivity {
 
         //Set info
         tvTimeInfo.setText("Available rooms from\n" + startTime + " to " + endTime);
+        al.clear();
+        al2.clear();
 
-        //Occupied rooms
-        booking.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+        readDb(new getList() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                al2.clear();
-                int status = 0;
-                int user = 0;
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        if (document.exists()) {
-                            final Bookings book = new Bookings();
-                            String date1 = document.getData().get("book_date").toString();
-                            String desc = document.getData().get("book_purpose").toString();
-                            String endTime = document.getData().get("end_time").toString();
-                            String startTime = document.getData().get("start_time").toString();
-                            String roomId = document.getData().get("room_id").toString();
-                            status = Integer.parseInt(document.getData().get("bks_id").toString());
+            public void onCallback(ArrayList<Rooms> roomList, ArrayList<Bookings> bookList) {
+                al = roomList;
+                al2 = bookList;
+                ArrayList<String> conflicted = new ArrayList<>();
 
-// TODO: Get user and replace
-// TODO: Check for booking status as well
+                //Log.d(TAG, al.size() + " Size of RoomList");
+                //Log.d(TAG, al2.size() + " Size of Book List");
 
-                            String statusString = String.valueOf(status);
-                            String userString = String.valueOf(user);
-                            if (date.equalsIgnoreCase(date1)) {
-                                book.setStart_time(startTime);
-                                book.setEnd_time(endTime);
-                                book.setBook_date(date1);
-                                book.setBook_purpose(desc);
+                //Remove by status
+                for (int i = al2.size() - 1; i >= 0; i--) {
+                    String status_id = al2.get(i).getBks_id();
+                    if (status_id.equalsIgnoreCase("3") || status_id.equalsIgnoreCase("4")) {
+                        al2.remove(i);
+                    }
+                }
 
-                                room.document(roomId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            String roomname = task.getResult().getData().get("room_name").toString();
-                                            book.setRoom_id(roomname);
-                                            aa2.notifyDataSetChanged();
-                                        }
-                                    }
-                                });
+                //Remove by date
+                for (int i = al2.size() - 1; i >= 0; i--) {
+                    String date1 = al2.get(i).getBook_date();
+                    if (!date1.equalsIgnoreCase(date)) {
+                        al2.remove(i);
+                    }
+                }
 
-                                bks.document(statusString).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            String realStatus = task.getResult().getData().get("bks_status").toString();
-                                            book.setBks_id(realStatus);
-                                            aa2.notifyDataSetChanged();
-                                        }
-                                    }
-                                });
+                //THEN remove by time
+                for (int i = al2.size() - 1; i >= 0; i--) {
+                    String b1 = al2.get(i).getStart_time();
+                    String b2 = al2.get(i).getEnd_time();
 
-                                player.document("000001").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            String realName = task.getResult().getData().get("name").toString();
-                                            book.setUser_id(realName);
-                                            aa2.notifyDataSetChanged();
-                                        }
-                                    }
-                                });
-                                al2.add(book);
-                            }
+                    if (checkConflict(startTime, endTime, b1, b2)) {
+                        conflicted.add(al2.get(i).getRoom_id());
+                    } else {
+                        al2.remove(i);
+                    }
+                }
+
+                //Whatever left in al2 gets removed in al
+                for (int i = al.size() - 1; i >= 0; i--) {
+                    for (int i2 = 0; conflicted.size() > i2; i2++) {
+                        if (conflicted.contains(al.get(i).getRoom_status())) {
+                            al.remove(i);
                         }
                     }
                 }
+
+                //Setting room ID to name
+                for (int i = 0; al2.size() > i; i++) {
+                    String room_id = al2.get(i).getRoom_id();
+                    final Bookings newBooking = al2.get(i);
+                    room.document(room_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                String roomname = task.getResult().getData().get("room_name").toString();
+                                newBooking.setRoom_id(roomname);
+                                aa2.notifyDataSetChanged();
+                            }
+                        }
+                    });
+                }
+                //Setting bks_id to status name
+                for (int i = 0; al2.size() > i; i++) {
+                    String status_id = al2.get(i).getBks_id();
+                    final Bookings newBooking = al2.get(i);
+                    bks.document(status_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                String realStatus = task.getResult().getData().get("bks_status").toString();
+                                newBooking.setBks_id(realStatus);
+                                try {
+                                    aa2.notifyDataSetChanged();
+                                } catch (Exception e) {
+
+                                }
+                            }
+                        }
+                    });
+                }
+
+                //=-=-=-=-=-=-=- Set lists =-=-=-=-=-=-=-=-=
                 rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2, RecyclerView.HORIZONTAL, false));
                 aa2 = new OccupiedAdapter(getApplicationContext(), al2);
-                rv.setAdapter(aa2); //Set occupied rooms
-            }
-        });
-
-        //Not Occupied Rooms
-        room.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                al.clear();
-                String roomName;
-                al.clear();
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        roomName = document.getData().get("room_name").toString();
-                        final String location = document.getId();
-                        final String capacityString = document.getData().get("room_capacity").toString();
-                        final int capacity = Integer.parseInt(capacityString);
-                        final String av = document.getData().get("room_description").toString();
-                        final String group = document.getData().get("room_group").toString();
-                        al.add(new Rooms(roomName, capacity, av, group, location));
-                    }
-                }
+                rv.setAdapter(aa2);
 
                 aa = new RoomsAdapter(getApplicationContext(), R.layout.row_rooms, al);
                 lv.setAdapter(aa);
@@ -195,6 +195,7 @@ public class OpenRoomsActivity extends AppCompatActivity {
             }
         });
 
+        //Click on room
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -234,11 +235,9 @@ public class OpenRoomsActivity extends AppCompatActivity {
                                         }
                                     }
                                     booking.document(id).set(book);
-                                    Map<String,Object> updates = new HashMap<>();
+                                    Map<String, Object> updates = new HashMap<>();
                                     updates.put("timestamp", FieldValue.serverTimestamp());
                                     booking.document(id).update(updates);
-
-
                                 }
                             }
                         });
@@ -249,24 +248,6 @@ public class OpenRoomsActivity extends AppCompatActivity {
                 alert.show();
             }
         });
-    }
-
-    public String docId(int count) {
-        String id = Integer.toString(count);
-
-        if (count > 99999) {
-            return id; // id = 100000
-        } else if (count > 9999) {
-            return "0" + id; // id = 010000
-        } else if (count > 999) {
-            return "00" + id; // id = 001000
-        } else if (count > 99) {
-            return "000" + id; // id = 000100
-        } else if (count > 9) {
-            return "0000" + id; // id = 000010;
-        } else {
-            return "00000" + id; // id = 000001;
-        }
     }
 
     private void centerTitle(String title) {
@@ -299,35 +280,132 @@ public class OpenRoomsActivity extends AppCompatActivity {
         ab.setTitle(Html.fromHtml("<font color='#000000'>" + title + " </font>"));
     }
 
-    public void onDone(ArrayList<Bookings> al2, ArrayList<Rooms> al, String b1, String b2) {
-        ArrayList<Bookings> alString = new ArrayList<>();
 
-        for (int i = 0; al2.size() > i; i++) {
-            for (int i2 = 0; al.size() > i2; i2++) {
-                if (al.get(i2).getRoom_status().equalsIgnoreCase(al2.get(i).getRoom_id())) {
-                    alString.add(al2.get(i));
+    private void readDb(final getList gl) {
 
-                    for (int i3 = 0; alString.size() > i3; i3++) {
-                        Log.d(TAG, alString.get(i3).getRoom_id());
-                        int a1 = Integer.parseInt(alString.get(i3).getStart_time());
-                        int a2 = Integer.parseInt(alString.get(i3).getEnd_time());
+        booking.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                al2.clear();
+                int status;
+                int user = 0;
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        if (document.exists()) {
+                            final Bookings book = new Bookings();
+                            String date1 = document.getData().get("book_date").toString();
+                            String desc = document.getData().get("book_purpose").toString();
+                            String endTime = document.getData().get("end_time").toString();
+                            String startTime = document.getData().get("start_time").toString();
+                            String roomId = document.getData().get("room_id").toString();
+                            status = Integer.parseInt(document.getData().get("bks_id").toString());
 
-                        int c1 = Integer.parseInt(b1);
-                        int c2 = Integer.parseInt(b2);
+// TODO: Get user and replace
+// TODO: Check for booking status as well
 
-                        if (c1 >= a1 && c1 < a2) {
-                            al.remove(i2);
-                        } else if (c2 > a1 && c2 <= a2) {
-                            al.remove(i2);
-                        } else if (c1 <= a1 && c2 >= a2) {
-                            al.remove(i2);
-                        } else {
+                            String statusString = String.valueOf(status);
+                            String userString = String.valueOf(user);
+                            //if (date.equalsIgnoreCase(date1)) {
+                            book.setStart_time(startTime);
+                            book.setEnd_time(endTime);
+                            book.setBook_date(date1);
+                            book.setBook_purpose(desc);
+                            book.setRoom_id(roomId);
+                            book.setBks_id(statusString);
+
+//                                room.document(roomId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                                    @Override
+//                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                                        if (task.isSuccessful()) {
+//                                            String roomname = task.getResult().getData().get("room_name").toString();
+//                                            book.setRoom_id(roomname);
+//                                            aa2.notifyDataSetChanged();
+//                                        }
+//                                    }
+//                                });
+//
+//                            bks.document(statusString).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                                @Override
+//                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                                    if (task.isSuccessful()) {
+//                                        String realStatus = task.getResult().getData().get("bks_status").toString();
+//                                        book.setBks_id(realStatus);
+//                                        try {
+//                                            aa2.notifyDataSetChanged();
+//                                        } catch (Exception e) {
+//
+//                                        }
+//                                    }
+//                                }
+//                            });
+
+                            player.document("000001").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        String realName = task.getResult().getData().get("name").toString();
+                                        book.setUser_id(realName);
+                                        try {
+                                            aa2.notifyDataSetChanged();
+                                        } catch (Exception e) {
+
+                                        }
+                                    }
+                                }
+                            });
+                            al2.add(book);
                         }
+                        //}
                     }
-                    alString.clear();
+                    room.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            al.clear();
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    final String roomName = document.getData().get("room_name").toString();
+                                    final String location = document.getId();
+                                    final String capacityString = document.getData().get("room_capacity").toString();
+                                    final int capacity = Integer.parseInt(capacityString);
+                                    final String av = document.getData().get("room_description").toString();
+                                    final String group = document.getData().get("room_group").toString();
+
+                                    al.add(new Rooms(roomName, capacity, av, group, location));
+                                }
+                            }
+                            gl.onCallback(al, al2);
+
+                        }
+                    });
                 }
             }
-        }
-        aa.notifyDataSetChanged();
+        });
+
+
     }
+
+    private interface getList {
+        void onCallback(ArrayList<Rooms> roomList, ArrayList<Bookings> bookList);
+
+    }
+
+    public boolean checkConflict(String chosenStart, String chosenEnd, String dbStart, String dbEnd) {
+        int a1 = Integer.parseInt(dbStart);
+        int a2 = Integer.parseInt(dbEnd);
+
+        int b1 = Integer.parseInt(chosenStart);
+        int b2 = Integer.parseInt(chosenEnd);
+
+        if (b1 >= a1 && b1 < a2) {
+            return true;
+        } else if (b2 >= a1 && b1 < a2) {
+            return true;
+        } else if (b1 <= a1 && b2 >= a2) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
 }

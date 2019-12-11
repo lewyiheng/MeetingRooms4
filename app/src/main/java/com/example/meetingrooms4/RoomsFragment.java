@@ -52,15 +52,15 @@ public class RoomsFragment extends Fragment {
         roomsList = view.findViewById(R.id.roomsList);
 
 
-//        Rooms city = new Rooms("BIS2 discussion room", 6, " ", "ISG", "Available");
-//        Rooms city1 = new Rooms("Courage room", 12, "AV", "ISG", "Available");
-//        Rooms city2 = new Rooms("Excellence room", 10, " ", "ISG", "Available");
-//        Rooms city3 = new Rooms("Faith room", 12, "AV", "ISG", "Available");
-//        Rooms city7 = new Rooms("Integrity room", 16, "AV", "ISG", "Available");
-//        Rooms city4 = new Rooms("OPL discussion room", 8, " ", "ISG", "Available");
-//        Rooms city5 = new Rooms("Perseverance room", 12, "AV", "ISG", "Available");
-//        Rooms city8 = new Rooms("Serenity room", 8, "AV", "ISG", "Available");
-//        Rooms city6 = new Rooms("Training centre", 6, "AV", "ISG", "Available");
+//        Rooms city = new Rooms("BIS2 discussion room", 6, " ", "ISG", true);
+//        Rooms city1 = new Rooms("Courage room", 12, "AV", "ISG", true);
+//        Rooms city2 = new Rooms("Excellence room", 10, " ", "ISG", true);
+//        Rooms city3 = new Rooms("Faith room", 12, "AV", "ISG", true);
+//        Rooms city7 = new Rooms("Integrity room", 16, "AV", "ISG", true);
+//        Rooms city4 = new Rooms("OPL discussion room", 8, " ", "ISG", true);
+//        Rooms city5 = new Rooms("Perseverance room", 12, "AV", "ISG", true);
+//        Rooms city8 = new Rooms("Serenity room", 8, "AV", "ISG", true);
+//        Rooms city6 = new Rooms("Training centre", 6, "AV", "ISG", true);
 //
 //        db.collection("room").document("AE05").set(city);
 //        db.collection("room").document("AE05-2").set(city1);

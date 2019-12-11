@@ -114,6 +114,7 @@ public class DateFragment extends Fragment {
         return view;
     }
 
+    //TODO: WRONG PLEASE WORK ON IT
     private String endTime(String startHour, String duration) {
         String endTiming;
 

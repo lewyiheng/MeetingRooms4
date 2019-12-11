@@ -88,10 +88,7 @@ public class AllBookingsFragment extends Fragment {
                         String statusString = String.valueOf(status);
                         String userString = String.valueOf(user);
                         String dateFormat = getDate(date, true);
-                        // book = new Bookings("null", room, startTime, endTime, date1, desc, "null");
-                        //book.setRoom_id(room);
 
-                        //String realDate = getDate(date);
                         book.setStart_time(startTime);
                         book.setEnd_time(endTime);
                         book.setBook_date(dateFormat);
@@ -153,6 +150,9 @@ public class AllBookingsFragment extends Fragment {
                             });
                         }
 
+                    } else {
+                        String docId = document.getId();
+                        booking.document(docId).update("bks_id", 3);
                     }
                 }
 
