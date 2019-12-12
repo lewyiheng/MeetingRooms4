@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.Html;
@@ -67,6 +68,7 @@ public class RoomsActivity extends AppCompatActivity {
     TimePicker timePicker;
     ArrayList<Bookings> al = new ArrayList<Bookings>();
     ArrayList<Rooms> al2 = new ArrayList<Rooms>();
+    LinearLayout roomLegend;
 
     String roomid1;
 
@@ -107,9 +109,15 @@ public class RoomsActivity extends AppCompatActivity {
         showAll = findViewById(R.id.showAll);
 
         collapsible = findViewById(R.id.collapsible);
+        roomLegend = findViewById(R.id.roomLegend);
         cTv = findViewById(R.id.collapsibleTV);
 
         hours.setText("1.0");
+
+        SharedPreferences sp = getSharedPreferences("sp", 0);
+        String userId = sp.getString("id", null);
+        final int user_id = Integer.parseInt(userId);
+
 
         //Plus minus button
         duration(minus, plus, hours);
@@ -133,6 +141,7 @@ public class RoomsActivity extends AppCompatActivity {
         al.clear();
 
         rv.setVisibility(View.GONE);
+        roomLegend.setVisibility(View.GONE);
         cTv.setText("+");
 
         collapsible.setOnClickListener(new View.OnClickListener() {
@@ -140,14 +149,15 @@ public class RoomsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (rv.getVisibility() == View.GONE) {
                     rv.setVisibility(View.VISIBLE);
+                    roomLegend.setVisibility(View.VISIBLE);
                     cTv.setText("-");
                 } else {
                     rv.setVisibility(View.GONE);
+                    roomLegend.setVisibility(View.GONE);
                     cTv.setText("+");
                 }
             }
         });
-
 
         datepicker.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
@@ -183,14 +193,6 @@ public class RoomsActivity extends AppCompatActivity {
 
                         Log.d(TAG, String.valueOf(al.size()));
 
-                        //Remove by status
-                        for (int i = al.size() - 1; i >= 0; i--) {
-                            String status_id = al.get(i).getBks_id();
-                            if (status_id.equalsIgnoreCase("3") || status_id.equalsIgnoreCase("4")) {
-                                al.remove(i);
-                            }
-                        }
-
                         //Remove by room
                         for (int i = al.size() - 1; i >= 0; i--) {
                             String room_id = al.get(i).getRoom_id();
@@ -206,7 +208,6 @@ public class RoomsActivity extends AppCompatActivity {
                                 al.remove(i);
                             }
                         }
-
 
                         //Setting room ID to name
                         for (int i = 0; al.size() > i; i++) {
@@ -243,7 +244,7 @@ public class RoomsActivity extends AppCompatActivity {
                             });
                         }
 
-                        rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2, RecyclerView.HORIZONTAL, false));
+                        rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 3, RecyclerView.HORIZONTAL, false));
                         aa = new OccupiedTimeAdapter(getApplicationContext(), al);
                         rv.setAdapter(aa); //Set recyclerView list.
                     }
@@ -276,20 +277,62 @@ public class RoomsActivity extends AppCompatActivity {
                     //getting time input
                     final String startTime = timePicker.getHour() + getMinute();
                     String durationSelected = hours.getText().toString();
-                    final String endTime = endTime(Integer.toString(timePicker.getHour()), durationSelected);
+                    final String endTime = endTime(Integer.toString(timePicker.getHour()), getMinute(), durationSelected);
+
+                    String msg = "Room: " + roomChosen + "\n"
+                            + "Date: " + gvClickedItem.getText() + "\n"
+                            + "Time: " + startTime + " - " + endTime + "\n"
+                            + "Purpose: " + "\n"
+                            + description.getText().toString() + "\n";
+                    final AlertDialog.Builder alert = new AlertDialog.Builder(RoomsActivity.this);
+                    alert.setTitle("Confirm booking?");
+                    alert.setMessage(msg);
+                    alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                            i.putExtra("frag", "fragBookings");
+
+                            final Bookings_Insert book = new Bookings_Insert(user_id, roomid1, startTime, endTime, gvClickedItem.getText().toString(), description.getText().toString(), 1);
+
+                            //getid?
+                            booking.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        String id = "000001";
+                                        int count = 1;
+                                        for (DocumentSnapshot document : task.getResult()) {
+                                            count++;
+                                            if (document.exists() == false) {
+                                                id = "000001";
+                                            } else {
+                                                //id = docId(count);
+                                                id = String.format("%6s", count).replace(' ', '0');
+                                            }
+                                        }
+                                        booking.document(id).set(book);
+                                        Map<String, Object> updates = new HashMap<>();
+                                        updates.put("timestamp", FieldValue.serverTimestamp());
+                                        booking.document(id).update(updates);
+                                    }
+                                }
+                            });
+                            startActivity(i);
+
+                        }
+                    });
+                    alert.setNegativeButton("No", null);
+                    //alert.show();
 
                     readBooking(new GetBookings() {
                         @Override
                         public void onCallback(ArrayList<Bookings> bookList) {
                             al = bookList;
+                            ArrayList<Bookings> al3 = new ArrayList<>();
+                            al3.clear();
 
-                            //Remove by status
-                            for (int i = al.size() - 1; i >= 0; i--) {
-                                String status_id = al.get(i).getBks_id();
-                                if (status_id.equalsIgnoreCase("3") || status_id.equalsIgnoreCase("4")) {
-                                    al.remove(i);
-                                }
-                            }
                             //Remove by room
                             for (int i = al.size() - 1; i >= 0; i--) {
                                 String room_id = al.get(i).getRoom_id();
@@ -310,59 +353,14 @@ public class RoomsActivity extends AppCompatActivity {
                             for (int i = al.size() - 1; i >= 0; i--) {
                                 String b1 = al.get(i).getStart_time();
                                 String b2 = al.get(i).getEnd_time();
-
-                                if (!checkConflict(startTime, endTime, b1, b2)) {
-
-
-                                    String msg = "Room: " + roomChosen + "\n"
-                                            + "Date: " + gvClickedItem.getText() + "\n"
-                                            + "Time: " + startTime + " - " + endTime + "\n"
-                                            + "Purpose: " + "\n"
-                                            + description.getText().toString() + "\n";
-                                    AlertDialog.Builder alert = new AlertDialog.Builder(RoomsActivity.this);
-                                    alert.setTitle("Confirm booking?");
-                                    alert.setMessage(msg);
-                                    alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-
-                                            Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                                            i.putExtra("frag", "fragBookings");
-
-                                            final Bookings_Insert book = new Bookings_Insert(000001, roomid1, startTime, endTime, gvClickedItem.getText().toString(), description.getText().toString(), 1);
-
-                                            //getid?
-                                            booking.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                    if (task.isSuccessful()) {
-                                                        String id = "000001";
-                                                        int count = 1;
-                                                        for (DocumentSnapshot document : task.getResult()) {
-                                                            count++;
-                                                            if (document.exists() == false) {
-                                                                id = "000001";
-                                                            } else {
-                                                                //id = docId(count);
-                                                                id = String.format("%6s", count).replace(' ', '0');
-                                                            }
-                                                        }
-                                                        booking.document(id).set(book);
-                                                        Map<String, Object> updates = new HashMap<>();
-                                                        updates.put("timestamp", FieldValue.serverTimestamp());
-                                                        booking.document(id).update(updates);
-                                                    }
-                                                }
-                                            });
-                                            startActivity(i);
-
-                                        }
-                                    });
-                                    alert.setNegativeButton("No", null);
-                                    alert.show();
-                                } else {
-                                    Toast.makeText(getApplicationContext(), "Your chosen slot is not available", Toast.LENGTH_SHORT).show();
+                                if (checkConflict(startTime, endTime, b1, b2)) {
+                                    al3.add(al.get(i));
                                 }
+                            }
+                            if (al3.size() > 0) {
+                                Toast.makeText(getApplicationContext(), "Your chosen slot is not available", Toast.LENGTH_SHORT).show();
+                            } else {
+                                alert.show();
                             }
 
                         }
@@ -374,19 +372,30 @@ public class RoomsActivity extends AppCompatActivity {
     }
 
     // =-=-=-=-=-=-=-=-=-==-=-=-=-=
-    //TODO: THIS IS WRONG
-    private String endTime(String startHour, String duration) {
+    private String endTime(String startHour, String minute1, String duration) {
         String endTiming;
 
         String[] timeSplit = duration.split("\\."); //Split duration by decimal place
         if (timeSplit[1].equalsIgnoreCase("0")) {
-            int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
-            String minute = "00";
-            endTiming = hour + minute;
+            if (minute1.equalsIgnoreCase("30")) {
+                int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
+                String minute = "30";
+                endTiming = hour + minute;
+            } else {
+                int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
+                String minute = "00";
+                endTiming = hour + minute;
+            }
         } else {
-            int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
-            String minute = "30";
-            endTiming = hour + minute;
+            if (minute1.equalsIgnoreCase("30")) {
+                int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
+                String minute = "00";
+                endTiming = (hour + 1) + minute;
+            } else {
+                int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
+                String minute = "30";
+                endTiming = hour + minute;
+            }
         }
 
         return endTiming;
@@ -534,31 +543,6 @@ public class RoomsActivity extends AppCompatActivity {
                             book.setRoom_id(roomId);
                             book.setBks_id(statusString);
 
-//                                room.document(roomId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                                    @Override
-//                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                                        if (task.isSuccessful()) {
-//                                            String roomname = task.getResult().getData().get("room_name").toString();
-//                                            book.setRoom_id(roomname);
-//                                            aa2.notifyDataSetChanged();
-//                                        }
-//                                    }
-//                                });
-//
-//                            bks.document(statusString).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                                @Override
-//                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                                    if (task.isSuccessful()) {
-//                                        String realStatus = task.getResult().getData().get("bks_status").toString();
-//                                        book.setBks_id(realStatus);
-//                                        try {
-//                                            aa2.notifyDataSetChanged();
-//                                        } catch (Exception e) {
-//
-//                                        }
-//                                    }
-//                                }
-//                            });
 
                             player.document("000001").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
@@ -578,8 +562,8 @@ public class RoomsActivity extends AppCompatActivity {
                         }
                         //}
                     }
+                    gb.onCallback(al);
                 }
-                gb.onCallback(al);
             }
 
         });

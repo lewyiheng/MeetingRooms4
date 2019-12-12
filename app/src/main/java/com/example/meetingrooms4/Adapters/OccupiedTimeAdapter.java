@@ -59,13 +59,13 @@ public class OccupiedTimeAdapter extends RecyclerView.Adapter<OccupiedTimeAdapte
         holder.time.setText(startTime + " - " + endTime);
 
         if (holder.status.getText().toString().equalsIgnoreCase("Confirmed")) {
-            holder.status.setTextColor(Color.parseColor("#000000"));
+            holder.status.setTextColor(Color.parseColor("#55EE55"));
             holder.status.setBackgroundColor(Color.parseColor("#55EE55"));
         } else if (holder.status.getText().toString().equalsIgnoreCase("Pending")) {
-            holder.status.setTextColor(Color.parseColor("#000000"));
+            holder.status.setTextColor(Color.parseColor("#ffb555"));
             holder.status.setBackgroundColor(Color.parseColor("#ffb555"));
         } else {
-            holder.status.setTextColor(Color.parseColor("#000000"));
+            holder.status.setTextColor(Color.parseColor("#CCCCCC"));
             holder.status.setBackgroundColor(Color.parseColor("#CCCCCC"));
         }
     }

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -79,6 +80,8 @@ public class OpenRoomsActivity extends AppCompatActivity {
     CollectionReference player = db.collection("user");
     CollectionReference room = db.collection("room");
 
+    //Context context = getApplicationContext();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +90,11 @@ public class OpenRoomsActivity extends AppCompatActivity {
         lv = findViewById(R.id.openList);
         tvTimeInfo = findViewById(R.id.openTimeInfo);
         rv = findViewById(R.id.openRv);
+
+        SharedPreferences sp = getSharedPreferences("sp", 0);
+        String userId = sp.getString("id", null);
+        final int user_id = Integer.parseInt(userId);
+
 
         centerTitle("Available Rooms");
 
@@ -111,14 +119,6 @@ public class OpenRoomsActivity extends AppCompatActivity {
 
                 //Log.d(TAG, al.size() + " Size of RoomList");
                 //Log.d(TAG, al2.size() + " Size of Book List");
-
-                //Remove by status
-                for (int i = al2.size() - 1; i >= 0; i--) {
-                    String status_id = al2.get(i).getBks_id();
-                    if (status_id.equalsIgnoreCase("3") || status_id.equalsIgnoreCase("4")) {
-                        al2.remove(i);
-                    }
-                }
 
                 //Remove by date
                 for (int i = al2.size() - 1; i >= 0; i--) {
@@ -216,7 +216,7 @@ public class OpenRoomsActivity extends AppCompatActivity {
                         Intent i = new Intent(getApplicationContext(), MainActivity.class);
                         i.putExtra("frag", "fragBookings");
 
-                        final Bookings_Insert book = new Bookings_Insert(000001, roomLocation, startTime, endTime, date, desc, 1);
+                        final Bookings_Insert book = new Bookings_Insert(user_id, roomLocation, startTime, endTime, date, desc, 1);
 
                         //getid?
                         booking.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

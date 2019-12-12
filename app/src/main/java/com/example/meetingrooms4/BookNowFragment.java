@@ -49,7 +49,8 @@ public class BookNowFragment extends Fragment {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
         SimpleDateFormat dateFormat2 = new SimpleDateFormat("dd-MM-yyyy");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        final SimpleDateFormat hourOnly = new SimpleDateFormat("HH"); //Get only hour
+        final SimpleDateFormat hourOnly = new SimpleDateFormat("HH");
+        final SimpleDateFormat minuteOnly = new SimpleDateFormat("mm");//Get only hour
 
         date.setText(dateFormat.format(c));//Set date to "dd MM yyyy"
         final String dateDB = dateFormat2.format(c);
@@ -74,12 +75,20 @@ public class BookNowFragment extends Fragment {
                     } else {
                         description = desc.getText().toString();
                     }
+                    String minutes = minuteOnly.format(c);
+                    String hours = hourOnly.format(c);
+                    String startTime = hours;
 
-                    String startTime = hourOnly.format(c) + "00";
+                    if (Integer.parseInt(minutes) < 30){
+                        minutes = "00";
+                    }else{
+                        minutes = "30";
+                    }
+
                     String durationSelected = duration.getText().toString();
 
-                    String endTime = endTime(hourOnly.format(c), durationSelected);
-
+                    String endTime = endTime(hours,minutes, durationSelected);
+                    startTime= hours + minutes;
                     Intent i = new Intent(getActivity(), OpenRoomsActivity.class);
                     i.putExtra("startTime", startTime);
                     i.putExtra("endTime", endTime);
@@ -94,22 +103,30 @@ public class BookNowFragment extends Fragment {
 
     }
 
-    private String endTime(String startHour, String duration) {
+    private String endTime(String startHour, String minute1, String duration) {
         String endTiming;
 
         String[] timeSplit = duration.split("\\."); //Split duration by decimal place
         if (timeSplit[1].equalsIgnoreCase("0")) {
-            int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
-            String minute = "00";
-            endTiming = hour + minute;
+            if (minute1.equalsIgnoreCase("30")) {
+                int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
+                String minute = "30";
+                endTiming = hour + minute;
+            } else {
+                int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
+                String minute = "00";
+                endTiming = hour + minute;
+            }
         } else {
-            int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
-            String minute = "30";
-            endTiming = hour + minute;
-        }
-
-        if (Integer.parseInt(endTiming) <= 999) {
-            endTiming = "0" + endTiming;
+            if (minute1.equalsIgnoreCase("30")) {
+                int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
+                String minute = "00";
+                endTiming = (hour + 1) + minute;
+            } else {
+                int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
+                String minute = "30";
+                endTiming = hour + minute;
+            }
         }
 
         return endTiming;

@@ -1,6 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="300dp"
+    android:layout_width="200dp"
     android:layout_height="match_parent"
     android:layout_margin="5dp"
     android:orientation="vertical">
@@ -40,10 +40,10 @@
                 <TextView
                     android:id="@+id/occupiedTimeStatus"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="7dp"
                     android:layout_marginBottom="7dp"
-                    android:layout_weight="2"
+                    android:layout_weight="4"
                     android:fontFamily="@font/roboto_light"
                     android:textAlignment="center"
                     android:textSize="20dp" />
@@ -55,6 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
                 android:orientation="horizontal">
 
 
@@ -84,7 +85,8 @@
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/roboto_light_bold"
-                android:textSize="15dp" />
+                android:textSize="15dp"
+                android:visibility="gone" />
 
 
         </LinearLayout>

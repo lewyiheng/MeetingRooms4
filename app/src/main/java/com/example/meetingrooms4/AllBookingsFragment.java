@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -69,91 +70,86 @@ public class AllBookingsFragment extends Fragment {
         SimpleDateFormat sfd = new SimpleDateFormat("yyyyMMdd");
         final String today = sfd.format(todaysDate);
 
-        booking.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        SharedPreferences sp = getActivity().getApplicationContext().getSharedPreferences("sp", 0);
+        String userId = sp.getString("id", null);
+        final int user_id = Integer.parseInt(userId);
+
+        readBookings(new GetBookings() {
             @Override
-            public void onEvent(@javax.annotation.Nullable QuerySnapshot snapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                int status = 0;
-                int user = 0;
-                al.clear();
-                for (QueryDocumentSnapshot document : snapshot) {
-                    final Bookings book = new Bookings();
-                    final String date = document.getData().get("book_date").toString();
-                    if (Integer.parseInt(today) <= Integer.parseInt(sortDate(date))) {
-                        final String desc = document.getData().get("book_purpose").toString();
-                        final String endTime = document.getData().get("end_time").toString();
-                        final String startTime = document.getData().get("start_time").toString();
-                        final String roomId = document.getData().get("room_id").toString();
-                        status = Integer.parseInt(document.getData().get("bks_id").toString());
+            public void onCallback(ArrayList<Bookings> bookList) {
+                al = bookList;
 
-                        String statusString = String.valueOf(status);
-                        String userString = String.valueOf(user);
-                        String dateFormat = getDate(date, true);
-
-                        book.setStart_time(startTime);
-                        book.setEnd_time(endTime);
-                        book.setBook_date(dateFormat);
-                        book.setBook_purpose(desc);
-
-                        room.document(roomId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    String roomname = task.getResult().getData().get("room_name").toString();
-                                    book.setRoom_id(roomname);
-                                    try {
-                                        aa.notifyDataSetChanged();
-                                    } catch (Exception e) {
-
-                                    }
-                                }
-                            }
-                        });
-
-                        bks.document(statusString).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    String realStatus = task.getResult().getData().get("bks_status").toString();
-                                    book.setBks_id(realStatus);
-                                    try {
-                                        aa.notifyDataSetChanged();
-                                    } catch (Exception e) {
-
-                                    }
-                                }
-                            }
-                        });
-
-                        player.document("000001").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    String realName = task.getResult().getData().get("name").toString();
-                                    book.setUser_id(realName);
-                                    try {
-                                        aa.notifyDataSetChanged();
-                                    } catch (Exception e) {
-
-                                    }
-                                }
-                            }
-                        });
-                        al.add(book);
-                        if (al.size() < 1) {
-                            Collections.sort(al, new Comparator<Bookings>() {
-                                public int compare(Bookings o1, Bookings o2) {
-                                    Log.d(TAG, al.get(0).getBook_date());
-                                    Log.d(TAG, getDate(al.get(0).getBook_date(), false));
-                                    Log.d(TAG, sortDate(getDate(al.get(0).getBook_date(), false)));
-                                    return sortDate(getDate(o1.getBook_date(), false)).compareTo(sortDate(getDate(o2.getBook_date(), false)));
-                                }
-                            });
-                        }
-
-                    } else {
-                        String docId = document.getId();
-                        booking.document(docId).update("bks_id", 3);
+                //remove expired
+                for (int i = al.size() - 1; i >= 0; i--) {
+                    String date = sortDate(al.get(i).getBook_date());
+                    int date1 = Integer.parseInt(date);
+                    int today1 = Integer.parseInt(today);
+                    if (date1 < today1) {
+                        al.remove(i);
                     }
+                }
+
+                //remove not user
+                for (int i = al.size() - 1; i >= 0; i--) {
+                    int id = Integer.parseInt(al.get(i).getUser_id());
+                    if (id != user_id) {
+                        al.remove(i);
+                    }
+                }
+
+                //Sort by date
+                Collections.sort(al, new Comparator<Bookings>() {
+                    @Override
+                    public int compare(Bookings o1, Bookings o2) {
+                        return sortDate(o1.getBook_date()).compareTo(sortDate(o2.getBook_date()));
+                    }
+                });
+
+                //Setting date
+                for (int i = 0; al.size() > i; i++) {
+                    String date = al.get(i).getBook_date();
+                    String displayDate = getDate(date, true);
+                    String book_id = String.format("%6s", String.valueOf(i)).replace(' ', '0');
+                    al.get(i).setBook_date(displayDate);
+                }
+
+                //Setting room ID to name
+                for (int i = 0; al.size() > i; i++) {
+                    String room_id = al.get(i).getRoom_id();
+                    final Bookings newBooking = al.get(i);
+                    room.document(room_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                String roomname = task.getResult().getData().get("room_name").toString();
+                                newBooking.setRoom_id(roomname);
+                                try {
+                                    aa.notifyDataSetChanged();
+                                } catch (Exception e) {
+
+                                }
+                            }
+                        }
+                    });
+                }
+                //Setting bks_id to status name
+                for (int i = 0; al.size() > i; i++) {
+                    String status_id = al.get(i).getBks_id();
+                    final Bookings newBooking = al.get(i);
+                    bks.document(status_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                String realStatus = task.getResult().getData().get("bks_status").toString();
+                                newBooking.setBks_id(realStatus);
+                                try {
+                                    aa.notifyDataSetChanged();
+                                } catch (Exception e) {
+
+                                }
+                            }
+                        }
+                    });
                 }
 
                 if (isAdded()) {
@@ -161,9 +157,10 @@ public class AllBookingsFragment extends Fragment {
                     lv.setAdapter(aa);
                     aa.notifyDataSetChanged();
                 }
-
             }
         });
+
+
         return view;
     }
 
@@ -276,5 +273,84 @@ public class AllBookingsFragment extends Fragment {
             return day1 + "-" + month1 + "-" + year;
 
         }
+    }
+
+    private void readBookings(final GetBookings gb) {
+
+        booking.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@javax.annotation.Nullable QuerySnapshot snapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                int status = 0;
+                int user = 0;
+                al.clear();
+                for (QueryDocumentSnapshot document : snapshot) {
+                    final Bookings book = new Bookings();
+                    final String date = document.getData().get("book_date").toString();
+                    final String desc = document.getData().get("book_purpose").toString();
+                    final String endTime = document.getData().get("end_time").toString();
+                    final String startTime = document.getData().get("start_time").toString();
+                    final String roomId = document.getData().get("room_id").toString();
+                    status = Integer.parseInt(document.getData().get("bks_id").toString());
+
+                    String statusString = String.valueOf(status);
+                    String userString = String.valueOf(user);
+//For when user table is included
+                    book.setStart_time(startTime);
+                    book.setEnd_time(endTime);
+                    book.setBook_date(date);
+                    book.setBook_purpose(desc);
+                    book.setRoom_id(roomId);
+                    book.setBks_id(statusString);
+
+//                                room.document(roomId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                                    @Override
+//                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                                        if (task.isSuccessful()) {
+//                                            String roomname = task.getResult().getData().get("room_name").toString();
+//                                            book.setRoom_id(roomname);
+//                                            aa2.notifyDataSetChanged();
+//                                        }
+//                                    }
+//                                });
+//
+//                            bks.document(statusString).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                                @Override
+//                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                                    if (task.isSuccessful()) {
+//                                        String realStatus = task.getResult().getData().get("bks_status").toString();
+//                                        book.setBks_id(realStatus);
+//                                        try {
+//                                            aa2.notifyDataSetChanged();
+//                                        } catch (Exception e) {
+//
+//                                        }
+//                                    }
+//                                }
+//                            });
+
+                    player.document("000001").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                String realName = task.getResult().getData().get("name").toString();
+                                book.setUser_id(realName);
+                                try {
+                                    aa.notifyDataSetChanged();
+                                } catch (Exception e) {
+
+                                }
+                            }
+                        }
+                    });
+                    al.add(book);
+                }
+                gb.onCallback(al);
+            }
+
+        });
+    }
+
+    private interface GetBookings {
+        void onCallback(ArrayList<Bookings> bookList);
     }
 }

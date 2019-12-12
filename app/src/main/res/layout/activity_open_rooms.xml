@@ -30,15 +30,6 @@
             android:listSelector="@drawable/list_selector"
             android:nestedScrollingEnabled="true" />
 
-        <!--        <EditText-->
-        <!--            android:layout_width="300dp"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_gravity="center"-->
-        <!--            android:clickable="false"-->
-        <!--            android:enabled="false"-->
-        <!--            android:focusable="false"-->
-        <!--            android:textIsSelectable="false" />-->
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -49,6 +40,45 @@
             android:text="Occupied Rooms"
             android:textAlignment="center"
             android:textSize="25dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="175dp"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Legend: " />
+
+            <TextView
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:background="@color/confirmed" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="Confirmed" />
+
+            <TextView
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:background="@color/pending" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginLeft="5dp"
+                android:text="Pending" />
+        </LinearLayout>
 
         <!-- Occupied Rooms -->
         <androidx.recyclerview.widget.RecyclerView

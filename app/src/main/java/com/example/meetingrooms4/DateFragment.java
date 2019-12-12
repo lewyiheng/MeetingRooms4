@@ -100,7 +100,7 @@ public class DateFragment extends Fragment {
 
                     String startTime = timePicker.getHour() + getMinute();
                     String durationSelected = duration.getText().toString();
-                    String endTime = endTime(Integer.toString(timePicker.getHour()), durationSelected);
+                    String endTime = endTime(Integer.toString(timePicker.getHour()),getMinute(), durationSelected);
 
                     Intent i = new Intent(getActivity(), OpenRoomsActivity.class);
                     i.putExtra("startTime", startTime);
@@ -115,18 +115,30 @@ public class DateFragment extends Fragment {
     }
 
     //TODO: WRONG PLEASE WORK ON IT
-    private String endTime(String startHour, String duration) {
+    private String endTime(String startHour, String minute1, String duration) {
         String endTiming;
 
         String[] timeSplit = duration.split("\\."); //Split duration by decimal place
         if (timeSplit[1].equalsIgnoreCase("0")) {
-            int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
-            String minute = "00";
-            endTiming = hour + minute;
+            if (minute1.equalsIgnoreCase("30")) {
+                int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
+                String minute = "30";
+                endTiming = hour + minute;
+            } else {
+                int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
+                String minute = "00";
+                endTiming = hour + minute;
+            }
         } else {
-            int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
-            String minute = "30";
-            endTiming = hour + minute;
+            if (minute1.equalsIgnoreCase("30")) {
+                int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
+                String minute = "00";
+                endTiming = (hour + 1) + minute;
+            } else {
+                int hour = Integer.parseInt(startHour) + Integer.parseInt(timeSplit[0]);
+                String minute = "30";
+                endTiming = hour + minute;
+            }
         }
 
         return endTiming;
