@@ -7,8 +7,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +25,7 @@ import java.util.Date;
 
 public class BookNowFragment extends Fragment {
 
+    private String TAG = "fdsa";
     Button plus, minus, book;
     TextView duration, time, date;
     EditText desc;
@@ -60,6 +63,11 @@ public class BookNowFragment extends Fragment {
 
         //Plus and minus buttons
         duration(minus, plus, duration);
+
+        SharedPreferences sp = getActivity().getApplicationContext().getSharedPreferences("sp", 0);
+        int userId = sp.getInt("id", 0);
+        //final int user_id = Integer.parseInt(userId);
+        //Log.d(TAG,userId);
 
         book.setOnClickListener(new View.OnClickListener() {
             @Override

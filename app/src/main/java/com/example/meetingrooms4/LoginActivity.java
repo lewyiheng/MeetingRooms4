@@ -31,6 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -39,6 +40,7 @@ public class LoginActivity extends AppCompatActivity {
     Button login;
     EditText id, pass;
     ArrayList<User> al = new ArrayList<>();
+    ArrayList<String> al3 = new ArrayList<>();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference userDb = db.collection("user");
 
@@ -62,32 +64,39 @@ public class LoginActivity extends AppCompatActivity {
 
                 ReadUser(new GetUser() {
                     @Override
-                    public void onCallback(ArrayList<User> userList, String id1) {
+                    public void onCallback(ArrayList<User> userList, ArrayList<String> IDal) {
                         al = userList;
+                        al3 = IDal;
+                        ArrayList<User> al2 = new ArrayList<>();
                         String loginId = id.getText().toString(); //Get ID
                         String loginPass = pass.getText().toString(); //Get password
-
+                        String ayDee = new String();
+                        String username = new String();
+                        al2.clear();
                         for (int i = 0; al.size() > i; i++) {
-                            if (al.get(i).getUsername().contains(loginId)) {
+                            if (loginId.equalsIgnoreCase(al.get(i).getUsername())) {
                                 if (al.get(i).getPassword().contains(loginPass)) {
-
-
-                                    SharedPreferences sp = getApplicationContext().getSharedPreferences("sp", 0);
-                                    SharedPreferences.Editor e = sp.edit();
-                                    e.putString("id", id1); //Put login ID
-                                    e.commit();
-                                    Intent i2 = new Intent(LoginActivity.this, MainActivity.class);
-                                    startActivity(i2);
-
-                                    Toast.makeText(getApplicationContext(), "Welcome, " + al.get(i).getName() , Toast.LENGTH_SHORT).show();
-
-
+                                    al2.add(al.get(i));
+                                    username = al.get(i).getName();
+                                    ayDee = al3.get(i);
                                 } else {
                                     Toast.makeText(getApplicationContext(), "Password is wrong", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
                                 Toast.makeText(getApplicationContext(), "Username is wrong", Toast.LENGTH_SHORT).show();
                             }
+                        }
+                        if (al2.size() > 0) {
+                            SharedPreferences sp = getApplicationContext().getSharedPreferences("sp", 0);
+                            SharedPreferences.Editor e = sp.edit();
+                            int idid = Integer.parseInt(ayDee);
+                            e.putInt("id", idid);
+                            e.putString("idString",ayDee);//Put login ID
+                            e.apply();
+                            Intent i2 = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(i2);
+
+                            Toast.makeText(getApplicationContext(), "Welcome, " + username, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -131,6 +140,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 ArrayList<User> al = new ArrayList<>();
+                ArrayList<String>IDal = new ArrayList<>();
                 String idl = new String();
                 for (QueryDocumentSnapshot doc : task.getResult()) {
                     String user = doc.getData().get("username").toString();
@@ -142,16 +152,15 @@ public class LoginActivity extends AppCompatActivity {
                     int employment = Integer.parseInt(doc.getData().get("employment_status").toString());
                     String groupName = doc.getData().get("group_name").toString();
 
-                    idl = doc.getId();
-
+                    IDal.add(doc.getId());
                     al.add(new User(user, pass, role, phone, officePhone, name, employment, groupName));
                 }
-                gu.onCallback(al,idl);
+                gu.onCallback(al, IDal);
             }
         });
     }
 
     private interface GetUser {
-        void onCallback(ArrayList<User> userList, String id1);
+        void onCallback(ArrayList<User> userList, ArrayList<String> IDal);
     }
 }

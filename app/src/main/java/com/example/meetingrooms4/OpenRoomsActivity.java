@@ -92,8 +92,7 @@ public class OpenRoomsActivity extends AppCompatActivity {
         rv = findViewById(R.id.openRv);
 
         SharedPreferences sp = getSharedPreferences("sp", 0);
-        String userId = sp.getString("id", null);
-        final int user_id = Integer.parseInt(userId);
+        final int user_id = sp.getInt("id", 0);
 
 
         centerTitle("Available Rooms");

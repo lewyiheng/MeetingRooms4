@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
@@ -70,9 +71,9 @@ public class AllBookingsFragment extends Fragment {
         SimpleDateFormat sfd = new SimpleDateFormat("yyyyMMdd");
         final String today = sfd.format(todaysDate);
 
-        SharedPreferences sp = getActivity().getApplicationContext().getSharedPreferences("sp", 0);
-        String userId = sp.getString("id", null);
-        final int user_id = Integer.parseInt(userId);
+        SharedPreferences sp = this.getActivity().getApplicationContext().getSharedPreferences("sp", Context.MODE_PRIVATE);
+        final int userId = sp.getInt("id", 0);
+        final String user_id = sp.getString("idString",null);
 
         readBookings(new GetBookings() {
             @Override
@@ -90,12 +91,18 @@ public class AllBookingsFragment extends Fragment {
                 }
 
                 //remove not user
-                for (int i = al.size() - 1; i >= 0; i--) {
-                    int id = Integer.parseInt(al.get(i).getUser_id());
-                    if (id != user_id) {
-                        al.remove(i);
+                    for (int i = al.size() - 1; i >= 0; i--) {
+                        //int id = Integer.parseInt(al.get(i).getUser_id());
+                        String id5 = al.get(i).getUser_id();
+                        if (!user_id.equalsIgnoreCase(id5)) {
+                            al.remove(i);
+                            Log.d(TAG, id5 + " this is getUser_id()");
+                            Log.d(TAG, user_id + " this is user id");
+
+                        }
                     }
-                }
+
+                    //Log.d(TAG,userId+ "");
 
                 //Sort by date
                 Collections.sort(al, new Comparator<Bookings>() {
@@ -281,7 +288,6 @@ public class AllBookingsFragment extends Fragment {
             @Override
             public void onEvent(@javax.annotation.Nullable QuerySnapshot snapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
                 int status = 0;
-                int user = 0;
                 al.clear();
                 for (QueryDocumentSnapshot document : snapshot) {
                     final Bookings book = new Bookings();
@@ -290,10 +296,12 @@ public class AllBookingsFragment extends Fragment {
                     final String endTime = document.getData().get("end_time").toString();
                     final String startTime = document.getData().get("start_time").toString();
                     final String roomId = document.getData().get("room_id").toString();
+                    final int user = Integer.parseInt(document.getData().get("user_id").toString());
                     status = Integer.parseInt(document.getData().get("bks_id").toString());
 
+                    String userString = String.format("%6s",user).replace(' ','0');
+
                     String statusString = String.valueOf(status);
-                    String userString = String.valueOf(user);
 //For when user table is included
                     book.setStart_time(startTime);
                     book.setEnd_time(endTime);
@@ -301,6 +309,7 @@ public class AllBookingsFragment extends Fragment {
                     book.setBook_purpose(desc);
                     book.setRoom_id(roomId);
                     book.setBks_id(statusString);
+                    book.setUser_id(userString);
 
 //                                room.document(roomId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 //                                    @Override
@@ -328,20 +337,21 @@ public class AllBookingsFragment extends Fragment {
 //                                }
 //                            });
 
-                    player.document("000001").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                String realName = task.getResult().getData().get("name").toString();
-                                book.setUser_id(realName);
-                                try {
-                                    aa.notifyDataSetChanged();
-                                } catch (Exception e) {
-
-                                }
-                            }
-                        }
-                    });
+//                    player.document(userString).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                            if (task.isSuccessful()) {
+//                                String realName = task.getResult().getData().get("name").toString();
+//                                String userid = task.getResult().getData().
+//                                book.setUser_id(realName);
+//                                try {
+//                                    aa.notifyDataSetChanged();
+//                                } catch (Exception e) {
+//
+//                                }
+//                            }
+//                        }
+//                    });
                     al.add(book);
                 }
                 gb.onCallback(al);

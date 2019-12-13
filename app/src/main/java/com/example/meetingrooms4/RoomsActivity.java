@@ -115,8 +115,7 @@ public class RoomsActivity extends AppCompatActivity {
         hours.setText("1.0");
 
         SharedPreferences sp = getSharedPreferences("sp", 0);
-        String userId = sp.getString("id", null);
-        final int user_id = Integer.parseInt(userId);
+        final int user_id = sp.getInt("id", 0);
 
 
         //Plus minus button
@@ -357,8 +356,30 @@ public class RoomsActivity extends AppCompatActivity {
                                     al3.add(al.get(i));
                                 }
                             }
+                            //Setting bks_id to status name
+                            for (int i = 0; al.size() > i; i++) {
+                                String status_id = al.get(i).getBks_id();
+                                final Bookings newBooking = al.get(i);
+                                bks.document(status_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            String realStatus = task.getResult().getData().get("bks_status").toString();
+                                            newBooking.setBks_id(realStatus);
+                                            try {
+                                                aa.notifyDataSetChanged();
+                                            } catch (Exception e) {
+
+                                            }
+                                        }
+                                    }
+                                });
+                            }
                             if (al3.size() > 0) {
                                 Toast.makeText(getApplicationContext(), "Your chosen slot is not available", Toast.LENGTH_SHORT).show();
+                                rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 3, RecyclerView.HORIZONTAL, false));
+                                aa = new OccupiedTimeAdapter(getApplicationContext(), al3);
+                                rv.setAdapter(aa); //Set recyclerView list.
                             } else {
                                 alert.show();
                             }
@@ -587,7 +608,7 @@ public class RoomsActivity extends AppCompatActivity {
 
         if (b1 >= a1 && b1 < a2) {
             return true;
-        } else if (b2 >= a1 && b1 < a2) {
+        } else if (b2 > a1 && b1 < a2) {
             return true;
         } else if (b1 <= a1 && b2 >= a2) {
             return true;
