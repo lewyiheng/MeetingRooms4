@@ -80,8 +80,6 @@ public class OpenRoomsActivity extends AppCompatActivity {
     CollectionReference player = db.collection("user");
     CollectionReference room = db.collection("room");
 
-    //Context context = getApplicationContext();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,20 +89,23 @@ public class OpenRoomsActivity extends AppCompatActivity {
         tvTimeInfo = findViewById(R.id.openTimeInfo);
         rv = findViewById(R.id.openRv);
 
+//Get whoever logged in
         SharedPreferences sp = getSharedPreferences("sp", 0);
         final int user_id = sp.getInt("id", 0);
 
-
+//Change Title
         centerTitle("Available Rooms");
 
+//Get Intents
         Intent i = getIntent();
         final String desc = i.getStringExtra("desc");
         final String startTime = i.getStringExtra("startTime");
         final String endTime = i.getStringExtra("endTime");
         final String date = i.getStringExtra("date");
 
-        //Set info
+//Set info
         tvTimeInfo.setText("Available rooms from\n" + startTime + " to " + endTime);
+
         al.clear();
         al2.clear();
 
@@ -135,6 +136,14 @@ public class OpenRoomsActivity extends AppCompatActivity {
                     if (checkConflict(startTime, endTime, b1, b2)) {
                         conflicted.add(al2.get(i).getRoom_id());
                     } else {
+                        al2.remove(i);
+                    }
+                }
+
+                //Remove by status
+                for (int i = al2.size() - 1; i >= 0; i--) {
+                    String status = al2.get(i).getBks_id();
+                    if (!status.equalsIgnoreCase("Cancelled")) {
                         al2.remove(i);
                     }
                 }
@@ -176,8 +185,24 @@ public class OpenRoomsActivity extends AppCompatActivity {
                                 try {
                                     aa2.notifyDataSetChanged();
                                 } catch (Exception e) {
-
                                 }
+                            }
+                        }
+                    });
+                }
+
+                //Setting user name
+                for (int i = 0; al2.size() > i; i++) {
+                    String user_id = al2.get(i).getUser_id();
+                    final Bookings newBooking = al2.get(i);
+                    player.document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            String realId = task.getResult().getData().get("name").toString();
+                            newBooking.setUser_id(realId);
+                            try {
+                                aa2.notifyDataSetChanged();
+                            } catch (Exception e) {
                             }
                         }
                     });
@@ -298,63 +323,19 @@ public class OpenRoomsActivity extends AppCompatActivity {
                             String startTime = document.getData().get("start_time").toString();
                             String roomId = document.getData().get("room_id").toString();
                             status = Integer.parseInt(document.getData().get("bks_id").toString());
-
-// TODO: Get user and replace
-// TODO: Check for booking status as well
+                            String userID = String.format("%6s", document.getData().get("user_id").toString()).replace(' ', '0');
 
                             String statusString = String.valueOf(status);
-                            String userString = String.valueOf(user);
-                            //if (date.equalsIgnoreCase(date1)) {
                             book.setStart_time(startTime);
                             book.setEnd_time(endTime);
                             book.setBook_date(date1);
                             book.setBook_purpose(desc);
                             book.setRoom_id(roomId);
                             book.setBks_id(statusString);
+                            book.setUser_id(userID);
 
-//                                room.document(roomId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                                    @Override
-//                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                                        if (task.isSuccessful()) {
-//                                            String roomname = task.getResult().getData().get("room_name").toString();
-//                                            book.setRoom_id(roomname);
-//                                            aa2.notifyDataSetChanged();
-//                                        }
-//                                    }
-//                                });
-//
-//                            bks.document(statusString).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                                @Override
-//                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                                    if (task.isSuccessful()) {
-//                                        String realStatus = task.getResult().getData().get("bks_status").toString();
-//                                        book.setBks_id(realStatus);
-//                                        try {
-//                                            aa2.notifyDataSetChanged();
-//                                        } catch (Exception e) {
-//
-//                                        }
-//                                    }
-//                                }
-//                            });
-
-                            player.document("000001").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        String realName = task.getResult().getData().get("name").toString();
-                                        book.setUser_id(realName);
-                                        try {
-                                            aa2.notifyDataSetChanged();
-                                        } catch (Exception e) {
-
-                                        }
-                                    }
-                                }
-                            });
                             al2.add(book);
                         }
-                        //}
                     }
                     room.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override

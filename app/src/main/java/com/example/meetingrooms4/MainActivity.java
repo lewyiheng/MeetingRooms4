@@ -28,17 +28,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SharedPreferences sp = getApplicationContext().getSharedPreferences("sp",0);
-        SharedPreferences.Editor e = sp.edit();
-        e.putString("user","000001");
-        e.commit();
-
         //View
         centerTitle("MainActivity");
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
-        //Change fragment to AllBookingsFrag when booking is confirmed.
+//Change fragment to AllBookingsFrag when booking is confirmed.
         Intent i = getIntent();
         String frag = i.getStringExtra("frag");
         if (frag == null) {
@@ -52,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //Fragment stuff
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -76,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    //Center title method
     private void centerTitle(String title) {
         ArrayList<View> textViews = new ArrayList<>();
 

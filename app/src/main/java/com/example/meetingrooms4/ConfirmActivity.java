@@ -37,6 +37,17 @@ public class ConfirmActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm);
 
+
+
+
+
+        //ACTIVITY NO LONGER IN USE
+
+
+
+
+
+
         iv = findViewById(R.id.confirmRoomImage);
         book = findViewById(R.id.confirmBook);
         time = findViewById(R.id.confirmTime);

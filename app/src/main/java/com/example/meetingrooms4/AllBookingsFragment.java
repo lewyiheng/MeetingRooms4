@@ -54,7 +54,6 @@ public class AllBookingsFragment extends Fragment {
     CollectionReference room = db.collection("room");
     CollectionReference bks = db.collection("booking_status");
     CollectionReference player = db.collection("user");
-    String roomName;
     BookingsAdapter aa;
 
     @Nullable
@@ -62,25 +61,27 @@ public class AllBookingsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frag_allbookings, container, false);
 
+//Set title
         ActionBar ab = ((AppCompatActivity) getActivity()).getSupportActionBar();
         ab.setTitle(Html.fromHtml("<font color='#000000'>My Bookings</font>"));
 
         lv = view.findViewById(R.id.bookingsLv);
 
+//Get today's date
         Date todaysDate = Calendar.getInstance().getTime();
         SimpleDateFormat sfd = new SimpleDateFormat("yyyyMMdd");
         final String today = sfd.format(todaysDate);
 
         SharedPreferences sp = this.getActivity().getApplicationContext().getSharedPreferences("sp", Context.MODE_PRIVATE);
         final int userId = sp.getInt("id", 0);
-        final String user_id = sp.getString("idString",null);
+        final String user_id = sp.getString("idString", null);
 
         readBookings(new GetBookings() {
             @Override
             public void onCallback(ArrayList<Bookings> bookList) {
                 al = bookList;
 
-                //remove expired
+//Remove expired
                 for (int i = al.size() - 1; i >= 0; i--) {
                     String date = sortDate(al.get(i).getBook_date());
                     int date1 = Integer.parseInt(date);
@@ -90,21 +91,18 @@ public class AllBookingsFragment extends Fragment {
                     }
                 }
 
-                //remove not user
-                    for (int i = al.size() - 1; i >= 0; i--) {
-                        //int id = Integer.parseInt(al.get(i).getUser_id());
-                        String id5 = al.get(i).getUser_id();
-                        if (!user_id.equalsIgnoreCase(id5)) {
-                            al.remove(i);
-                            Log.d(TAG, id5 + " this is getUser_id()");
-                            Log.d(TAG, user_id + " this is user id");
+//Remove bookings that aren't made by user
+                for (int i = al.size() - 1; i >= 0; i--) {
+                    String id5 = al.get(i).getUser_id();
+                    if (!user_id.equalsIgnoreCase(id5)) {
+                        al.remove(i);
+                        Log.d(TAG, id5 + " this is getUser_id()");
+                        Log.d(TAG, user_id + " this is user id");
 
-                        }
                     }
+                }
 
-                    //Log.d(TAG,userId+ "");
-
-                //Sort by date
+//Sort by date
                 Collections.sort(al, new Comparator<Bookings>() {
                     @Override
                     public int compare(Bookings o1, Bookings o2) {
@@ -112,7 +110,7 @@ public class AllBookingsFragment extends Fragment {
                     }
                 });
 
-                //Setting date
+//Set date
                 for (int i = 0; al.size() > i; i++) {
                     String date = al.get(i).getBook_date();
                     String displayDate = getDate(date, true);
@@ -120,7 +118,7 @@ public class AllBookingsFragment extends Fragment {
                     al.get(i).setBook_date(displayDate);
                 }
 
-                //Setting room ID to name
+//Setting room name
                 for (int i = 0; al.size() > i; i++) {
                     String room_id = al.get(i).getRoom_id();
                     final Bookings newBooking = al.get(i);
@@ -139,7 +137,7 @@ public class AllBookingsFragment extends Fragment {
                         }
                     });
                 }
-                //Setting bks_id to status name
+//Setting status ID to status name
                 for (int i = 0; al.size() > i; i++) {
                     String status_id = al.get(i).getBks_id();
                     final Bookings newBooking = al.get(i);
@@ -171,6 +169,7 @@ public class AllBookingsFragment extends Fragment {
         return view;
     }
 
+    //Change date to be easily sorted
     public String sortDate(String date) {
         String date1;
 
@@ -181,6 +180,9 @@ public class AllBookingsFragment extends Fragment {
 
     }
 
+    //Convert date
+//True for int to string (11-02-2019) -> (11 February 2019)
+//False for string to int (30 March 2019) -> (30-03-2019)
     public String getDate(String date, Boolean i) {
 
         if (i == true) {
@@ -282,6 +284,7 @@ public class AllBookingsFragment extends Fragment {
         }
     }
 
+    //Read from Bookings DB
     private void readBookings(final GetBookings gb) {
 
         booking.addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -299,10 +302,10 @@ public class AllBookingsFragment extends Fragment {
                     final int user = Integer.parseInt(document.getData().get("user_id").toString());
                     status = Integer.parseInt(document.getData().get("bks_id").toString());
 
-                    String userString = String.format("%6s",user).replace(' ','0');
+                    String userString = String.format("%6s", user).replace(' ', '0');
 
                     String statusString = String.valueOf(status);
-//For when user table is included
+                    //For when user table is included
                     book.setStart_time(startTime);
                     book.setEnd_time(endTime);
                     book.setBook_date(date);
@@ -311,47 +314,6 @@ public class AllBookingsFragment extends Fragment {
                     book.setBks_id(statusString);
                     book.setUser_id(userString);
 
-//                                room.document(roomId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                                    @Override
-//                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                                        if (task.isSuccessful()) {
-//                                            String roomname = task.getResult().getData().get("room_name").toString();
-//                                            book.setRoom_id(roomname);
-//                                            aa2.notifyDataSetChanged();
-//                                        }
-//                                    }
-//                                });
-//
-//                            bks.document(statusString).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                                @Override
-//                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                                    if (task.isSuccessful()) {
-//                                        String realStatus = task.getResult().getData().get("bks_status").toString();
-//                                        book.setBks_id(realStatus);
-//                                        try {
-//                                            aa2.notifyDataSetChanged();
-//                                        } catch (Exception e) {
-//
-//                                        }
-//                                    }
-//                                }
-//                            });
-
-//                    player.document(userString).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                            if (task.isSuccessful()) {
-//                                String realName = task.getResult().getData().get("name").toString();
-//                                String userid = task.getResult().getData().
-//                                book.setUser_id(realName);
-//                                try {
-//                                    aa.notifyDataSetChanged();
-//                                } catch (Exception e) {
-//
-//                                }
-//                            }
-//                        }
-//                    });
                     al.add(book);
                 }
                 gb.onCallback(al);

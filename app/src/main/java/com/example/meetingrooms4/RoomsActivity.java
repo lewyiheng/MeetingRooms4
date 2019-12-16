@@ -208,6 +208,14 @@ public class RoomsActivity extends AppCompatActivity {
                             }
                         }
 
+                        //Remove by status
+                        for (int i = al.size() - 1; i >= 0; i--) {
+                            String status = al.get(i).getBks_id();
+                            if (!status.equalsIgnoreCase("Cancelled")) {
+                                al.remove(i);
+                            }
+                        }
+
                         //Setting room ID to name
                         for (int i = 0; al.size() > i; i++) {
                             String room_id = al.get(i).getRoom_id();
@@ -238,6 +246,23 @@ public class RoomsActivity extends AppCompatActivity {
                                         } catch (Exception e) {
 
                                         }
+                                    }
+                                }
+                            });
+                        }
+
+                        //Setting user name
+                        for (int i = 0; al.size() > i; i++) {
+                            String user_id = al.get(i).getUser_id();
+                            final Bookings newBooking = al.get(i);
+                            player.document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    String realId = task.getResult().getData().get("name").toString();
+                                    newBooking.setUser_id(realId);
+                                    try {
+                                        aa.notifyDataSetChanged();
+                                    } catch (Exception e) {
                                     }
                                 }
                             });
@@ -371,6 +396,23 @@ public class RoomsActivity extends AppCompatActivity {
                                             } catch (Exception e) {
 
                                             }
+                                        }
+                                    }
+                                });
+                            }
+
+                            //Setting user name
+                            for (int i = 0; al.size() > i; i++) {
+                                String user_id = al.get(i).getUser_id();
+                                final Bookings newBooking = al.get(i);
+                                player.document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        String realId = task.getResult().getData().get("name").toString();
+                                        newBooking.setUser_id(realId);
+                                        try {
+                                            aa.notifyDataSetChanged();
+                                        } catch (Exception e) {
                                         }
                                     }
                                 });
@@ -539,7 +581,6 @@ public class RoomsActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 al.clear();
                 int status;
-                int user = 0;
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         if (document.exists()) {
@@ -551,37 +592,19 @@ public class RoomsActivity extends AppCompatActivity {
                             String roomId = document.getData().get("room_id").toString();
                             status = Integer.parseInt(document.getData().get("bks_id").toString());
 
-// TODO: Get user and replace
-// TODO: Check for booking status as well
+                            String userID = String.format("%6s", document.getData().get("user_id").toString()).replace(' ', '0');
 
                             String statusString = String.valueOf(status);
-                            String userString = String.valueOf(user);
-                            //if (date.equalsIgnoreCase(date1)) {
                             book.setStart_time(startTime);
                             book.setEnd_time(endTime);
                             book.setBook_date(date1);
                             book.setBook_purpose(desc);
                             book.setRoom_id(roomId);
                             book.setBks_id(statusString);
+                            book.setUser_id(userID);
 
-
-                            player.document("000001").get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        String realName = task.getResult().getData().get("name").toString();
-                                        book.setUser_id(realName);
-                                        try {
-                                            aa.notifyDataSetChanged();
-                                        } catch (Exception e) {
-
-                                        }
-                                    }
-                                }
-                            });
                             al.add(book);
                         }
-                        //}
                     }
                     gb.onCallback(al);
                 }

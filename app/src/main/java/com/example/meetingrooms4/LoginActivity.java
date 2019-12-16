@@ -49,15 +49,14 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        centerTitle(" ");
+//Hide action bar
+        getSupportActionBar().hide();
 
         login = findViewById(R.id.login);
         id = findViewById(R.id.loginId);
         pass = findViewById(R.id.loginPass);
 
-        getSupportActionBar().hide();
-
-
+//LOGIN button
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,9 +72,10 @@ public class LoginActivity extends AppCompatActivity {
                         String ayDee = new String();
                         String username = new String();
                         al2.clear();
+
                         for (int i = 0; al.size() > i; i++) {
-                            if (loginId.equalsIgnoreCase(al.get(i).getUsername())) {
-                                if (al.get(i).getPassword().contains(loginPass)) {
+                            if (loginId.equalsIgnoreCase(al.get(i).getUsername())) {//Check if username is right
+                                if (al.get(i).getPassword().contains(loginPass)) { //Check if password is right
                                     al2.add(al.get(i));
                                     username = al.get(i).getName();
                                     ayDee = al3.get(i);
@@ -86,12 +86,14 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(), "Username is wrong", Toast.LENGTH_SHORT).show();
                             }
                         }
+
+//If the account is correct
                         if (al2.size() > 0) {
                             SharedPreferences sp = getApplicationContext().getSharedPreferences("sp", 0);
                             SharedPreferences.Editor e = sp.edit();
                             int idid = Integer.parseInt(ayDee);
                             e.putInt("id", idid);
-                            e.putString("idString",ayDee);//Put login ID
+                            e.putString("idString", ayDee);//Put login ID
                             e.apply();
                             Intent i2 = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(i2);
@@ -104,44 +106,14 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void centerTitle(String title) {
-        ArrayList<View> textViews = new ArrayList<>();
-
-        getWindow().getDecorView().findViewsWithText(textViews, getTitle(), View.FIND_VIEWS_WITH_TEXT);
-
-        if (textViews.size() > 0) {
-            AppCompatTextView appCompatTextView = null;
-            if (textViews.size() == 1) {
-                appCompatTextView = (AppCompatTextView) textViews.get(0);
-            } else {
-                for (View v : textViews) {
-                    if (v.getParent() instanceof Toolbar) {
-                        appCompatTextView = (AppCompatTextView) v;
-                        break;
-                    }
-                }
-            }
-
-            if (appCompatTextView != null) {
-                ViewGroup.LayoutParams params = appCompatTextView.getLayoutParams();
-                params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                appCompatTextView.setLayoutParams(params);
-                appCompatTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            }
-        }
-        ActionBar ab = getSupportActionBar();
-        ab.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.actionbar));
-        ab.setTitle(Html.fromHtml("<font color='#000000'>" + title + " </font>"));
-    }
-
+    //Interface for USER DB
     private void ReadUser(final GetUser gu) {
 
         userDb.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 ArrayList<User> al = new ArrayList<>();
-                ArrayList<String>IDal = new ArrayList<>();
-                String idl = new String();
+                ArrayList<String> IDal = new ArrayList<>();
                 for (QueryDocumentSnapshot doc : task.getResult()) {
                     String user = doc.getData().get("username").toString();
                     String pass = doc.getData().get("password").toString();

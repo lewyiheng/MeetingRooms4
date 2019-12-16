@@ -43,17 +43,17 @@ public class BookNowFragment extends Fragment {
         date = view.findViewById(R.id.bookNowDateNow);
         desc = view.findViewById(R.id.bookNowDesc);
 
-        //View
+//View
         ActionBar ab = ((AppCompatActivity) getActivity()).getSupportActionBar();
         ab.setTitle(Html.fromHtml("<font color='#000000'>Book Now</font>"));
 
-        //Time Now
+//Time Now
         final Date c = Calendar.getInstance().getTime(); //Get today's date and time
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
         SimpleDateFormat dateFormat2 = new SimpleDateFormat("dd-MM-yyyy");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        final SimpleDateFormat hourOnly = new SimpleDateFormat("HH");
-        final SimpleDateFormat minuteOnly = new SimpleDateFormat("mm");//Get only hour
+        final SimpleDateFormat hourOnly = new SimpleDateFormat("HH"); //Get only hour
+        final SimpleDateFormat minuteOnly = new SimpleDateFormat("mm"); //Get only minute
 
         date.setText(dateFormat.format(c));//Set date to "dd MM yyyy"
         final String dateDB = dateFormat2.format(c);
@@ -66,8 +66,6 @@ public class BookNowFragment extends Fragment {
 
         SharedPreferences sp = getActivity().getApplicationContext().getSharedPreferences("sp", 0);
         int userId = sp.getInt("id", 0);
-        //final int user_id = Integer.parseInt(userId);
-        //Log.d(TAG,userId);
 
         book.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,18 +83,19 @@ public class BookNowFragment extends Fragment {
                     }
                     String minutes = minuteOnly.format(c);
                     String hours = hourOnly.format(c);
-                    String startTime = hours;
+                    String startTime;
 
-                    if (Integer.parseInt(minutes) < 30){
+                    if (Integer.parseInt(minutes) < 30) {
                         minutes = "00";
-                    }else{
+                    } else {
                         minutes = "30";
                     }
 
                     String durationSelected = duration.getText().toString();
 
-                    String endTime = endTime(hours,minutes, durationSelected);
-                    startTime= hours + minutes;
+                    String endTime = endTime(hours, minutes, durationSelected);
+                    startTime = String.format("%4s",hours + minutes).replace(' ','0');
+                    endTime = String.format("%4s",endTime).replace(' ','0');
                     Intent i = new Intent(getActivity(), OpenRoomsActivity.class);
                     i.putExtra("startTime", startTime);
                     i.putExtra("endTime", endTime);
@@ -111,6 +110,7 @@ public class BookNowFragment extends Fragment {
 
     }
 
+//Adding duration to start time
     private String endTime(String startHour, String minute1, String duration) {
         String endTiming;
 
@@ -140,6 +140,7 @@ public class BookNowFragment extends Fragment {
         return endTiming;
     }
 
+//The plus and minus buttons
     private void duration(Button minus, Button plus, final TextView tv) {
         plus.setOnClickListener(new View.OnClickListener() {
             @Override

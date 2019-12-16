@@ -51,7 +51,7 @@ public class RoomsFragment extends Fragment {
 
         roomsList = view.findViewById(R.id.roomsList);
 
-
+        /* To add room */
 //        Rooms city = new Rooms("BIS2 discussion room", 6, " ", "ISG", true);
 //        Rooms city1 = new Rooms("Courage room", 12, "AV", "ISG", true);
 //        Rooms city2 = new Rooms("Excellence room", 10, " ", "ISG", true);
@@ -106,17 +106,6 @@ public class RoomsFragment extends Fragment {
                 }
             }
         });
-
-//        al.add(new Rooms("BIS2 discussion room", "6,AE05, "));
-//        al.add(new Rooms("Courage room", "12,AE05-2,AV"));
-//        al.add(new Rooms("Excellence room", "10,WW05-5, "));
-//        al.add(new Rooms("Faith room", "12,AW05-1,AV"));
-//        al.add(new Rooms("Integrity room", "16,WW05-2,AV"));
-//        al.add(new Rooms("OPL discussion Room", "8,WW05, "));
-//        al.add(new Rooms("Perseverance room", "12,AE05-1,AV"));
-//        al.add(new Rooms("Serenity room", "8,WW05-1, "));
-//        al.add(new Rooms("Training room", "18,WW05-4,AV"));
-//        al.add(new Rooms("Vigilance room", "10,WW05-3,AV"));
 
         //Set room click
         roomsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

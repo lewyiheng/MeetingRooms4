@@ -58,26 +58,23 @@ public class DateFragment extends Fragment {
         timePicker.setIs24HourView(true);
         duration.setText("1.0");
 
-        //Ease of Access
-        desc.setText("TEST ");
-
-        //Set Minute Picker to 30min intervals
+//Set Minute Picker to 30min intervals
         setMinutePicker();
 
-        //getDate
+//Get date frm calendarView
         Date c = Calendar.getInstance().getTime();
         SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         String formattedDate = df.format(c);
         check.setText(formattedDate);
 
+//Get date SELECTED from calendarView
         calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                //String date = getDate(dayOfMonth, month, year);
                 String day;
-                if (dayOfMonth < 10){
+                if (dayOfMonth < 10) {
                     day = "0" + dayOfMonth;
-                }else{
+                } else {
                     day = Integer.toString(dayOfMonth);
                 }
                 String date = day + "-" + (month + 1) + "-" + year;
@@ -85,10 +82,10 @@ public class DateFragment extends Fragment {
             }
         });
 
-        //Set min date to today
+//Set min date to today
         calendar.setMinDate(System.currentTimeMillis() - 1000);
 
-        //Plus minus
+//Plus minus
         duration(minus, plus, duration);
 
         find.setOnClickListener(new View.OnClickListener() {
@@ -100,7 +97,10 @@ public class DateFragment extends Fragment {
 
                     String startTime = timePicker.getHour() + getMinute();
                     String durationSelected = duration.getText().toString();
-                    String endTime = endTime(Integer.toString(timePicker.getHour()),getMinute(), durationSelected);
+                    String endTime = endTime(Integer.toString(timePicker.getHour()), getMinute(), durationSelected);
+
+                    startTime = String.format("%4s", startTime).replace(' ', '0');
+                    endTime = String.format("%4s", endTime).replace(' ', '0');
 
                     Intent i = new Intent(getActivity(), OpenRoomsActivity.class);
                     i.putExtra("startTime", startTime);
@@ -114,7 +114,6 @@ public class DateFragment extends Fragment {
         return view;
     }
 
-    //TODO: WRONG PLEASE WORK ON IT
     private String endTime(String startHour, String minute1, String duration) {
         String endTiming;
 
@@ -140,7 +139,6 @@ public class DateFragment extends Fragment {
                 endTiming = hour + minute;
             }
         }
-
         return endTiming;
     }
 
