@@ -32,8 +32,8 @@ public class NotificationReceiver extends BroadcastReceiver {
         PendingIntent pIntent = PendingIntent.getActivity(context, reqCode, i, PendingIntent.FLAG_CANCEL_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "default");
-        builder.setContentTitle("Excellence room at at 0900");
-        builder.setContentText("To cancel tap on this notification.");
+        builder.setContentTitle(room + " at " + startTime);
+        builder.setContentText("You have an incoming reservation");
         builder.setSmallIcon(android.R.drawable.ic_dialog_info);
         builder.setContentIntent(pIntent);
         builder.setAutoCancel(true);

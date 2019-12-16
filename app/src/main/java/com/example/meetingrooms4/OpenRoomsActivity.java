@@ -224,7 +224,7 @@ public class OpenRoomsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                String roomChosen = al.get(position).getRoom_name();
+                final String roomChosen = al.get(position).getRoom_name();
                 final String roomLocation = al.get(position).getRoom_status();
                 String msg = "Room: " + roomChosen + "\n"
                         + "Date: " + date + "\n"
@@ -239,6 +239,8 @@ public class OpenRoomsActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent i = new Intent(getApplicationContext(), MainActivity.class);
                         i.putExtra("frag", "fragBookings");
+                        i.putExtra("room",roomChosen);
+                        i.putExtra("startTime",startTime);
 
                         final Bookings_Insert book = new Bookings_Insert(user_id, roomLocation, startTime, endTime, date, desc, 1);
 

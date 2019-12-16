@@ -7,6 +7,9 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.drm.DrmStore;
@@ -20,6 +23,7 @@ import android.widget.Toolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,12 +40,28 @@ public class MainActivity extends AppCompatActivity {
 //Change fragment to AllBookingsFrag when booking is confirmed.
         Intent i = getIntent();
         String frag = i.getStringExtra("frag");
+
         if (frag == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new BookNowFragment()).commit();
         } else if (frag.equalsIgnoreCase("fragBookings")) {
             Fragment f = new AllBookingsFragment();
             bottomNav.setSelectedItemId(R.id.navBookings);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, f).commitNow();
+
+            String room = i.getStringExtra("room");
+            String start = i.getStringExtra("startTime");
+
+            Intent notif = new Intent(MainActivity.this, NotificationReceiver.class);
+            notif.putExtra("room", room);
+            notif.putExtra("startTime", start);
+
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.SECOND, 5);
+
+            PendingIntent pIntent = PendingIntent.getBroadcast(MainActivity.this, 1234, notif, PendingIntent.FLAG_CANCEL_CURRENT);
+
+            AlarmManager am = (AlarmManager) getSystemService(Activity.ALARM_SERVICE);
+            am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pIntent);
 
         }
 

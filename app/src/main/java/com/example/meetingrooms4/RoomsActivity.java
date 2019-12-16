@@ -317,6 +317,8 @@ public class RoomsActivity extends AppCompatActivity {
 
                             Intent i = new Intent(getApplicationContext(), MainActivity.class);
                             i.putExtra("frag", "fragBookings");
+                            i.putExtra("room", roomChosen);
+                            i.putExtra("startTime", startTime);
 
                             final Bookings_Insert book = new Bookings_Insert(user_id, roomid1, startTime, endTime, gvClickedItem.getText().toString(), description.getText().toString(), 1);
 
