@@ -97,6 +97,7 @@ public class LoginActivity extends AppCompatActivity {
                             e.apply();
                             Intent i2 = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(i2);
+                            finish();
 
                             Toast.makeText(getApplicationContext(), "Welcome, " + username, Toast.LENGTH_SHORT).show();
                         }
@@ -104,6 +105,7 @@ public class LoginActivity extends AppCompatActivity {
                 });
             }
         });
+
     }
 
     //Interface for USER DB
