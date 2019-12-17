@@ -22,6 +22,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         String room = intent.getStringExtra("room");
         String startTime = intent.getStringExtra("startTime");
+        String user_id = Integer.toString(intent.getIntExtra("userID",0));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("default", "Default Channel", NotificationManager.IMPORTANCE_DEFAULT);
             channel.setDescription("This is for default notification");
@@ -29,6 +30,9 @@ public class NotificationReceiver extends BroadcastReceiver {
         }
 
         Intent i = new Intent(context, LoginActivity.class);
+        i.putExtra("userID",user_id);
+        i.putExtra("startTime",startTime);
+        i.putExtra("room",room);
         PendingIntent pIntent = PendingIntent.getActivity(context, reqCode, i, PendingIntent.FLAG_CANCEL_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "default");

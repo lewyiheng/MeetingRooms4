@@ -23,10 +23,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.example.meetingrooms4.Classes.Bookings_Insert;
 import com.example.meetingrooms4.Classes.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -34,6 +37,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -48,6 +53,33 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+//Check if came from notif
+        Intent i = getIntent();
+        final String userID = i.getStringExtra("userID");
+        final String roomChosen = i.getStringExtra("room");
+        final String startTime = i.getStringExtra("startTime");
+        if (userID != null) {
+            final AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
+            alert.setTitle("Confirm/Cancel booking?");
+            alert.setMessage("Reservation for " + roomChosen + " at " + startTime);
+            alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                    i.putExtra("frag", "fragBookings");
+                    SharedPreferences sp = getApplicationContext().getSharedPreferences("sp", 0);
+                    SharedPreferences.Editor e = sp.edit();
+                    e.putInt("id", Integer.parseInt(userID));
+                    e.apply();
+                    startActivity(i);
+
+                }
+            });
+            alert.setNegativeButton("No", null);
+            alert.show();
+        }
 
 //Hide action bar
         getSupportActionBar().hide();
@@ -108,7 +140,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    //Interface for USER DB
+//Interface for USER DB
     private void ReadUser(final GetUser gu) {
 
         userDb.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

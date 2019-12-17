@@ -97,7 +97,7 @@ public class OpenRoomsActivity extends AppCompatActivity {
         centerTitle("Available Rooms");
 
 //Get Intents
-        Intent i = getIntent();
+        final Intent i = getIntent();
         final String desc = i.getStringExtra("desc");
         final String startTime = i.getStringExtra("startTime");
         final String endTime = i.getStringExtra("endTime");
@@ -119,6 +119,7 @@ public class OpenRoomsActivity extends AppCompatActivity {
 
                 //Log.d(TAG, al.size() + " Size of RoomList");
                 //Log.d(TAG, al2.size() + " Size of Book List");
+                //Log.d(TAG,al2.size() + " before removing by date" );
 
                 //Remove by date
                 for (int i = al2.size() - 1; i >= 0; i--) {
@@ -127,6 +128,8 @@ public class OpenRoomsActivity extends AppCompatActivity {
                         al2.remove(i);
                     }
                 }
+                //Log.d(TAG,al2.size() + " after removing by date" );
+
 
                 //THEN remove by time
                 for (int i = al2.size() - 1; i >= 0; i--) {
@@ -139,14 +142,18 @@ public class OpenRoomsActivity extends AppCompatActivity {
                         al2.remove(i);
                     }
                 }
+                //Log.d(TAG,al2.size() + " after removing by time" );
+
 
                 //Remove by status
                 for (int i = al2.size() - 1; i >= 0; i--) {
                     String status = al2.get(i).getBks_id();
-                    if (!status.equalsIgnoreCase("Cancelled")) {
+                    if (status.equalsIgnoreCase("Cancelled")) {
                         al2.remove(i);
                     }
                 }
+                //Log.d(TAG,al2.size() + " after removing by status" );
+
 
                 //Whatever left in al2 gets removed in al
                 for (int i = al.size() - 1; i >= 0; i--) {
@@ -212,10 +219,12 @@ public class OpenRoomsActivity extends AppCompatActivity {
                 rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2, RecyclerView.HORIZONTAL, false));
                 aa2 = new OccupiedAdapter(getApplicationContext(), al2);
                 rv.setAdapter(aa2);
+                aa2.notifyDataSetChanged();
 
                 aa = new RoomsAdapter(getApplicationContext(), R.layout.row_rooms, al);
                 lv.setAdapter(aa);
                 aa.notifyDataSetChanged();
+
             }
         });
 
@@ -241,10 +250,11 @@ public class OpenRoomsActivity extends AppCompatActivity {
                         i.putExtra("frag", "fragBookings");
                         i.putExtra("room",roomChosen);
                         i.putExtra("startTime",startTime);
+                        i.putExtra("userID",user_id);
 
                         final Bookings_Insert book = new Bookings_Insert(user_id, roomLocation, startTime, endTime, date, desc, 1);
 
-                        //getid?
+                        // GetId?
                         booking.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -305,7 +315,6 @@ public class OpenRoomsActivity extends AppCompatActivity {
         ab.setBackgroundDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.actionbar));
         ab.setTitle(Html.fromHtml("<font color='#000000'>" + title + " </font>"));
     }
-
 
     private void readDb(final getList gl) {
 

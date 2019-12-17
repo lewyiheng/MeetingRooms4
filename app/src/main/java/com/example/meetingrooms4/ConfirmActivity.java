@@ -38,15 +38,7 @@ public class ConfirmActivity extends AppCompatActivity {
         setContentView(R.layout.activity_confirm);
 
 
-
-
-
         //ACTIVITY NO LONGER IN USE
-
-
-
-
-
 
         iv = findViewById(R.id.confirmRoomImage);
         book = findViewById(R.id.confirmBook);

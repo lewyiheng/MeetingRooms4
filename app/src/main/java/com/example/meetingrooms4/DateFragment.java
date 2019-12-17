@@ -64,6 +64,7 @@ public class DateFragment extends Fragment {
 //Get date frm calendarView
         Date c = Calendar.getInstance().getTime();
         SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
         String formattedDate = df.format(c);
         check.setText(formattedDate);
 

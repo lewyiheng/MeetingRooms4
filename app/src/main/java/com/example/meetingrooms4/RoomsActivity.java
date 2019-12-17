@@ -211,7 +211,7 @@ public class RoomsActivity extends AppCompatActivity {
                         //Remove by status
                         for (int i = al.size() - 1; i >= 0; i--) {
                             String status = al.get(i).getBks_id();
-                            if (!status.equalsIgnoreCase("Cancelled")) {
+                            if (status.equalsIgnoreCase("Cancelled")) {
                                 al.remove(i);
                             }
                         }
@@ -290,7 +290,6 @@ public class RoomsActivity extends AppCompatActivity {
             }
         });
 
-
         book.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -319,6 +318,7 @@ public class RoomsActivity extends AppCompatActivity {
                             i.putExtra("frag", "fragBookings");
                             i.putExtra("room", roomChosen);
                             i.putExtra("startTime", startTime);
+                            i.putExtra("userID",user_id);
 
                             final Bookings_Insert book = new Bookings_Insert(user_id, roomid1, startTime, endTime, gvClickedItem.getText().toString(), description.getText().toString(), 1);
 
