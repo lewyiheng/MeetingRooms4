@@ -54,32 +54,32 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-//Check if came from notif
-        Intent i = getIntent();
-        final String userID = i.getStringExtra("userID");
-        final String roomChosen = i.getStringExtra("room");
-        final String startTime = i.getStringExtra("startTime");
-        if (userID != null) {
-            final AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
-            alert.setTitle("Confirm/Cancel booking?");
-            alert.setMessage("Reservation for " + roomChosen + " at " + startTime);
-            alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                    i.putExtra("frag", "fragBookings");
-                    SharedPreferences sp = getApplicationContext().getSharedPreferences("sp", 0);
-                    SharedPreferences.Editor e = sp.edit();
-                    e.putInt("id", Integer.parseInt(userID));
-                    e.apply();
-                    startActivity(i);
-
-                }
-            });
-            alert.setNegativeButton("No", null);
-            alert.show();
-        }
+////Check if came from notif
+//        Intent i = getIntent();
+//        final String userID = i.getStringExtra("userID");
+//        final String roomChosen = i.getStringExtra("room");
+//        final String startTime = i.getStringExtra("startTime");
+//        if (userID != null) {
+//            final AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
+//            alert.setTitle("Confirm/Cancel booking?");
+//            alert.setMessage("Reservation for " + roomChosen + " at " + startTime);
+//            alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//
+//                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
+//                    i.putExtra("frag", "fragBookings");
+//                    SharedPreferences sp = getApplicationContext().getSharedPreferences("sp", 0);
+//                    SharedPreferences.Editor e = sp.edit();
+//                    e.putInt("id", Integer.parseInt(userID));
+//                    e.apply();
+//                    startActivity(i);
+//
+//                }
+//            });
+//            alert.setNegativeButton("No", null);
+//            alert.show();
+//        }
 
 //Hide action bar
         getSupportActionBar().hide();

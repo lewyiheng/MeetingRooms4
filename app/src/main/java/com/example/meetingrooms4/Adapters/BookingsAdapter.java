@@ -172,7 +172,7 @@ public class BookingsAdapter extends ArrayAdapter<Bookings> {
             public void onClick(View v) {
 
                 AlertDialog.Builder alert = new AlertDialog.Builder(context);
-                alert.setTitle("Confirm book?");
+                alert.setTitle("Confirm booking?");
                 alert.setMessage("Are you sure you want to proceed with the booking?");
                 alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
