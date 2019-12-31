@@ -6,12 +6,13 @@
     android:orientation="vertical">
 
 
-        <ListView
-            android:id="@+id/roomsList"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="5dp"
-            android:dividerHeight="1dip"
-            android:listSelector="@drawable/list_selector"></ListView>
+    <ListView
+        android:id="@+id/roomsList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:dividerHeight="1dip"
+        android:listSelector="@drawable/list_selector"></ListView>
+
 
 </LinearLayout>

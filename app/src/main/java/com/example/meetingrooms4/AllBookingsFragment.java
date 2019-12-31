@@ -168,7 +168,6 @@ public class AllBookingsFragment extends Fragment {
 
         return view;
     }
-
     //Change date to be easily sorted
     public String sortDate(String date) {
         String date1;

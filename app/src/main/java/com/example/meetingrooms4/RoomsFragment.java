@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.example.meetingrooms4.Adapters.RoomsAdapter;
 import com.example.meetingrooms4.Classes.Rooms;
@@ -34,6 +35,7 @@ public class RoomsFragment extends Fragment {
     ArrayList<Rooms> al;
     ArrayAdapter aa;
     ListView roomsList;
+    ProgressBar pb;
 
     // String roomid;
 
@@ -50,6 +52,7 @@ public class RoomsFragment extends Fragment {
         ab.setTitle(Html.fromHtml("<font color='#000000'>By Room</font>"));
 
         roomsList = view.findViewById(R.id.roomsList);
+        //pb = view.findViewById(R.id.progressbar);
 
         /* To add room */
 //        Rooms city = new Rooms("BIS2 discussion room", 6, " ", "ISG", true);
@@ -74,11 +77,13 @@ public class RoomsFragment extends Fragment {
 
         al = new ArrayList<Rooms>();
         al.clear();
+        //pb.setVisibility(View.GONE);
 
         //Set rooms list
         room.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                //pb.setVisibility(View.VISIBLE);
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         Boolean avail = (Boolean) document.getData().get("room_status");
@@ -103,6 +108,7 @@ public class RoomsFragment extends Fragment {
                     aa = new RoomsAdapter(getActivity(), R.layout.row_rooms, al);
                     roomsList.setAdapter(aa);
                     aa.notifyDataSetChanged();
+                    //pb.setVisibility(View.GONE);
                 }
             }
         });
