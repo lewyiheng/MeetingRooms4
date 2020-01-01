@@ -389,7 +389,7 @@ public class OpenRoomsActivity extends AppCompatActivity {
 
         if (b1 >= a1 && b1 < a2) {
             return true;
-        } else if (b2 >= a1 && b1 < a2) {
+        } else if (b2 > a1 && b2 <= a2) {
             return true;
         } else if (b1 <= a1 && b2 >= a2) {
             return true;

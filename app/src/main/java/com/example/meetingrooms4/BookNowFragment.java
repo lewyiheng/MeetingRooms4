@@ -50,13 +50,13 @@ public class BookNowFragment extends Fragment {
 //Time Now
         final Date c = Calendar.getInstance().getTime(); //Get today's date and time
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
-        SimpleDateFormat dateFormat2 = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
         final SimpleDateFormat hourOnly = new SimpleDateFormat("HH"); //Get only hour
         final SimpleDateFormat minuteOnly = new SimpleDateFormat("mm"); //Get only minute
 
-        date.setText(dateFormat.format(c));//Set date to "dd MM yyyy"
-        final String dateDB = dateFormat2.format(c);
+        date.setText(dateFormat.format(c));//Set today's date to "dd MM yyyy"
+        final String dateDB = dateFormat2.format(c); //Set date to be collected to yyyy-MM-dd
         time.setText(timeFormat.format(c)); //Set time to HH:mm
 
         duration.setText("1.0");

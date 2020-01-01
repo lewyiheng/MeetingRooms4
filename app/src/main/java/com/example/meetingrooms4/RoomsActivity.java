@@ -130,7 +130,7 @@ public class RoomsActivity extends AppCompatActivity {
 
         //getDate
         Date date1 = new Date(datepicker.getDate()); //Get today's date
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         gvClickedItem.setText(sdf.format(date1)); //Convert today's date to "dd MMMM yyyy"
         datepicker.setDate(Calendar.getInstance().getTimeInMillis(), false, true);
 
@@ -180,7 +180,7 @@ public class RoomsActivity extends AppCompatActivity {
                 } else {
                     monthString = String.valueOf(month);
                 }
-                final String date2 = dayofmonth + "-" + monthString + "-" + yearString;
+                final String date2 = yearString + "-" + monthString + "-" + dayofmonth;
                 gvClickedItem.setText(date2);
 
                 Log.d(TAG, gvClickedItem.getText().toString());

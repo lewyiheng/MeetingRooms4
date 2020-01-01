@@ -173,7 +173,7 @@ public class AllBookingsFragment extends Fragment {
         String date1;
 
         String[] dateString = date.split("-");
-        date1 = dateString[2] + dateString[1] + dateString[0];
+        date1 = dateString[0] + dateString[1] + dateString[2];
 
         return date1;
 
@@ -191,10 +191,10 @@ public class AllBookingsFragment extends Fragment {
 
             String[] dateSplit = date.split("-");
 
-            int day = Integer.parseInt(dateSplit[0]);
+            int day = Integer.parseInt(dateSplit[2]);
             int datePickerMonth = Integer.parseInt(dateSplit[1]);
             datePickerMonth--;
-            int year = Integer.parseInt(dateSplit[2]);
+            int year = Integer.parseInt(dateSplit[0]);
 
             if (day < 10) {
                 day1 = "0" + day;
@@ -240,9 +240,9 @@ public class AllBookingsFragment extends Fragment {
             String day1;
             String month1;
 
-            int day = Integer.parseInt(date1[0]);
+            int day = Integer.parseInt(date1[2]);
             String month = date1[1];
-            String year = date1[2];
+            String year = date1[0];
 
             if (day < 10) {
                 day1 = "0" + day;

@@ -223,10 +223,10 @@ public class BookingsAdapter extends ArrayAdapter<Bookings> {
 
             String[] dateSplit = date.split("-");
 
-            int day = Integer.parseInt(dateSplit[0]);
+            int day = Integer.parseInt(dateSplit[2]);
             int datePickerMonth = Integer.parseInt(dateSplit[1]);
             datePickerMonth--;
-            int year = Integer.parseInt(dateSplit[2]);
+            int year = Integer.parseInt(dateSplit[0]);
 
             if (day < 10) {
                 day1 = "0" + day;

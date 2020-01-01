@@ -63,7 +63,7 @@ public class DateFragment extends Fragment {
 
 //Get date frm calendarView
         Date c = Calendar.getInstance().getTime();
-        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
         String formattedDate = df.format(c);
         check.setText(formattedDate);
@@ -78,7 +78,7 @@ public class DateFragment extends Fragment {
                 } else {
                     day = Integer.toString(dayOfMonth);
                 }
-                String date = day + "-" + (month + 1) + "-" + year;
+                String date = year + "-" + (month + 1) + "-" + day;
                 check.setText(date);
             }
         });
