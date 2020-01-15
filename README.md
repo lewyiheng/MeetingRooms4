@@ -6,7 +6,8 @@ Welcome to the final version of MeetingRooms!
 - Working internet at all times during usage
 - FireStore database connected to the app
 
-***Setbacks***
+***Setbacks:***
+
 Currently there is no way of registering for an account within the app. Any additional users must be added straight to the database
 
 All data are stored in FireStore itself! Nothing is local.
