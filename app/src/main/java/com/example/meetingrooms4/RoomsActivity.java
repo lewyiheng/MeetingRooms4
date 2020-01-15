@@ -211,7 +211,7 @@ public class RoomsActivity extends AppCompatActivity {
                         //Remove by status
                         for (int i = al.size() - 1; i >= 0; i--) {
                             String status = al.get(i).getBks_id();
-                            if (status.equalsIgnoreCase("Cancelled")) {
+                            if (status.equalsIgnoreCase("3")) {
                                 al.remove(i);
                             }
                         }
@@ -375,6 +375,14 @@ public class RoomsActivity extends AppCompatActivity {
                                 }
                             }
 
+                            //Remove by status
+                            for (int i = al.size() - 1; i >= 0; i--) {
+                                String status = al.get(i).getBks_id();
+                                if (status.equalsIgnoreCase("3")) {
+                                    al.remove(i);
+                                }
+                            }
+
                             //THEN remove by time
                             for (int i = al.size() - 1; i >= 0; i--) {
                                 String b1 = al.get(i).getStart_time();
@@ -382,7 +390,12 @@ public class RoomsActivity extends AppCompatActivity {
                                 if (checkConflict(startTime, endTime, b1, b2)) {
                                     al3.add(al.get(i));
                                 }
+
                             }
+
+
+
+
                             //Setting bks_id to status name
                             for (int i = 0; al.size() > i; i++) {
                                 String status_id = al.get(i).getBks_id();
@@ -424,6 +437,7 @@ public class RoomsActivity extends AppCompatActivity {
                                 rv.setLayoutManager(new GridLayoutManager(getApplicationContext(), 3, RecyclerView.HORIZONTAL, false));
                                 aa = new OccupiedTimeAdapter(getApplicationContext(), al3);
                                 rv.setAdapter(aa); //Set recyclerView list.
+                                aa.notifyDataSetChanged();
                             } else {
                                 alert.show();
                             }

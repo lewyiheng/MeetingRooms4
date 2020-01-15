@@ -159,7 +159,7 @@ public class BookingsAdapter extends ArrayAdapter<Bookings> {
                                 });
                             }
                         });
-                        Toast.makeText(context, "Booking confirmed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Room released", Toast.LENGTH_SHORT).show();
                     }
                 });
                 alert.setNegativeButton("No", null);
@@ -272,9 +272,9 @@ public class BookingsAdapter extends ArrayAdapter<Bookings> {
             String day1;
             String month1;
 
-            int day = Integer.parseInt(date1[0]);
+            int day = Integer.parseInt(date1[2]);
             String month = date1[1];
-            String year = date1[2];
+            String year = date1[0];
 
             if (day < 10) {
                 day1 = "0" + day;

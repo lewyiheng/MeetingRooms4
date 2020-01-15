@@ -78,7 +78,10 @@ public class DateFragment extends Fragment {
                 } else {
                     day = Integer.toString(dayOfMonth);
                 }
-                String date = year + "-" + (month + 1) + "-" + day;
+                String month1 = String.valueOf(month + 1);
+                String formatMonth = String.format("%2s",month1).replace(' ','0');
+
+                String date = year + "-" + formatMonth + "-" + day;
                 check.setText(date);
             }
         });

@@ -148,7 +148,7 @@ public class OpenRoomsActivity extends AppCompatActivity {
                 //Remove by status
                 for (int i = al2.size() - 1; i >= 0; i--) {
                     String status = al2.get(i).getBks_id();
-                    if (status.equalsIgnoreCase("Cancelled")) {
+                    if (status.equalsIgnoreCase("3")) {
                         al2.remove(i);
                     }
                 }
@@ -157,9 +157,10 @@ public class OpenRoomsActivity extends AppCompatActivity {
 
                 //Whatever left in al2 gets removed in al
                 for (int i = al.size() - 1; i >= 0; i--) {
-                    for (int i2 = 0; conflicted.size() > i2; i2++) {
-                        if (conflicted.contains(al.get(i).getRoom_status())) {
+                    for (int i2 = 0; al2.size() > i2; i2++) {
+                        if (al2.get(i2).getRoom_id().equalsIgnoreCase(al.get(i).getRoom_status())) {
                             al.remove(i);
+
                         }
                     }
                 }
