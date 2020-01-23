@@ -41,10 +41,10 @@ All fields are neccessary unless described otherwise.
 
 Collection | Document (title example) | Document fields
 --- | --- | ---
-booking | 000001 | bks_id <br/> book_date <br/> book_purpose <br/> end_time <br/> start_time <br/> room_id <br/> timestamp* <br/> user_id
-booking_status | 1 | bks_status
-room | BIS discussion room | room_capacity <br/> room_description* <br/> room_group* <br/> room_name <br/> room_status* <br/>
-user | 000001 | employment_status* <br/> group_name* <br/> mobile_number <br/> name <br/> office_number* <br/> password <br/> role <br/> username <br/>
+booking | 000001 | bks_id(int) <br/> book_date(string) <br/> book_purpose(string) <br/> end_time(string) <br/> start_time(string) <br/> room_id(string( <br/> timestamp* <br/> user_id(int)
+booking_status | 1 | bks_status(string)
+room | BIS discussion room | room_capacity(int) <br/> room_description(string)* <br/> room_group(string)* <br/> room_name(string) <br/> room_status(string)* <br/>
+user | 000001 | employment_status(int)* <br/> group_name(string)* <br/> mobile_number(int) <br/> name(string) <br/> office_number(int)* <br/> password(string) <br/> role(string)* <br/> username(string) <br/>
 
 _* - optional as not used by app as of latest update_
 
